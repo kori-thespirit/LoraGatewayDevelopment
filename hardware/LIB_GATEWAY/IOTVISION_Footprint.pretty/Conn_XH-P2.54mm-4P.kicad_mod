@@ -1,0 +1,203 @@
+(footprint "Conn_XH-P2.54mm-4P"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(tags "XH 2.54 ")
+	(property "Reference" "REF**"
+		(at 1.75 -5.23 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "b0045cf6-868f-4f84-9e00-4554d91b3e4d")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.3)
+			)
+		)
+	)
+	(property "Value" "Conn_01x04"
+		(at 0 7.4 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "2d212d70-a55f-4e92-80e0-d4fe2d86420c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "2fec3b81-ab73-4fdb-af3f-43efa7f033ac")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "58b49319-f174-48fc-a739-580bdf74ede7")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" "Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "b402bc37-3f44-463d-bd38-b48103172cf2")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_line
+		(start -2.86 -4.54)
+		(end -2.06 -4.54)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "6d2bad46-499a-40bf-98d5-c3ea7c4ec3ce")
+	)
+	(fp_line
+		(start -2.8 3.23)
+		(end -2 3.23)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "6ff7cb4f-0696-462d-a99b-10e67ec7aa84")
+	)
+	(fp_line
+		(start -2.06 -4.54)
+		(end -2.06 -3.34)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "03796140-7555-45ad-b2c2-46b7694a0f35")
+	)
+	(fp_line
+		(start -2.06 -3.34)
+		(end -2.86 -3.34)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "48dd573e-929f-4bf1-bf7a-859a29ece125")
+	)
+	(fp_line
+		(start -2 3.23)
+		(end -2 4.43)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "7d89f942-15fb-4cf9-92ae-964042b113d5")
+	)
+	(fp_line
+		(start -2 4.43)
+		(end -2.8 4.43)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "33cf77c3-a588-4b41-8fe3-19cdc4166cd1")
+	)
+	(fp_line
+		(start 2.6 -6.26)
+		(end 2.6 6.23)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "73234372-5af8-4bed-a4e4-1aab23a1834b")
+	)
+	(fp_rect
+		(start -2.87 -6.26)
+		(end 3.43 6.26)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "c53a7f5e-9af5-4d4c-9801-1ac8a37bd207")
+	)
+	(fp_rect
+		(start -3.02 -6.39)
+		(end 3.59 6.39)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "c629e83f-0ad9-4e77-bc66-1d64330fb51a")
+	)
+	(pad "1" thru_hole rect
+		(at 0 -3.81)
+		(size 1.7 1.7)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "f640461a-20ef-4beb-8bd9-8eb8b8308b0b")
+	)
+	(pad "2" thru_hole oval
+		(at 0 -1.27)
+		(size 1.7 1.7)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "c4ab862c-0fb9-4fa5-97f6-711fb70d269c")
+	)
+	(pad "3" thru_hole circle
+		(at 0 1.27)
+		(size 1.7 1.7)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "b31ca65a-f5c5-40cd-8d73-4a6efc0d95b4")
+	)
+	(pad "4" thru_hole circle
+		(at 0 3.81)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "fd3565f0-b91f-4917-a307-497496c78792")
+	)
+	(model "E:/IoT_Lab/3D/Connector/XH_2.54/Thru Vertical/JST - XH - Thru (V) - 4Pin - 2.54mm.stp"
+		(offset
+			(xyz -0.1 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 90)
+		)
+	)
+)

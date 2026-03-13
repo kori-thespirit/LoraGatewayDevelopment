@@ -1,0 +1,418 @@
+(footprint "Diodes_PowerDI3333-8"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(descr "Diodes Incorporated PowerDI3333-8, Plastic Dual Flat No Lead Package, 3.3x3.3x0.8mm Body, https://www.diodes.com/assets/Package-Files/PowerDI3333-8.pdf")
+	(tags "PowerDI 0.65")
+	(property "Reference" "REF**"
+		(at 0.2 -2.95 -90)
+		(layer "F.SilkS")
+		(uuid "6b2c2fec-b76d-40c1-811d-17ebd51f5082")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "DMP3013SFV-7"
+		(at 0 2.65 180)
+		(layer "F.Fab")
+		(uuid "0eac7fdf-23eb-43f5-bfbe-819e0433e7cf")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "4b0ef3d2-5fe9-4ff3-8f7f-be0eb76d95a8")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "2dfc24e6-60a9-4347-95c5-4016d436cfb6")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "a1b9a1bc-8717-487e-9fad-565383c8ede3")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Field4" "Farnell"
+		(at 0 0 90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "243236e6-a8cc-434c-9cdf-a4fde0cee842")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field5" "3405192"
+		(at 0 0 90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "09a10f5b-dfcd-46e7-af0e-2c3ffefd6276")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field6" "DMP3013SFV-7"
+		(at 0 0 90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "578bf1d8-823f-4d41-8b54-a5c999f04158")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field7" "Diodes"
+		(at 0 0 90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "07951519-3d11-40fe-a8e6-4776951e30b9")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Part Description" "DMP3013SFV-7 -  Power MOSFET, P Channel, 30 V, 12 A, 0.008 ohm, PowerDI3333, Surface Mount"
+		(at 0 0 90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "1c24fdbe-1dbf-4439-b07d-5c611bdb649e")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start -1.77 1.77)
+		(end -1.77 1.4)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "f15cc14f-2465-4a4d-b403-08a5cbe9934f")
+	)
+	(fp_line
+		(start -1.77 1.77)
+		(end 1.77 1.77)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "a2e9835a-9be2-4a70-92d2-542dba5e8816")
+	)
+	(fp_line
+		(start 1.77 -1.77)
+		(end -2 -1.77)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "02d0ea30-d0c4-4814-82b8-1278edf88fba")
+	)
+	(fp_line
+		(start 1.77 -1.77)
+		(end 1.77 -1.4)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "87bf3a3b-c10f-4bb4-bb98-fde1fd13b173")
+	)
+	(fp_line
+		(start 1.77 1.77)
+		(end 1.77 1.4)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "fdd9ddae-b4ad-4ddc-afea-58706bfaa97d")
+	)
+	(fp_line
+		(start -2.1 -1.9)
+		(end -2.1 1.9)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "adb69c90-f400-40d7-b8b9-b05e6a6754e0")
+	)
+	(fp_line
+		(start -2.1 1.9)
+		(end 2.1 1.9)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "c438d19d-b34c-4bc2-9196-500c389fef91")
+	)
+	(fp_line
+		(start 2.1 -1.9)
+		(end -2.1 -1.9)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "8abb0aa8-2547-4b25-8f69-0b0b6eb0146b")
+	)
+	(fp_line
+		(start 2.1 1.9)
+		(end 2.1 -1.9)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "0ff72eab-5caf-4c08-bcfc-72af8e24e920")
+	)
+	(fp_line
+		(start -1.65 -0.825)
+		(end -1.65 1.65)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "cba08213-a640-417e-a952-932eecc086ee")
+	)
+	(fp_line
+		(start -1.65 1.65)
+		(end 1.65 1.65)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "cfe82f4c-ce51-4d5f-99b3-37f1941e13b6")
+	)
+	(fp_line
+		(start -0.825 -1.65)
+		(end -1.65 -0.825)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "bda85515-915a-404f-b7f0-319973ed7278")
+	)
+	(fp_line
+		(start 1.65 -1.65)
+		(end -0.825 -1.65)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "21b2a714-6bc4-49d1-af86-e8cb26b1e8a5")
+	)
+	(fp_line
+		(start 1.65 1.65)
+		(end 1.65 -1.65)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "d1caf38d-a51b-4563-b1af-210605e40dd9")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(uuid "6557c9a6-bd65-4fdf-9235-e46e18db50b7")
+		(effects
+			(font
+				(size 0.7 0.7)
+				(thickness 0.1)
+			)
+		)
+	)
+	(pad "" smd rect
+		(at 0.02 -0.565)
+		(size 0.6 1)
+		(layers "F.Paste")
+		(solder_paste_margin_ratio -0.2)
+		(uuid "a2386b87-bece-4b22-b11c-4922cd0d5c4f")
+	)
+	(pad "" smd rect
+		(at 0.02 0.565)
+		(size 0.6 1)
+		(layers "F.Paste")
+		(solder_paste_margin_ratio -0.2)
+		(uuid "1736567d-4b8e-4b23-9c8c-96bd789c03b5")
+	)
+	(pad "" smd rect
+		(at 0.73 -0.565)
+		(size 0.6 1)
+		(layers "F.Paste")
+		(solder_paste_margin_ratio -0.2)
+		(uuid "b9ae38d2-1d9f-4930-8d57-5028e8bed372")
+	)
+	(pad "" smd rect
+		(at 0.73 0.565)
+		(size 0.6 1)
+		(layers "F.Paste")
+		(solder_paste_margin_ratio -0.2)
+		(uuid "0da989ea-af28-4916-a7e8-eef723e0abd5")
+	)
+	(pad "" smd rect
+		(at 1.5 -0.975)
+		(size 0.7 0.42)
+		(layers "F.Paste")
+		(uuid "a0561fae-ac0a-4b24-985c-48dcd78ff7db")
+	)
+	(pad "" smd rect
+		(at 1.5 -0.325)
+		(size 0.7 0.42)
+		(layers "F.Paste")
+		(uuid "db290136-ef47-4ab9-993e-9278dd38e382")
+	)
+	(pad "" smd rect
+		(at 1.5 0.325)
+		(size 0.7 0.42)
+		(layers "F.Paste")
+		(uuid "6e891cb3-8bcc-4cc3-b1b5-df5ce0965b26")
+	)
+	(pad "" smd rect
+		(at 1.5 0.975)
+		(size 0.7 0.42)
+		(layers "F.Paste")
+		(uuid "ccc2fe74-9a83-4439-b3c1-97edd7123940")
+	)
+	(pad "1" smd rect
+		(at -1.5 -0.975)
+		(size 0.7 0.42)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "3c74ee24-6bd4-48c8-85fe-277654281908")
+	)
+	(pad "2" smd rect
+		(at -1.5 -0.325)
+		(size 0.7 0.42)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "eb5357a6-c76c-4498-844f-465fb38f9849")
+	)
+	(pad "3" smd rect
+		(at -1.5 0.325)
+		(size 0.7 0.42)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "5623b126-73bd-4be7-8198-aa80ba4913c5")
+	)
+	(pad "4" smd rect
+		(at -1.5 0.975)
+		(size 0.7 0.42)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "c69c8392-9419-4be8-8b8d-3385da6b8984")
+	)
+	(pad "5" smd custom
+		(at 0.455 0)
+		(size 1.71 2.37)
+		(layers "F.Cu" "F.Mask")
+		(zone_connect 0)
+		(options
+			(clearance outline)
+			(anchor rect)
+		)
+		(primitives
+			(gr_poly
+				(pts
+					(xy 1.395 1.185) (xy 0.855 1.185) (xy 0.855 0.765) (xy 1.395 0.765)
+				)
+				(width 0)
+				(fill yes)
+			)
+			(gr_poly
+				(pts
+					(xy 1.395 0.535) (xy 0.855 0.535) (xy 0.855 0.115) (xy 1.395 0.115)
+				)
+				(width 0)
+				(fill yes)
+			)
+			(gr_poly
+				(pts
+					(xy 1.395 -0.115) (xy 0.855 -0.115) (xy 0.855 -0.535) (xy 1.395 -0.535)
+				)
+				(width 0)
+				(fill yes)
+			)
+			(gr_poly
+				(pts
+					(xy 1.395 -0.765) (xy 0.855 -0.765) (xy 0.855 -1.185) (xy 1.395 -1.185)
+				)
+				(width 0)
+				(fill yes)
+			)
+		)
+		(uuid "4993ebff-a774-469a-b2aa-eac1c5c28123")
+	)
+	(model "${KICAD6_3DMODEL_DIR}/Package_SON.3dshapes/Diodes_PowerDI3333-8.wrl"
+		(hide yes)
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 90)
+		)
+	)
+	(model "${KIPRJMOD}/CM4IO.3dshapes/PowerDI3333-8_Type-UX.STP"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 180 0 -90)
+		)
+	)
+)

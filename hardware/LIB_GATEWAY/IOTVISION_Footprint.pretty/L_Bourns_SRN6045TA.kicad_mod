@@ -1,0 +1,301 @@
+(footprint "L_Bourns_SRN6045TA"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(descr "http://www.bourns.com/docs/product-datasheets/srn6045ta.pdf")
+	(tags "Semi-shielded Power Inductor")
+	(property "Reference" "REF**"
+		(at 0.15 4.6625 0)
+		(layer "F.SilkS")
+		(uuid "bd6d3664-679c-4380-8a89-a1bfde7690d1")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "SRN6045TA-3R3Y"
+		(at 0 4.2 180)
+		(layer "F.Fab")
+		(uuid "31839a61-78b3-4457-93e5-6da642600188")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "84bcaaf7-9b04-41ba-a8f8-ffea060f86cb")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "ffdba853-1e94-4451-b376-76b5ffbb9f80")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "2c086f29-4939-4f63-a078-42dbba0d41d4")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Field4" "Farnell"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "ecb17584-08ee-41ed-80b0-155f76cd7f7f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field5" "2616889"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "834a3801-c21e-4e21-924e-0d1b13fa4952")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field6" "SRN6045TA-3R3Y"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "43f00e0c-8e61-498e-93eb-d4f7d0aa4297")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field7" "Bourns"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "a1564867-cfda-4e87-9022-2e6540fce370")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Part Description" "3.3µH Semi-Shielded Wirewound Inductor 7.8A 21mOhm Nonstandard"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "5a43a650-12d5-4379-a62e-eeb030c648a4")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start -3.1 -3.1)
+		(end -3.1 -2.65)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "f932e126-e904-4550-8c79-deec1727ac3e")
+	)
+	(fp_line
+		(start -3.1 -3.1)
+		(end 3.1 -3.1)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "984333f9-56ee-400a-8598-81393f36dc85")
+	)
+	(fp_line
+		(start -3.1 3.1)
+		(end -3.1 2.65)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "fe10c135-f1b1-4b10-8490-af0e6dd952f3")
+	)
+	(fp_line
+		(start 3.1 -3.1)
+		(end 3.1 -2.65)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "4e960bc2-d55e-4c49-8da2-aa48d568c64d")
+	)
+	(fp_line
+		(start 3.1 3.1)
+		(end -3.1 3.1)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "a8e16f74-8a19-43fe-9fc4-ab01b3e964d5")
+	)
+	(fp_line
+		(start 3.1 3.1)
+		(end 3.1 2.65)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "81ebc75e-b33d-4cb0-a65f-65bf303a070d")
+	)
+	(fp_line
+		(start -3.5 -3.25)
+		(end -3.5 3.25)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "f9059956-0c73-4be9-9b54-b36a6a85348e")
+	)
+	(fp_line
+		(start -3.5 3.25)
+		(end 3.5 3.25)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "75b09ae2-2e7d-4989-9161-e89f716dce90")
+	)
+	(fp_line
+		(start 3.5 -3.25)
+		(end -3.5 -3.25)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "8ae8eab0-882f-4b69-bbd6-a96214377e6f")
+	)
+	(fp_line
+		(start 3.5 3.25)
+		(end 3.5 -3.25)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "7df46e1d-a9e0-4d7c-9e36-563e58370bc2")
+	)
+	(fp_line
+		(start -3 -3)
+		(end -3 3)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "80f07412-61f7-4fd5-8bff-489f8bfc1193")
+	)
+	(fp_line
+		(start -3 -3)
+		(end 3 -3)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "affc3bb7-2c7a-409d-a988-618c19a17d73")
+	)
+	(fp_line
+		(start -3 3)
+		(end 3 3)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "54b4bc4d-6ae5-4c1e-9d03-09bb7da60c43")
+	)
+	(fp_line
+		(start 3 3)
+		(end 3 -3)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "7ad30a33-23ac-4f29-8e38-2ac2c8f0e1b7")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(uuid "ec316b15-339b-47bc-ae62-f079851019d9")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd rect
+		(at -2.075 0)
+		(size 2.35 5.1)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "88160d7b-92d7-4151-b81f-674e16085554")
+	)
+	(pad "2" smd rect
+		(at 2.075 0)
+		(size 2.35 5.1)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "e423f137-d719-42cd-8459-8b24c648ff67")
+	)
+	(model "${KICAD6_3DMODEL_DIR}/Inductor_SMD.3dshapes/L_Bourns_SRN6045TA.wrl"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)

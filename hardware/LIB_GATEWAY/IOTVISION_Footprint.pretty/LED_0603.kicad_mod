@@ -1,0 +1,297 @@
+(footprint "LED_0603"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 -1.3 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "a6a1b4e9-44b0-46df-a728-3e0d6186252d")
+		(effects
+			(font
+				(size 0.6 0.6)
+				(thickness 0.15)
+				(bold yes)
+			)
+		)
+	)
+	(property "Value" "PWR"
+		(at 0 1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "f86b82e5-2411-49e9-ad61-6f8a6868d17f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "cb1ae2be-d50c-48af-889f-a401617cc846")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "62eadd9c-863a-4a8a-b21d-882f5a85731b")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" "Light emitting diode"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f1d1b88b-56fb-494c-aabf-c6866723e01b")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start -1.5 -0.7)
+		(end -1.5 0.7)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "54f2412c-d06d-4bc9-961a-4f6000ee2a80")
+	)
+	(fp_line
+		(start -1.5 -0.7)
+		(end 0.35 -0.7)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "d5bbadd9-178d-47f3-8b96-c2a6e0cd08a2")
+	)
+	(fp_line
+		(start -1.5 0.7)
+		(end 0.275 0.7)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "a44ee111-b18e-43cc-9b61-a99332a30c88")
+	)
+	(fp_line
+		(start -0.2 -0.4)
+		(end -0.2 0.4)
+		(stroke
+			(width 0.2)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "fe0ce925-30d9-4833-a984-568b46e8d0a6")
+	)
+	(fp_poly
+		(pts
+			(xy -0.2 0) (xy 0.2 -0.4) (xy 0.2 0.4)
+		)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill solid)
+		(layer "F.SilkS")
+		(uuid "20415ebf-f9aa-4158-bc65-e7a71414fca5")
+	)
+	(fp_rect
+		(start -1.5 -0.7)
+		(end 1.5 0.7)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "646d0476-2bf1-43fd-87ed-d8a3f94e677e")
+	)
+	(fp_line
+		(start -0.8 -0.4)
+		(end 0.8 -0.4)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "b5733a49-5d40-43d0-9f62-cdcde04dc946")
+	)
+	(fp_line
+		(start -0.8 0.4)
+		(end -0.8 -0.4)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "1fc28fcd-f841-4029-985f-2a8a6f41e85e")
+	)
+	(fp_line
+		(start -0.175 -0.2875)
+		(end -0.175 0.2625)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "a451c0a7-450c-444e-83f1-866a5031f6ca")
+	)
+	(fp_line
+		(start -0.175 -0.0125)
+		(end -0.5 -0.0125)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "2ca9835e-021a-4ce7-8e88-68b463f7659c")
+	)
+	(fp_line
+		(start 0.525 -0.0125)
+		(end 0.2 -0.0125)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "e26769d9-9533-4bdb-97fc-1254f75080dd")
+	)
+	(fp_line
+		(start 0.8 -0.4)
+		(end 0.8 0.4)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "a1b4b63f-bc95-4f22-80a4-ae4d9adcf620")
+	)
+	(fp_line
+		(start 0.8 0.4)
+		(end -0.8 0.4)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "296c3982-c638-4b1f-95d1-a4507750aa71")
+	)
+	(fp_poly
+		(pts
+			(xy -0.125 -0.0125) (xy 0.175 -0.3125) (xy 0.175 0.2875)
+		)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill solid)
+		(layer "F.Fab")
+		(uuid "7c6452a9-5058-40e4-ad13-7cf65f2ceb43")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0.1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "9ee4a4fc-a777-4fe2-9769-578a4beffa58")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at 0.775 0)
+		(size 0.85 0.9)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.15)
+		(uuid "8fbe1074-fcfa-4c30-996a-7b45140d4bb6")
+	)
+	(pad "2" smd roundrect
+		(at -0.775 0)
+		(size 0.85 0.9)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.15)
+		(uuid "5c6931a2-98c2-4299-a7c0-ddbc074823b2")
+	)
+	(model "${KICAD6_3DMODEL_DIR}/LED_SMD.3dshapes/LED_0603_1608Metric.wrl"
+		(hide yes)
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+	(model "E:/IoT_Lab/3D/Diode/LED/LED/0603 Red.step"
+		(offset
+			(xyz 0 0 -0.1)
+		)
+		(scale
+			(xyz 1 1 0.9)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+	(model "${ANH_3DMODELS}/General/SMD_Led/LED0603_GREEN.STEP"
+		(hide yes)
+		(offset
+			(xyz 0 0 -0.1)
+		)
+		(scale
+			(xyz 1 1 0.9)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+	(model "${ANH_3DMODELS}/General/SMD_Led/LED0603_BLUE.STEP"
+		(hide yes)
+		(offset
+			(xyz 0 0 -0.1)
+		)
+		(scale
+			(xyz 1 1 0.9)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+	(model "${ANH_3DMODELS}/General/SMD_Led/LED0603_YELLOW.STEP"
+		(offset
+			(xyz 0 0 -0.1)
+		)
+		(scale
+			(xyz 1 1 0.9)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)

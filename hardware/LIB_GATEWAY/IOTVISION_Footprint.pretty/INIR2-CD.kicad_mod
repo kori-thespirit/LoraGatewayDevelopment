@@ -1,0 +1,222 @@
+(footprint "INIR2-CD"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(tags "sensor CO2")
+	(property "Reference" "REF**"
+		(at 0 -0.5 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "2f208bab-e2be-4b34-b90e-6225edcececa")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "INIR2-CD"
+		(at 0 1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "7f633927-cc68-486b-b4ba-1995e2f86f07")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f3365908-e084-43f0-b8db-59fbead4cb3d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "11002bae-2800-415a-87aa-cc2175764c45")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "6cd1d7e9-f6eb-4603-b2e8-2a456e413f7c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_circle
+		(center 0 0)
+		(end 10 0)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "497cbf41-e0c8-449b-8a80-be7ddb9da211")
+	)
+	(fp_circle
+		(center 0 0)
+		(end 10 0)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "fe0d4007-3217-47d4-b133-fead98d6dbe9")
+	)
+	(fp_circle
+		(center -4.24 0)
+		(end -3.49 0)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(fill none)
+		(layer "User.1")
+		(uuid "4ab981b9-217d-4b91-9214-d9cf2b655f6b")
+	)
+	(fp_circle
+		(center -0.42 -5.335)
+		(end 0.33 -5.335)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(fill none)
+		(layer "User.1")
+		(uuid "63d4b9ca-0a2f-4ae8-801a-81fce80f80f5")
+	)
+	(fp_circle
+		(center -0.42 5.335)
+		(end 0.33 5.335)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(fill none)
+		(layer "User.1")
+		(uuid "c56b5d9a-916e-4612-85fc-fc141c0135ea")
+	)
+	(fp_circle
+		(center 0 0)
+		(end 10 0)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(fill none)
+		(layer "User.1")
+		(uuid "0c8e0a69-0d98-4641-9c35-eebb1f278aa6")
+	)
+	(fp_circle
+		(center 3.38 -2.54)
+		(end 4.13 -2.54)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(fill none)
+		(layer "User.1")
+		(uuid "d0d72daa-fde3-49c2-9ca2-880e2fc97ef1")
+	)
+	(fp_circle
+		(center 3.38 2.54)
+		(end 4.13 2.54)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(fill none)
+		(layer "User.1")
+		(uuid "dac78b6e-6d40-4fb3-8831-7962bf2c9562")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 2.5 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "3fdf1713-8b64-4ca5-94a7-8055c70edd20")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" thru_hole circle
+		(at -0.42 -5.335)
+		(size 3 3)
+		(drill 1.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "2adcb250-1211-402e-81ea-f115cd721856")
+	)
+	(pad "2" thru_hole circle
+		(at 3.38 -2.54)
+		(size 3 3)
+		(drill 1.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "e9b8b62b-c725-4c90-b12e-61788871cf15")
+	)
+	(pad "3" thru_hole circle
+		(at 3.38 2.54)
+		(size 3 3)
+		(drill 1.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "e4e5954f-37d7-423e-8596-b785146688e1")
+	)
+	(pad "4" thru_hole circle
+		(at -0.42 5.335)
+		(size 3 3)
+		(drill 1.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "c8b0a2f5-de65-4ec8-8d9d-aa38448a727d")
+	)
+	(pad "5" thru_hole circle
+		(at -4.24 0)
+		(size 3 3)
+		(drill 1.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "58626b16-928f-4b86-8c45-77403072d861")
+	)
+	(model "E:/SCHOOL/CURRICULUM/current/DoAnTotNghiep/CASE/SENSOR/CO2/CO2.STEP"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 0)
+		)
+	)
+)

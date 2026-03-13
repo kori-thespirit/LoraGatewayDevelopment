@@ -1,0 +1,142 @@
+(footprint "Terminal_HT-3.96mm-4P-Vertical-Pluggable"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(tags "HT-3.96mm-5P")
+	(property "Reference" "REF**"
+		(at -12.365 -5.589 0)
+		(layer "F.SilkS")
+		(uuid "fd64755e-b67f-4606-8c86-740fb98254c1")
+		(effects
+			(font
+				(size 1.4 1.4)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "Conn_01x04_Pin"
+		(at -4.364 6.161 0)
+		(layer "F.Fab")
+		(uuid "b7144d1f-8ba3-41dd-be48-308995028246")
+		(effects
+			(font
+				(size 1.4 1.4)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "74f6893b-6f0e-4871-b7bd-0c93a85268ce")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "bd580bb3-40fc-4fac-a8b2-5304a907afe2")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" "Generic connector, single row, 01x04, script generated"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "9eb0c42a-cce1-41b0-a3dd-dc1d81fa5927")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_rect
+		(start -8 -6.15)
+		(end 8 6.15)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "9d75cfce-3b21-4c09-a273-1eac98dcdb15")
+	)
+	(fp_rect
+		(start -8.2 -6.35)
+		(end 8.2 6.35)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "912d2d5f-79ce-4e5d-81b2-85df2c7fd82b")
+	)
+	(pad "1" thru_hole rect
+		(at -6.06 -3.85)
+		(size 2.475 2.475)
+		(drill 1.5)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "1da8d449-f818-457d-a709-c3e019f58d7a")
+	)
+	(pad "2" thru_hole circle
+		(at -2.1 -3.85)
+		(size 2.475 2.475)
+		(drill 1.5)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "188bd080-33b7-4f3c-9151-2a571c6d1af7")
+	)
+	(pad "3" thru_hole circle
+		(at 1.86 -3.85)
+		(size 2.475 2.475)
+		(drill 1.5)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "54db814c-8cfc-4105-8bf8-56d08d780b6a")
+	)
+	(pad "4" thru_hole circle
+		(at 5.82 -3.85)
+		(size 2.475 2.475)
+		(drill 1.5)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "51f186b7-c2bb-4fd0-927b-f650b7e4a08f")
+	)
+	(model "E:/IoT_Lab/3D/Connector/HT-3.96/HT396 3.96 Connector Green v1.step"
+		(offset
+			(xyz -8 -1.5 3.5)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 90)
+		)
+	)
+	(model "E:/IoT_Lab/3D/Connector/HT-3.96/HT396 3.96 Connector Green v1.step"
+		(offset
+			(xyz -4 -1.5 3.5)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 90)
+		)
+	)
+)

@@ -1,0 +1,125 @@
+(footprint "Terminal_HT-3.96mm-2P-Vertical-Pluggable"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(tags "conn 3.96")
+	(property "Reference" "REF**"
+		(at -3.2 -7.6 0)
+		(layer "F.SilkS")
+		(uuid "40f5a8a9-d5e5-49ba-bcce-1d574ea20bdd")
+		(effects
+			(font
+				(size 1.4 1.4)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "TE_5-1123723-8"
+		(at -4.364 6.161 0)
+		(layer "F.Fab")
+		(uuid "457f8e6a-4873-4498-9835-9f892c286d34")
+		(effects
+			(font
+				(size 1.4 1.4)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f4e6d466-379b-4d48-b839-721eba1e11d1")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "fd717b9f-0866-48fc-aa2b-e2c6e4b2c39f")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "898a9718-634b-406e-8c71-434b356ea0c1")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_line
+		(start -3.94 -2.6)
+		(end 3.96 -2.6)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "8419c686-340b-4fa2-ac2b-aca21e4fbccd")
+	)
+	(fp_rect
+		(start -3.94 -3.65)
+		(end 3.96 3.65)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "5d969b7c-2c63-43b4-95a1-fef68efb9e4e")
+	)
+	(fp_rect
+		(start -4.14 -3.9)
+		(end 4.16 3.9)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "d0879f92-9ad4-4cd2-b198-c6bdd2d42128")
+	)
+	(pad "1" thru_hole rect
+		(at -1.98 0)
+		(size 2.475 2.475)
+		(drill 1.3)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "a215bf55-fc92-4967-b9f6-1636f8d71cbc")
+	)
+	(pad "2" thru_hole circle
+		(at 1.98 0)
+		(size 2.475 2.475)
+		(drill 1.3)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "69e6bddf-32d0-4fb5-a49f-b34d6d571b01")
+	)
+	(model "E:/IoT_Lab/3D/Connector/HT-3.96/HT396 3.96 Connector Green_2_pin Hori.STEP"
+		(offset
+			(xyz -8 0 4.5)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 90 90)
+		)
+	)
+)

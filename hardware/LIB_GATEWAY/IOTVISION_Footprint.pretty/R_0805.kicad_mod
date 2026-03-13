@@ -1,0 +1,136 @@
+(footprint "R_0805"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 -1.59 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "5ad57c68-96ff-4fc0-b4a5-6b633fe4b7ce")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.3)
+				(bold yes)
+			)
+		)
+	)
+	(property "Value" "360"
+		(at 0 1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "284d33da-e86c-4f73-919d-fd0e0c2b3d03")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "9fc397d6-c4c9-4e3e-a169-4eb9eab37594")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "86861002-c5bf-4d98-acdd-424138ed70e0")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" "Resistor"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "a108c070-eb13-4a91-a44a-209b24a5ab1d")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start -0.3 -0.5)
+		(end 0.3 -0.5)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "518c8d41-aad1-44e2-b077-9c9e8932869b")
+	)
+	(fp_line
+		(start -0.3 0.5)
+		(end 0.3 0.5)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "39c5d72c-8aa0-49df-abe4-19e884a2c64a")
+	)
+	(fp_rect
+		(start -1.7 -0.9)
+		(end 1.7 0.9)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "9483cd14-34dc-4117-a25e-e50f6724b1fa")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "6fa95db1-a0ca-40f5-a943-5ac06d25dfc0")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at -0.95 0)
+		(size 1 1.35)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.15)
+		(uuid "1ee486ba-f741-4870-b52a-b575817fb077")
+	)
+	(pad "2" smd roundrect
+		(at 0.95 0)
+		(size 1 1.35)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.15)
+		(uuid "5d1b7590-9a4d-479a-aceb-be57dd990645")
+	)
+	(model "E:/IoT_Lab/3D/RESISTOR/Resistor 0805.step"
+		(offset
+			(xyz -1 2.53 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 0)
+		)
+	)
+)

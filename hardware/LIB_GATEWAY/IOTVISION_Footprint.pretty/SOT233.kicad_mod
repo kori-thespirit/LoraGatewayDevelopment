@@ -1,0 +1,203 @@
+(footprint "SOT233"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 3 -3.1 180)
+		(layer "F.SilkS")
+		(uuid "d59f7ba2-59ea-46ae-b2ff-b7683dfb9a72")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.3)
+			)
+		)
+	)
+	(property "Value" "AMS1117"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(uuid "4c67aa49-5a4b-4180-afbb-ea9d570e266f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "03f2d08e-541a-40a6-bcb8-f21b9371bba9")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "bbf0d194-f512-4db9-bcf0-e0c4b408498f")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" "1A Low Dropout regulator, positive, 1.5V fixed output, TO-252"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f76645d2-5f3f-41a0-9b8b-615af13cafc3")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr smd)
+	(fp_rect
+		(start -3.09 -1.7)
+		(end 3.4 1.82)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "eb1a4669-6bb0-49e4-8dbe-a6ab9c669188")
+	)
+	(fp_poly
+		(pts
+			(xy -1.8 1.8) (xy -3.07 1.79) (xy -3.09 0.4)
+		)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(fill solid)
+		(layer "F.SilkS")
+		(uuid "221423de-6b9d-48ff-96eb-bb7def9d3cf0")
+	)
+	(fp_line
+		(start -3.35 -4.17)
+		(end -3.35 4.29)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "6a6052b9-4d30-4123-afdd-cdd57c157253")
+	)
+	(fp_line
+		(start -3.35 4.29)
+		(end 3.65 4.29)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "25bb1862-c88e-4da2-b1d4-fc826960e95a")
+	)
+	(fp_line
+		(start 3.65 -4.17)
+		(end -3.35 -4.17)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "bb35002a-bf6f-406e-be2c-183a274b69ba")
+	)
+	(fp_line
+		(start 3.65 4.29)
+		(end 3.65 -4.17)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "e59330a3-38c0-4df1-957c-eecf61bc274c")
+	)
+	(fp_line
+		(start -3.1 -1.69)
+		(end 3.4 -1.69)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "b49a1a14-8c37-4449-bd8b-3d070714a20c")
+	)
+	(fp_line
+		(start -3.1 1.81)
+		(end -3.1 -1.69)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "2c9cd06a-8d73-4a95-a907-7025d3ec1dec")
+	)
+	(fp_line
+		(start 3.4 -1.69)
+		(end 3.4 1.81)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "d0ce1f30-8fc4-4973-80d1-87a40449da4d")
+	)
+	(fp_line
+		(start 3.4 1.81)
+		(end -3.1 1.81)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "0310da25-dff6-4e45-87a2-71d145210426")
+	)
+	(pad "1" smd rect
+		(at -2.15 3.185 90)
+		(size 1.76 1.4)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "8b8c5129-3d9c-49bf-8a6c-4bb6df6a2ed1")
+	)
+	(pad "2" smd rect
+		(at 0.15 -3.065 90)
+		(size 1.76 3.5)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "3bf2816c-ada5-495f-a07d-8ae89935c3bb")
+	)
+	(pad "2" smd rect
+		(at 0.15 3.185 90)
+		(size 1.76 1.4)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "4f6f904b-20eb-4116-95d4-8c12b582fa5e")
+	)
+	(pad "3" smd rect
+		(at 2.45 3.185 90)
+		(size 1.76 1.4)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "2e2a1173-17f8-488f-8ab2-b493ec63a9d7")
+	)
+	(model "${IOTVISION_3D}/MCU_SoC_Package/SOT223/SOT223.stp"
+		(offset
+			(xyz 0.1 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 0)
+		)
+	)
+)

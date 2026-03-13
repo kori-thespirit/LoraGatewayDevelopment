@@ -1,0 +1,331 @@
+(footprint "USON-10_2.5x1.0mm_P0.5mm"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(descr "USON-10 2.5x1.0mm_ Pitch 0.5mm http://www.ti.com/lit/ds/symlink/tpd4e02b04.pdf")
+	(tags "USON-10 2.5x1.0mm Pitch 0.5mm")
+	(property "Reference" "REF**"
+		(at -0.05 2.7 90)
+		(layer "F.SilkS")
+		(uuid "3a2e5a2f-16ca-494b-ab6b-3dd429fe1ced")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "TPD4EUSB30"
+		(at 0.01829 2.5 0)
+		(layer "F.Fab")
+		(uuid "0b16d366-cf10-415d-9734-a51957ebc315")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f8bf575d-7a58-4c06-82a6-29b0a2e487ca")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "77242c7e-df8f-4975-a8ea-51de72dca33b")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "6b4cd620-9c28-4c53-8859-2907d187af1b")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Field4" "Farnell"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f5045032-dfa3-4079-9124-1be57226afca")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field5" "2335455"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "971e88a6-3f51-46ab-aa76-abd9e878824c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field6" "CDDFN10-3324P-13"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "d0647f64-8880-4d1c-a4b2-af65ca35dcc4")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field7" "Bourns"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "4ea9f8f7-8211-4c90-a5ae-83c81bef6939")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field8" "UDIO00346"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "4f55088f-48e4-4f6d-8aa1-70db916a3adb")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Part Description" "Quad TVS diode for high speed signals (USB3, GigE etc.)"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "0671f3ce-50d3-4b78-aea7-d5ba7a070346")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start 0.5 -1.4)
+		(end -0.8 -1.4)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "4c08f53f-849c-49b5-ad5f-81405f6c76f7")
+	)
+	(fp_line
+		(start 0.5 1.4)
+		(end -0.5 1.4)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "bbe207c1-0926-41d2-8390-5569486f4ad6")
+	)
+	(fp_line
+		(start -0.91 -1.5)
+		(end 0.91 -1.5)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "7bb740d0-4b61-47c7-ab27-1b8f2b58f581")
+	)
+	(fp_line
+		(start -0.91 1.5)
+		(end -0.91 -1.5)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "d3b3370e-4e6a-4cbe-bea3-df5b6571711c")
+	)
+	(fp_line
+		(start 0.91 -1.5)
+		(end 0.91 1.5)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "2ef32dc7-a76c-4a40-bd7a-637f793d9238")
+	)
+	(fp_line
+		(start 0.91 1.5)
+		(end -0.91 1.5)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "58e1f31c-502b-4506-ab2c-c71c287bada9")
+	)
+	(fp_line
+		(start -0.5 -1)
+		(end -0.5 1.25)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "763808ba-0e90-43a6-9e9d-9e37840db3d2")
+	)
+	(fp_line
+		(start -0.5 1.25)
+		(end 0.5 1.25)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "d09e1a24-aed2-443b-826c-ce821eea7cfd")
+	)
+	(fp_line
+		(start -0.25 -1.25)
+		(end -0.5 -1)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "ec0dcd0c-7688-4991-988e-dff8bd8f381e")
+	)
+	(fp_line
+		(start 0.5 -1.25)
+		(end -0.25 -1.25)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "690925aa-1911-4d3b-87db-a055f577546f")
+	)
+	(fp_line
+		(start 0.5 -1.25)
+		(end 0.5 1.25)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "97f3ff4b-0ae8-4d7f-9a43-f1e7c005f1f1")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(uuid "bda5418b-1b91-4c93-ab34-002bc7076a7e")
+		(effects
+			(font
+				(size 0.55 0.55)
+				(thickness 0.1)
+			)
+		)
+	)
+	(pad "1" smd rect
+		(at -0.385 -1 270)
+		(size 0.3 0.55)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "d2ad7f0d-3193-4d06-ba26-cc826fee0d43")
+	)
+	(pad "2" smd rect
+		(at -0.385 -0.5 270)
+		(size 0.3 0.55)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "35a14c6b-3c67-4887-aaf2-298f004d66dd")
+	)
+	(pad "3" smd rect
+		(at -0.385 0 270)
+		(size 0.4 0.55)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "da1484da-cd2b-4b6a-8deb-e80bba075f76")
+	)
+	(pad "4" smd rect
+		(at -0.385 0.5 270)
+		(size 0.3 0.55)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "edc3451e-8941-4b61-b131-7a4912b90094")
+	)
+	(pad "5" smd rect
+		(at -0.385 1 270)
+		(size 0.3 0.55)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "48c1a636-148f-41d2-807d-8a53d49c090b")
+	)
+	(pad "6" smd rect
+		(at 0.385 1 270)
+		(size 0.3 0.55)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "3b78bf70-3798-4e76-a8a0-2c20bf27a701")
+	)
+	(pad "7" smd rect
+		(at 0.385 0.5 270)
+		(size 0.3 0.55)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "472f687b-188c-474a-8929-665790804019")
+	)
+	(pad "8" smd rect
+		(at 0.385 0 270)
+		(size 0.4 0.55)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "8890fdf2-7717-4ac3-9680-5ca925c9b6ac")
+	)
+	(pad "9" smd rect
+		(at 0.385 -0.5 270)
+		(size 0.3 0.55)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "f5724c8d-1d17-4e05-8180-bf003ae350a1")
+	)
+	(pad "10" smd rect
+		(at 0.385 -1 270)
+		(size 0.3 0.55)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "88f2fa9d-39c0-4f0b-a8f4-9cda8c060691")
+	)
+	(model "${KICAD6_3DMODEL_DIR}/Package_SON.3dshapes/USON-10_2.5x1.0mm_P0.5mm.wrl"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)

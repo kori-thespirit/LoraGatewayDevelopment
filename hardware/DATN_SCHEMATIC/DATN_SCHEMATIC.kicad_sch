@@ -1,0 +1,977 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "08b065f5-231d-43cb-bb9e-87dca43beac9")
+	(paper "A4")
+	(lib_symbols)
+	(wire
+		(pts
+			(xy 113.03 133.35) (xy 119.38 133.35)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "016f0d31-33be-40ff-acd4-96efde806e1c")
+	)
+	(bus
+		(pts
+			(xy 113.03 102.87) (xy 119.38 102.87)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1f3090da-ab3b-420f-a31f-c90c63ba18e5")
+	)
+	(bus
+		(pts
+			(xy 113.03 111.76) (xy 119.38 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "22c4b43c-9462-4577-bfae-bd218b78f006")
+	)
+	(wire
+		(pts
+			(xy 151.13 97.79) (xy 157.48 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2ca03b35-d460-4720-a44f-8a7d9b274cfe")
+	)
+	(wire
+		(pts
+			(xy 113.03 128.27) (xy 119.38 128.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "35f5b298-f25f-472d-bcc0-d4d06802785c")
+	)
+	(wire
+		(pts
+			(xy 151.13 100.33) (xy 157.48 100.33)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3aa06855-562d-46fc-8a2f-b9c492d9a411")
+	)
+	(wire
+		(pts
+			(xy 113.03 81.28) (xy 119.38 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "44560e84-5389-4861-9918-0b9844e6c810")
+	)
+	(bus
+		(pts
+			(xy 151.13 130.81) (xy 157.48 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "45ff7f56-07f6-49b8-bfc4-11a7d3082353")
+	)
+	(wire
+		(pts
+			(xy 137.16 139.7) (xy 137.16 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5d4dd6f9-f427-41a6-a5a7-f5684eebe537")
+	)
+	(bus
+		(pts
+			(xy 113.03 83.82) (xy 119.38 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "67262de2-a4de-44f7-9985-fd3fece305e3")
+	)
+	(wire
+		(pts
+			(xy 132.08 139.7) (xy 132.08 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6917713f-9844-4f85-bde3-aaec391e5a41")
+	)
+	(wire
+		(pts
+			(xy 113.03 120.65) (xy 119.38 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7c49be4c-14ab-4a45-920c-71c1e51f06b4")
+	)
+	(wire
+		(pts
+			(xy 139.7 139.7) (xy 139.7 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "852c25f6-4e15-4850-bd47-fcc925390d0d")
+	)
+	(wire
+		(pts
+			(xy 113.03 78.74) (xy 119.38 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9de44a3c-f2fa-4285-b29c-10767d38afe7")
+	)
+	(wire
+		(pts
+			(xy 134.62 139.7) (xy 134.62 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a67bc7a8-5a5e-411d-80de-9ddef3bdbf29")
+	)
+	(wire
+		(pts
+			(xy 113.03 130.81) (xy 119.38 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a6ba8e84-be74-413b-8277-b4d0ddffee52")
+	)
+	(wire
+		(pts
+			(xy 113.03 125.73) (xy 119.38 125.73)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d56ee6b7-01e4-42c0-b0d9-04facb0743b0")
+	)
+	(wire
+		(pts
+			(xy 151.13 102.87) (xy 157.48 102.87)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ed634f95-fe47-43be-8726-3c65da797f7d")
+	)
+	(wire
+		(pts
+			(xy 113.03 123.19) (xy 119.38 123.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fe8f50d4-8d94-419f-b4d9-f5c9b66880fe")
+	)
+	(sheet
+		(at 95.25 100.33)
+		(size 17.78 5.08)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+			(color 0 0 255 1)
+		)
+		(fill
+			(color 194 255 56 1.0000)
+		)
+		(uuid "1df74298-08ba-436b-be57-630b4de74316")
+		(property "Sheetname" "Khối thẻ nhớ"
+			(at 95.25 99.6184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "SDCard.kicad_sch"
+			(at 95.25 105.9946 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "SD{SDIO}" input
+			(at 113.03 102.87 0)
+			(uuid "84483c8f-4149-4cde-9356-a8ffaa59f5ec")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "DATN_SCHEMATIC"
+				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
+					(page "6")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 119.38 146.05)
+		(size 30.48 21.59)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+			(color 255 124 22 1)
+		)
+		(fill
+			(color 203 143 255 1.0000)
+		)
+		(uuid "552d244c-50bc-47f1-b1f4-fd3447251a9e")
+		(property "Sheetname" "SIMCOM"
+			(at 111.252 152.146 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "SIMCOM.kicad_sch"
+			(at 119.38 168.2246 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "UART1_RX" output
+			(at 134.62 146.05 90)
+			(uuid "30cfafcb-0ea3-4c2c-816d-0a3a665a2e34")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "UART1_TX" input
+			(at 132.08 146.05 90)
+			(uuid "fe491b7d-e774-4d2b-8640-38d0c12161b6")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "ESP_PWRKEY" input
+			(at 137.16 146.05 90)
+			(uuid "2a2d8079-32ad-43b7-98b5-8623a90640ab")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "ESP_RST" input
+			(at 139.7 146.05 90)
+			(uuid "61c37cb9-3ce2-48d6-9986-b72073f570d7")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "DATN_SCHEMATIC"
+				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
+					(page "11")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 95.25 118.11)
+		(size 17.78 17.78)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 255 32 237 1.0000)
+		)
+		(uuid "655459cc-6774-42c4-83ff-de79be2a0622")
+		(property "Sheetname" "Lora"
+			(at 95.25 117.3984 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Lora.kicad_sch"
+			(at 95.25 136.4746 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "LORA.CS" input
+			(at 113.03 120.65 0)
+			(uuid "7850fe5b-2864-443a-8528-7cd14694bb08")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "LORA.MOSI" input
+			(at 113.03 128.27 0)
+			(uuid "face22b3-9b4c-40b6-8c94-07a9ff3bc306")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "LORA.RST" input
+			(at 113.03 130.81 0)
+			(uuid "b5fa48f8-6b60-483a-bd7d-14a6593c524b")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "LORA.SCK" input
+			(at 113.03 133.35 0)
+			(uuid "fda54bd3-5f45-4f3c-b163-584ece31f962")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "LORA.INT" output
+			(at 113.03 123.19 0)
+			(uuid "f4d2dc01-94fd-48d8-ac87-fdb15a13a2dc")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "LORA.MISO" output
+			(at 113.03 125.73 0)
+			(uuid "962c89d5-dc84-421b-bb34-a412c61aace4")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "DATN_SCHEMATIC"
+				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
+					(page "9")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 95.25 107.95)
+		(size 17.78 6.35)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+			(color 0 0 255 1)
+		)
+		(fill
+			(color 255 255 0 1.0000)
+		)
+		(uuid "8365096e-daf1-459b-a078-4ed337f2bed7")
+		(property "Sheetname" "USB"
+			(at 95.25 107.2384 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "USB.kicad_sch"
+			(at 95.25 114.8846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "DEVICE{USB}" input
+			(at 113.03 111.76 0)
+			(uuid "05df19cf-90c9-484c-89d0-6afc1faeb289")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "DATN_SCHEMATIC"
+				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
+					(page "10")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 119.38 74.93)
+		(size 31.75 64.77)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+			(color 255 184 26 1)
+		)
+		(fill
+			(color 15 255 0 1.0000)
+		)
+		(uuid "9fd5b551-28b1-42e9-a33d-c957f6949690")
+		(property "Sheetname" "ESP32-S3"
+			(at 119.38 74.2184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "ESP32-S3.kicad_sch"
+			(at 119.38 140.2846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "ESP{USB}" output
+			(at 119.38 111.76 180)
+			(uuid "c1776cd8-2f8d-49d1-8318-ab3b67f9aace")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "ESP{SDIO}" output
+			(at 119.38 102.87 180)
+			(uuid "73f727b0-3452-405c-b9b8-ca6186430c55")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "ESP{I2C}" output
+			(at 151.13 130.81 0)
+			(uuid "31dcd50e-92c9-4b14-8a72-17d0904b633b")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "ESP_HMI_RX" input
+			(at 151.13 100.33 0)
+			(uuid "5965c4e2-7783-4ce6-828d-53f0bffb656c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "ESP_HMI_TX" output
+			(at 151.13 97.79 0)
+			(uuid "9a99bfce-eb2f-4c7a-934c-ed5bb4fbae3f")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "LORA.INT" input
+			(at 119.38 123.19 180)
+			(uuid "aa9ae85a-acb4-4635-998a-d7abe3e57c6f")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "LORA.MISO" input
+			(at 119.38 125.73 180)
+			(uuid "6393d28f-1a8d-4738-995b-f1941080c386")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "UART1_TX" output
+			(at 132.08 139.7 270)
+			(uuid "37e9ee21-d63a-4fbc-b9ca-69f6d4bd2300")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "UART1_RX" input
+			(at 134.62 139.7 270)
+			(uuid "629176ff-005d-43f9-9465-e0414908047a")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "SIM_PWRKEY" output
+			(at 137.16 139.7 270)
+			(uuid "c3e4ec96-9e58-4f20-bd2a-6f1e974562b6")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "SIM_RST" output
+			(at 139.7 139.7 270)
+			(uuid "0b92d667-4fbd-476b-84cb-d598f3e3f388")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "ESP_ETH_CS" output
+			(at 119.38 78.74 180)
+			(uuid "120e0a03-50c6-43ff-b973-73078ca460fe")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "ESP_ETH_INT" input
+			(at 119.38 81.28 180)
+			(uuid "ae56c0e7-81f3-47a8-8c1c-5c4b229899c0")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "ESP_ETH{SPI}" output
+			(at 119.38 83.82 180)
+			(uuid "945ef34b-2c19-4eba-ba33-a4c815bddbe7")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "LORA.CS" output
+			(at 119.38 120.65 180)
+			(uuid "46573419-778b-43aa-a915-bb779f5c9d6c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "LORA.MOSI" output
+			(at 119.38 128.27 180)
+			(uuid "17780064-01e6-4a22-bfdd-fe88decdcf03")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "LORA.SCK" output
+			(at 119.38 133.35 180)
+			(uuid "ae69899d-3c0d-44e1-ade8-82d1307a0289")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "HMI_POWER" output
+			(at 151.13 102.87 0)
+			(uuid "713d6a22-3c70-4f86-aa9d-83e4423eaa8a")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "LORA.RESET" output
+			(at 119.38 130.81 180)
+			(uuid "1ca46de3-92e7-402e-bd81-04c24c92d23c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "DATN_SCHEMATIC"
+				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 157.48 95.25)
+		(size 19.05 25.4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+			(color 0 0 255 1)
+		)
+		(fill
+			(color 47 242 255 1.0000)
+		)
+		(uuid "b068e736-77a3-4da7-b7df-319407e96c28")
+		(property "Sheetname" "Khối hiển thị"
+			(at 157.48 94.234 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "HMI_DWIN.kicad_sch"
+			(at 157.48 121.2346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "HMI_POWER" input
+			(at 157.48 102.87 180)
+			(uuid "3cd78b65-3eb0-45f5-aa93-e0b5298c5161")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "RS232_TX" output
+			(at 157.48 100.33 180)
+			(uuid "480b3b16-e9b4-48ba-8631-baa35df7c7a9")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "RS232_RX" input
+			(at 157.48 97.79 180)
+			(uuid "4ae2cdab-232b-47e5-9520-e657ce4222fb")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "DATN_SCHEMATIC"
+				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 157.48 124.46)
+		(size 19.05 13.97)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+			(color 0 0 255 1)
+		)
+		(fill
+			(color 139 255 218 1.0000)
+		)
+		(uuid "b64c8f51-171e-4949-97e6-87303bf3a90b")
+		(property "Sheetname" "Khối thời gian thực"
+			(at 157.48 123.7484 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "RTCBlock.kicad_sch"
+			(at 157.48 139.0146 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "DS3231{I2C}" input
+			(at 157.48 130.81 180)
+			(uuid "a465c379-25d8-4063-9c7d-58db0e043697")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "DATN_SCHEMATIC"
+				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 95.25 55.88)
+		(size 83.82 15.24)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+			(color 0 0 255 1)
+		)
+		(fill
+			(color 255 54 50 1.0000)
+		)
+		(uuid "be7dc874-3a80-4125-bbf4-83e9b6dc8646")
+		(property "Sheetname" "Khối nguồn"
+			(at 95.25 55.1684 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "POWER.kicad_sch"
+			(at 95.25 71.7046 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(instances
+			(project "DATN_SCHEMATIC"
+				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 95.25 74.93)
+		(size 17.78 21.59)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+			(color 0 0 255 1)
+		)
+		(fill
+			(color 255 144 84 1.0000)
+		)
+		(uuid "e826eac3-07a8-4403-aea2-c6706516015d")
+		(property "Sheetname" "Ethernet"
+			(at 95.25 74.2184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "communication.kicad_sch"
+			(at 95.25 97.1046 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "ETHCS" input
+			(at 113.03 78.74 0)
+			(uuid "b3fa8013-815f-4c5d-bfa2-09219f66e41c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "ETH{SPI}" input
+			(at 113.03 83.82 0)
+			(uuid "869d2627-3d3c-4857-8d71-e05756485744")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "ETH_INT" output
+			(at 113.03 81.28 0)
+			(uuid "eaed237a-98c1-4c6c-9a14-ce0fc678391a")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "DATN_SCHEMATIC"
+				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

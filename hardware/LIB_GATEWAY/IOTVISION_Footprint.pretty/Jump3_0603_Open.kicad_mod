@@ -1,0 +1,145 @@
+(footprint "Jump3_0603_Open"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 -1.2 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "844637f2-263a-4eee-ac11-a9dd8131d44c")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.2)
+				(bold yes)
+			)
+		)
+	)
+	(property "Value" "SolderJumper_3_Open"
+		(at 0 -1.375 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "2130ef4a-688c-4016-a2f9-7c12235d2d6f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "b3bc5c69-a007-4f47-bb04-13f5f19af4b5")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "bdebb841-2e4b-4971-893f-7ecb002d16ac")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" "Solder Jumper, 3-pole, open"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "b2996ec4-f464-4d84-84a8-c0cca96f46be")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr smd)
+	(fp_rect
+		(start -1.8 -0.7)
+		(end 1.8 0.7)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "15f86d1b-eb39-4336-80c1-1aae152c4803")
+	)
+	(fp_rect
+		(start -1.8 -0.7)
+		(end 1.8 0.7)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "3d81d884-e0af-451d-ae01-d7d8fdfb354c")
+	)
+	(fp_text user "${REFERENCE}"
+		(at -0.8 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "43e05624-885b-4e8e-b8b5-9502951456c3")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd rect
+		(at -1.1 0)
+		(size 0.8 0.9)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "09fbf493-aeb3-44b8-bef0-247d8861e6ea")
+	)
+	(pad "2" smd rect
+		(at 0 0)
+		(size 0.8 0.9)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "892ddc60-2819-484f-b4d2-b22f7e1b724a")
+	)
+	(pad "3" smd rect
+		(at 1.1 0)
+		(size 0.85 0.9)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "28e9e48e-72f7-49c5-9630-ad0629706815")
+	)
+	(model "${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl"
+		(hide yes)
+		(offset
+			(xyz -0.8 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+	(model "E:/IoT_Lab/3D/RESISTOR/Resistor 0603.step"
+		(hide yes)
+		(offset
+			(xyz 0 1.2 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 0)
+		)
+	)
+)

@@ -1,0 +1,241 @@
+(footprint "RES 04021005"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 1.96925 0.19773 180)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "b75bdcc2-631b-48bd-beb4-04acd9f82c09")
+		(effects
+			(font
+				(size 0.64 0.64)
+				(thickness 0.1)
+			)
+		)
+	)
+	(property "Value" "2.2k"
+		(at 0 1 180)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "4cf6d624-2255-4ca4-9d14-9986c748490d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" "HTracker:RES 04021005"
+		(at 0 0 180)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "6c389ed1-9a94-4a14-84d5-6489e305ae3f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 180)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "9ae57a3d-685a-4b2d-aa62-10e233c47585")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" "SMT Resistor"
+		(at 0 0 180)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "89396108-1f83-4b17-a02f-6e405c6cd226")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "ALTIUM_VALUE" "2.2K"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "e0a1b9b3-0a89-4e34-aaa3-ccdeadb9f795")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "JLC" "C25879"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "5cbdfa45-898f-478c-be2b-205dd7fe23f5")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Manufacture Part Number" "0402WGF2201TCE"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "2f39fe12-a8e8-4d6f-a1b1-ccfdb7cc0ce8")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start 1.03439 0.579)
+		(end 1.03439 -0.55)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "Dwgs.User")
+		(uuid "80e44135-a49d-42f2-99a6-67ba610f70db")
+	)
+	(fp_line
+		(start 1.03439 0.579)
+		(end -1 0.579)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "Dwgs.User")
+		(uuid "ceb0567b-20fa-4951-bd38-949da4e5ad91")
+	)
+	(fp_line
+		(start 1.03439 -0.55)
+		(end -1 -0.55)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "Dwgs.User")
+		(uuid "3d4e4c0c-ca82-46a2-b0e0-5810863bc9e0")
+	)
+	(fp_line
+		(start -1 0.579)
+		(end -1 -0.55)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "Dwgs.User")
+		(uuid "9ff1aad3-3599-43a1-a5a1-b4bc24fc7223")
+	)
+	(fp_line
+		(start 0.51511 0.26493)
+		(end 0.51511 -0.23506)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "ab311037-a940-401c-9d33-c775df076b03")
+	)
+	(fp_line
+		(start 0.51511 0.26493)
+		(end -0.48499 0.26493)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "d0e83ad3-a7b5-400e-b25b-2dc11f54fa09")
+	)
+	(fp_line
+		(start 0.51511 -0.23506)
+		(end -0.48499 -0.23506)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "b9bf97e3-4fdf-4bcc-8112-81a3c66e31db")
+	)
+	(fp_line
+		(start -0.48499 0.26493)
+		(end -0.48499 -0.23506)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "f2c08d29-bef4-4f58-9687-d0dbac8a88c3")
+	)
+	(fp_text user "H=0.37"
+		(at -0.343 0.075 180)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "08b80046-ee83-44df-abd7-7c11624c4a3f")
+		(effects
+			(font
+				(size 0.127 0.127)
+				(thickness 0.0254)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 2.5 180)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "e9bd2ce9-1e26-40ac-b8a6-9d231343ea76")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd rect
+		(at -0.46 0.015 90)
+		(size 0.6 0.55)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(solder_mask_margin 0.0508)
+		(thermal_bridge_angle 45)
+		(uuid "d6c418f8-4950-4f7a-938d-d98873b192b4")
+	)
+	(pad "2" smd rect
+		(at 0.49 0.015 90)
+		(size 0.6 0.55)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(solder_mask_margin 0.0508)
+		(thermal_bridge_angle 45)
+		(uuid "b9b219ce-d05c-4c9f-8678-c9d30379c332")
+	)
+	(model "${KIPRJMOD}/Libraries/3D_models/0402 resistor.STEP"
+		(offset
+			(xyz 0 0.22 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 0)
+		)
+	)
+)

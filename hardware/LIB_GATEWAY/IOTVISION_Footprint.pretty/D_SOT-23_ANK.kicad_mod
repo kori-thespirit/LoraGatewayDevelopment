@@ -1,0 +1,347 @@
+(footprint "D_SOT-23_ANK"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(descr "SOT-23, Single Diode")
+	(tags "SOT-23")
+	(property "Reference" "REF**"
+		(at 2.45 -0.15 90)
+		(layer "F.SilkS")
+		(uuid "fff4034e-4b4e-4680-b59d-35e7d56c17b7")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "MMBZ5242BLT3G"
+		(at 0 2.5 0)
+		(layer "F.Fab")
+		(uuid "a52c6d8b-bc13-43c4-8e22-cb48ae30d71c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "d4106895-701f-4890-be4d-255fc2bda76c")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "3525ceb3-fa7b-4846-9d6d-691fb7aa729d")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "b197d0c1-ab2b-4be3-bccd-0763c033e576")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Field4" "Digikey"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "b8cf0da7-a7f6-4f56-aa8c-9238f79bca0d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field5" "	MMBZ5242BLT3GOSCT-ND"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "0e582b9a-6c4d-4b31-878d-147af6223b3e")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field6" "MMBZ5242BLT3G"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "9bf531ff-e115-4e54-9504-accb15e96454")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Field7" "Onsemi"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "45e63f16-8053-4b85-8edf-f93b2de0870e")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Part Description" "	Zener Diode 12V 225mW 5% Surface Mount SOT-23-3 (TO-236)"
+		(at 0 0 -90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "c82485d4-2879-4762-9c92-ebf9270b2040")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start 0.76 -1.58)
+		(end -1.4 -1.58)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "548d3efa-1a74-457e-822d-e145cb800d53")
+	)
+	(fp_line
+		(start 0.76 -1.58)
+		(end 0.76 -0.65)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "c08046b2-1484-4fd1-a3f3-27d9f7044c5c")
+	)
+	(fp_line
+		(start 0.76 1.58)
+		(end -0.7 1.58)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "8d3756b6-a3d8-4a7d-8d45-227e19b7430a")
+	)
+	(fp_line
+		(start 0.76 1.58)
+		(end 0.76 0.65)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "e4cd8827-8cb2-4425-a776-b3d6d1460d08")
+	)
+	(fp_line
+		(start -1.7 -1.75)
+		(end 1.7 -1.75)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "0c2ccc1a-42ea-43f1-8850-d1af3b271064")
+	)
+	(fp_line
+		(start -1.7 1.75)
+		(end -1.7 -1.75)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "2898f2a5-52c6-4559-b1bd-be163b9a5eb9")
+	)
+	(fp_line
+		(start 1.7 -1.75)
+		(end 1.7 1.75)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "61139ed3-8e5e-4faf-a012-abb7c46ebeaa")
+	)
+	(fp_line
+		(start 1.7 1.75)
+		(end -1.7 1.75)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "0124435b-736e-4e0f-955c-508341f4df5b")
+	)
+	(fp_line
+		(start -0.7 -1.52)
+		(end -0.7 1.52)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "1a055a90-b604-42d4-865a-2ce927c2268d")
+	)
+	(fp_line
+		(start -0.7 -1.52)
+		(end 0.7 -1.52)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "967a26ca-feea-4807-a5e0-d83247255eba")
+	)
+	(fp_line
+		(start -0.7 1.52)
+		(end 0.7 1.52)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "780d7911-92b3-4fc7-8948-7d13ef18c8a4")
+	)
+	(fp_line
+		(start -0.15 -0.65)
+		(end -0.15 -0.25)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "db7b8a15-891a-4e89-9bec-ed1a0b5c1a24")
+	)
+	(fp_line
+		(start -0.15 -0.45)
+		(end -0.4 -0.45)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "3c005e12-07e0-468e-ac00-8316bbebb71e")
+	)
+	(fp_line
+		(start -0.15 -0.25)
+		(end 0.15 -0.45)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "82815ab3-d4cc-48ef-9af2-84ae7474e4c4")
+	)
+	(fp_line
+		(start 0.15 -0.65)
+		(end 0.15 -0.25)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "538022d3-8249-434c-b9c8-c821ad63dda7")
+	)
+	(fp_line
+		(start 0.15 -0.45)
+		(end -0.15 -0.65)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "c0c339a9-52b2-4a14-8347-8db15fd15ff0")
+	)
+	(fp_line
+		(start 0.15 -0.45)
+		(end 0.4 -0.45)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "777a899e-d901-4abf-8bcb-17f84ace22a1")
+	)
+	(fp_line
+		(start 0.7 -1.52)
+		(end 0.7 1.52)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "989781a7-0abe-4a19-b923-67eac2f4f35b")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 -2.5 0)
+		(layer "F.Fab")
+		(uuid "e1c0ce74-2e90-4ae2-853b-e2351376969d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "" smd rect
+		(at -1 0.95)
+		(size 0.9 0.8)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "a51b211c-e9a3-42d6-87f3-4872f61beeea")
+	)
+	(pad "1" smd rect
+		(at 1 0)
+		(size 0.9 0.8)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "651e5aae-346f-4842-a8dd-05a92d49e2a0")
+	)
+	(pad "2" smd rect
+		(at -1 -0.95)
+		(size 0.9 0.8)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "0e596339-9589-4435-912e-ac363124ca73")
+	)
+	(model "${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOT-23.wrl"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)

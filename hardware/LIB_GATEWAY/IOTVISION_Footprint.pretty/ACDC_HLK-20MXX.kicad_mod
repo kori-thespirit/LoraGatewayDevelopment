@@ -1,0 +1,232 @@
+(footprint "ACDC_HLK-20MXX"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at -25.575 -18.385 0)
+		(layer "F.SilkS")
+		(uuid "3813ebb0-e566-41f6-89f2-99fbc7ae93d0")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "HLK-PM01"
+		(at -19.86 18.385 0)
+		(layer "F.Fab")
+		(uuid "20aa463f-3551-4407-a499-c28e8e7250df")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "13ddf763-f711-4ef4-9eb3-b12fddf158e3")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "0f241b5c-42ee-4ab5-8d06-40e748de0a89")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" "Compact AC/DC board mount power module 3W 5V"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "ea4f42a9-c28d-4e41-9da4-effc760af2bf")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_line
+		(start -28.5 -16.5)
+		(end 28.5 -16.5)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "74dff056-1296-4d6c-bf43-86e2c92d6c59")
+	)
+	(fp_line
+		(start -28.5 16.5)
+		(end -28.5 -16.5)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "a99b8f77-25ad-4e5d-b553-2017222f9b48")
+	)
+	(fp_line
+		(start 28.5 -16.5)
+		(end 28.5 16.5)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "ae25c4c0-1155-47aa-b038-bd5010ddb340")
+	)
+	(fp_line
+		(start 28.5 16.5)
+		(end -28.5 16.5)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "f2665df4-6611-402a-b8b6-5e2219a79874")
+	)
+	(fp_line
+		(start -28.75 -16.75)
+		(end -28.75 16.75)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "ba641761-037d-4f62-a70a-04884f0b190d")
+	)
+	(fp_line
+		(start -28.75 16.75)
+		(end 28.75 16.75)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "b9f20137-cbc6-46dd-9bd4-9166c6d5c04d")
+	)
+	(fp_line
+		(start 28.75 -16.75)
+		(end -28.75 -16.75)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "43fb1138-7d2f-4ba7-9fc4-2f882c6a1ab2")
+	)
+	(fp_line
+		(start 28.75 16.75)
+		(end 28.75 -16.75)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "bc7ec7e1-3f9b-4b19-a4ba-0d71c2ac4e3a")
+	)
+	(fp_line
+		(start -28.5 -16.5)
+		(end 28.5 -16.5)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "c7f4e0f1-fca8-4b38-b35c-047fff1871d8")
+	)
+	(fp_line
+		(start -28.5 16.5)
+		(end -28.5 -16.5)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "4e6167d6-ca66-43b9-85cb-d39657a1c224")
+	)
+	(fp_line
+		(start 28.5 -16.5)
+		(end 28.5 16.5)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "7f8efacc-4486-46c5-99fa-cc828d8cdd2a")
+	)
+	(fp_line
+		(start 28.5 16.5)
+		(end -28.5 16.5)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "9b0179fd-8df9-4fd8-823a-575cac03fcb0")
+	)
+	(pad "1" thru_hole oval
+		(at -25.5 -4.5)
+		(size 2.5 2.5)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(solder_mask_margin 0.102)
+		(uuid "281dc439-ffdb-47d9-a0c3-6abc0c48f1b5")
+	)
+	(pad "2" thru_hole oval
+		(at -25.5 4.5)
+		(size 2.5 2.5)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(solder_mask_margin 0.102)
+		(uuid "65c81bf2-bbe3-4967-9de1-21f7ab0bd241")
+	)
+	(pad "3" thru_hole oval
+		(at 25.5 -13.5)
+		(size 2.5 2.5)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(solder_mask_margin 0.102)
+		(uuid "5992a867-2eec-4889-9333-f77502c19d56")
+	)
+	(pad "4" thru_hole oval
+		(at 25.5 13.5)
+		(size 2.5 2.5)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(solder_mask_margin 0.102)
+		(uuid "68fd64a1-2257-4e35-b64f-c703d9a3d9ec")
+	)
+	(model "E:/IoT_Lab/3D/Power/HLK/User Library-hilink20M.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)

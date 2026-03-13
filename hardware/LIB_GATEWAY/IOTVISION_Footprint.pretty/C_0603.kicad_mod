@@ -1,0 +1,176 @@
+(footprint "C_0603"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at -0.000001 -1.100001 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "aee8ebe8-f88d-4635-9c76-82c9cf302218")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.2)
+				(bold yes)
+			)
+		)
+	)
+	(property "Value" "100nF"
+		(at 0 0.95 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "7fbc0499-2635-4fbd-b09e-993adc9886a4")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "75df4345-a6a7-484c-9cd4-f5bc9e67a758")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "7a0ffaaa-b74d-401e-8fdf-ce2205ea7449")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" "Unpolarized capacitor, small symbol"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "e20753c9-e111-457d-8a74-abc44aa17c2c")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start -0.15 -0.3)
+		(end 0.15 -0.3)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "493b8a01-8a59-40bf-b2ef-b8cf63469b64")
+	)
+	(fp_line
+		(start -0.15 0.3)
+		(end 0.15 0.3)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "7a78bf82-6f76-418f-9f45-eaa296103c85")
+	)
+	(fp_rect
+		(start -1.3 -0.6)
+		(end 1.3 0.6)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "b56018b9-fd16-43c3-b215-6affdf448a7c")
+	)
+	(fp_line
+		(start -0.8 -0.39)
+		(end 0.8 -0.39)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "5c1e1790-edcc-4499-8dc5-24ba3ca63f32")
+	)
+	(fp_line
+		(start -0.8 0.41)
+		(end -0.8 -0.39)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "58d89a01-6276-46e3-a0be-4e6fe62709c8")
+	)
+	(fp_line
+		(start 0.8 -0.39)
+		(end 0.8 0.41)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "9d1decea-7968-4740-998f-0f6a283cc2af")
+	)
+	(fp_line
+		(start 0.8 0.41)
+		(end -0.8 0.41)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "ca454708-3c9d-402a-9dea-e750224dd3f6")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "95e2588f-89c2-4dcd-89c7-35f0dd29a96d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at -0.775 0)
+		(size 0.85 0.9)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.1)
+		(uuid "3a8e668a-88e2-4937-bf50-e763d444afa0")
+	)
+	(pad "2" smd roundrect
+		(at 0.775 0)
+		(size 0.85 0.9)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.1)
+		(uuid "cdb68796-7c58-40f2-b586-cff63a09bfb7")
+	)
+	(model "E:/IoT_Lab/3D/Capacitor/Cap_SMD/CAP/csmd-0603_l1-6_w0-8_h0-8.stp"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 0)
+		)
+	)
+)

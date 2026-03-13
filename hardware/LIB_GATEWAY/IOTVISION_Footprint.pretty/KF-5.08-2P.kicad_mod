@@ -1,0 +1,129 @@
+(footprint "KF-5.08-2P"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(tags "conn")
+	(property "Reference" "REF**"
+		(at 0 -7.62 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "167d06d8-21c7-45f6-8f56-e611594f856d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "KF-5.08-2P"
+		(at 5.1 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "dfb3c046-5b4a-4192-a280-78e32781807f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 5.1 -1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "0ea89965-c295-457f-92af-3b3d87d38aa8")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 5.1 -1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "2971a589-c79d-4295-97e3-9f5441328e24")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 5.1 -1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "7f1d6749-9ff8-4d37-96fd-31b2b37f6358")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_rect
+		(start -5.06 -6.08)
+		(end 5.06 6.62)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "3368477c-2beb-4556-9c75-be5f6a405180")
+	)
+	(fp_rect
+		(start -5.06 -6.08)
+		(end 5.06 6.62)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "9b6ac90d-e430-4a80-bffd-2f6d5efdbbd9")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 2.5 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "abac6cfd-da3f-46df-ae00-56f62a531ab9")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" thru_hole circle
+		(at -2.52 -3.54)
+		(size 2.5 2.5)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "59789d35-c6a8-4591-9912-87f76ac8d9c4")
+	)
+	(pad "2" thru_hole circle
+		(at 2.56 -3.54)
+		(size 2.5 2.5)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "023c6b95-eb57-49c9-8557-478e2e45770b")
+	)
+	(model "E:/IoT_Lab/3D/Connector/KF-5.08/2P.STEP"
+		(offset
+			(xyz -2.6 3.5 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 90)
+		)
+	)
+)

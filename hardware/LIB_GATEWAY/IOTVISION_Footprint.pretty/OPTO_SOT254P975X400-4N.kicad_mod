@@ -1,0 +1,225 @@
+(footprint "OPTO_SOT254P975X400-4N"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 1.32 0.05 180)
+		(layer "F.SilkS")
+		(uuid "66a38dbd-201c-40e1-ab08-77709cc8f6c3")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.3)
+			)
+		)
+	)
+	(property "Value" "PC817"
+		(at 0.12 3.89 180)
+		(layer "F.Fab")
+		(uuid "ddd11634-9958-4f58-b929-1f607aa00253")
+		(effects
+			(font
+				(size 1.00037 1.00037)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f0c09263-90fc-4e48-9d63-9044316915b5")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "bf95661a-fab4-48af-950f-5320851f714c")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" "DC Optocoupler, Vce 35V, DIP-4"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "ba443f9e-8f9a-42c9-9fbe-7f7e9e48f4bf")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start -2.85 -2.3)
+		(end 2.85 -2.3)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "d2034905-11f6-4ca8-a36f-3e25dace40df")
+	)
+	(fp_line
+		(start -2.85 2.3)
+		(end -2.85 -2.3)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "8d930d7d-8b9a-47f9-aeea-8305a5352ea2")
+	)
+	(fp_line
+		(start 2.85 -2.3)
+		(end 2.85 2.3)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "8e73a63e-8770-4e69-8d77-26bff774f0ae")
+	)
+	(fp_line
+		(start 2.85 2.3)
+		(end -2.85 2.3)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "507a13ce-ecac-49b6-bf1f-2660ce71357a")
+	)
+	(fp_rect
+		(start -2.85 -2.3)
+		(end 2.85 2.3)
+		(stroke
+			(width 0.25)
+			(type default)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "350ba922-351d-4a59-800e-b362cf6fd764")
+	)
+	(fp_circle
+		(center -4.4 -2.7)
+		(end -4.1 -2.71)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(fill solid)
+		(layer "F.SilkS")
+		(uuid "a2ffdb7d-5258-45c4-91e7-03f3a475b240")
+	)
+	(fp_poly
+		(pts
+			(xy -2.85 -2.3) (xy -1.46 -2.3) (xy -2.84 -0.92)
+		)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(fill solid)
+		(layer "F.SilkS")
+		(uuid "7b84e17c-317b-4512-be7f-d1c9e87ed3a6")
+	)
+	(fp_line
+		(start -5.65 -2.8)
+		(end 5.65 -2.8)
+		(stroke
+			(width 0.052)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "28ea11b5-55e4-4244-950a-7fd56d7a3730")
+	)
+	(fp_line
+		(start -5.65 2.8)
+		(end -5.65 -2.8)
+		(stroke
+			(width 0.052)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "dffc120f-f584-496e-8ac2-6c1351c42e7e")
+	)
+	(fp_line
+		(start 5.65 -2.8)
+		(end 5.65 2.8)
+		(stroke
+			(width 0.052)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "fc3f8304-cb7e-4e2d-b9ee-f50d98c88634")
+	)
+	(fp_line
+		(start 5.65 2.8)
+		(end -5.65 2.8)
+		(stroke
+			(width 0.052)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "3af4e0c7-9c8d-47c3-afd2-f1e26e6743be")
+	)
+	(fp_text user "Name"
+		(at -0.26017 -3.737435 180)
+		(layer "Dwgs.User")
+		(uuid "cf848609-b763-4cc9-a71e-29a437715fba")
+		(effects
+			(font
+				(size 1.000654 1.000654)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd oval
+		(at -4.25 -1.27)
+		(size 2.25 1.6)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "fdef93aa-9db8-466b-b8b0-6bcfa767f5c9")
+	)
+	(pad "2" smd oval
+		(at -4.25 1.27)
+		(size 2.25 1.6)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "a0a6b2de-39e6-4243-bdc1-c088273dd4d0")
+	)
+	(pad "3" smd oval
+		(at 4.25 1.27)
+		(size 2.25 1.6)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "c3ea8b0c-d25b-438b-a29a-235da12fe5e5")
+	)
+	(pad "4" smd oval
+		(at 4.25 -1.27)
+		(size 2.25 1.6)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "cd7b341a-2be0-4c4a-b8ee-1545da2a389d")
+	)
+	(model "${IOTVISION_3D}/Isolation/OPTO/pc817/PC817_smd.STEP"
+		(offset
+			(xyz 0 0 2)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 90)
+		)
+	)
+)

@@ -1,0 +1,179 @@
+(footprint "ESP32_float_sensor"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at -1.4 -3.75 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "0268c7f3-33e8-4ef4-a3cb-dfb4aa7bbd80")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "ESP32_float_sensor"
+		(at 0 1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "07fa8736-cdb3-447d-9471-20f8233ee3a6")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "12d12bf3-3c3c-4255-b468-8a251a3b1572")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "bffe986a-7a99-4cc9-91d4-0bb5dec76e7e")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "318c2329-a312-44cb-baf1-d0efe6b0e6e5")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_rect
+		(start -12.33 -3.802)
+		(end 13.324 0.77)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "4b19a3ea-3ba2-431d-b5ab-171a8acdb232")
+	)
+	(fp_rect
+		(start -12.33 -3.802)
+		(end 13.324 0.77)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "23fce602-e4f6-44e8-b8dd-26db10f649f7")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 2.5 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "13eea35d-7acf-48ae-9ed7-ff96c71528e0")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" thru_hole circle
+		(at -8.52 -0.5)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "03ad7d9c-78fd-4c1f-9eac-00de8eb027a7")
+	)
+	(pad "2" thru_hole circle
+		(at -5.98 -0.5)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "abded362-8d4b-4633-96b5-108b940d6dc0")
+	)
+	(pad "3" thru_hole circle
+		(at -3.44 -0.5)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "d965aecb-965b-404f-9b92-59c83f636305")
+	)
+	(pad "4" thru_hole circle
+		(at -0.9 -0.5)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "c46b1c02-5caa-416f-86f4-4dee6b3c52c4")
+	)
+	(pad "5" thru_hole circle
+		(at 1.64 -0.5)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "62c83855-2111-4d89-ac39-ba617b908440")
+	)
+	(pad "6" thru_hole circle
+		(at 4.18 -0.5)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "670aab0e-6407-48b2-83e7-7e1ee8e225b6")
+	)
+	(pad "7" thru_hole circle
+		(at 6.72 -0.5)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "e76b4585-b3c2-48d2-a28a-4f773357fa62")
+	)
+	(pad "8" thru_hole circle
+		(at 9.26 -0.5)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "11795500-6a6c-447c-9d3f-9b4d72fb665c")
+	)
+	(model "E:/HOME/Practice/FreeLance/Kicad/ESP32_float_0215/ESP32_float_Sensor/ESP32_float_Sensor.step"
+		(offset
+			(xyz -132 3.5 140)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 0)
+		)
+	)
+)

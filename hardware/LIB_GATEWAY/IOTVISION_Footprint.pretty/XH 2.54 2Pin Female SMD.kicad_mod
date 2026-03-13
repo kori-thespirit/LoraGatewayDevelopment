@@ -1,0 +1,229 @@
+(footprint "XH 2.54 2Pin Female SMD"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at -0.05 -0.2 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "6ea126f7-1cdb-4b72-8ed5-44f8b29bdfb0")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "Battery"
+		(at 0 1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "7363284f-6699-4ec7-81a8-1a40249caead")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "ae73558e-ee47-4c9c-b216-59fa5317f3e5")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "bda94853-8f1d-483c-9939-2ce5e8ca59ff")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "223699a0-5597-40e6-973d-d8d96feaf95d")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start -5.24 -2.5)
+		(end -4 -2.5)
+		(stroke
+			(width 0.1527)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "fa8ff17b-a24c-4950-8c6a-729c9c057db0")
+	)
+	(fp_line
+		(start -5.24 -0.43)
+		(end -5.24 -2.5)
+		(stroke
+			(width 0.1527)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "1c069c81-444e-45a7-8c48-6d58caeff5b9")
+	)
+	(fp_line
+		(start -4 -4.93)
+		(end -2.24 -4.93)
+		(stroke
+			(width 0.1527)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "85b9aafc-9455-478f-904e-c494dfe1467d")
+	)
+	(fp_line
+		(start -4 -2.5)
+		(end -4 -4.93)
+		(stroke
+			(width 0.1527)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "e4d4c23f-9dd9-4e07-b4e0-1731abe48de7")
+	)
+	(fp_line
+		(start -3.3 3)
+		(end 3 3)
+		(stroke
+			(width 0.1527)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "05f7c8e9-138a-4315-90a5-1f9bbd0df239")
+	)
+	(fp_line
+		(start -0.55 -4.93)
+		(end 0.3 -4.93)
+		(stroke
+			(width 0.1527)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "4cf9f0d1-4d96-46f0-b68b-d5dbb6eb3996")
+	)
+	(fp_line
+		(start 3.7 -4.93)
+		(end 1.96 -4.93)
+		(stroke
+			(width 0.1527)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "17a0881b-03e3-4b2a-b152-4bcce8968fb1")
+	)
+	(fp_line
+		(start 3.7 -2.5)
+		(end 3.7 -4.93)
+		(stroke
+			(width 0.1527)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "ce23cc20-8311-4bdb-bfe4-25a38d0bc215")
+	)
+	(fp_line
+		(start 3.7 -2.5)
+		(end 5 -2.5)
+		(stroke
+			(width 0.1527)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "1d776b9e-fcd4-4139-8ed1-6fbcf8c5eeab")
+	)
+	(fp_line
+		(start 5 -0.43)
+		(end 5 -2.5)
+		(stroke
+			(width 0.1527)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "e2147702-a49d-4495-a6d6-3347898e3559")
+	)
+	(fp_rect
+		(start -5.8 -7.4)
+		(end 5.5 3.4)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "6836a774-0b57-4d5b-a8df-08c146f4c4ea")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 2.5 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "355a0d6f-b62c-45b6-89ea-c12d90569a05")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at -4.3 1.4)
+		(size 1.8 3.5)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.25)
+		(uuid "9d957d5d-4791-42ca-8571-6d1592f66fc9")
+	)
+	(pad "1" smd roundrect
+		(at -1.42 -5.39)
+		(size 1.4 3.6)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.25)
+		(uuid "255ec5e5-deab-418e-9cd6-706ebd3e5aec")
+	)
+	(pad "1" smd roundrect
+		(at 4 1.4)
+		(size 1.8 3.5)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.25)
+		(uuid "e58bf924-11e2-4af2-9bcb-c0728644c53b")
+	)
+	(pad "2" smd roundrect
+		(at 1.12 -5.39)
+		(size 1.4 3.6)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.25)
+		(uuid "f802699f-dd41-40d0-b4fc-39e8f29d8e5f")
+	)
+	(model "${IOTVISION_3D}/Connector/XH_2.54/SMD Horizontal/JST - XH - SMD (R) - 2Pin - 2.54mm.stp"
+		(offset
+			(xyz -0.2 7 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 180)
+		)
+	)
+)
