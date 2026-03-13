@@ -1,0 +1,1 @@
+idf.py -p /dev/ttyACM0 build flash
