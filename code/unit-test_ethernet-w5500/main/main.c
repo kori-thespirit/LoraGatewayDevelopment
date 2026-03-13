@@ -31,7 +31,7 @@ const gpio_config_t w5500_pin_cfg[4] = {{.pin_bit_mask = 1ULL << W5500_SCK,
 
 void app_main(void) {
 
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < sizeof(w5500_pin_cfg) / sizeof(gpio_config_t); i++) {
     gpio_config(w5500_pin_cfg + i);
   }
   while (1) {
