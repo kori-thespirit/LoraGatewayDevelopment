@@ -1,5 +1,6 @@
 idf_component_register(SRCS "ethernet_w5500.c"
                        INCLUDE_DIRS "include"
+                       PRIV_REQUIRES esp_driver_gpio esp_driver_spi
 )
 
 

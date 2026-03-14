@@ -568,6 +568,15 @@ CONFIG_ESP_ERR_TO_NAME_LOOKUP=y
 # end of ESP-Driver:GPIO Configurations
 
 #
+# ESP-Driver:SPI Configurations
+#
+# CONFIG_SPI_MASTER_IN_IRAM is not set
+CONFIG_SPI_MASTER_ISR_IN_IRAM=y
+# CONFIG_SPI_SLAVE_IN_IRAM is not set
+CONFIG_SPI_SLAVE_ISR_IN_IRAM=y
+# end of ESP-Driver:SPI Configurations
+
+#
 # Hardware Settings
 #
 CONFIG_ESP_HW_SUPPORT_FUNC_IN_IRAM=y
@@ -647,7 +656,7 @@ CONFIG_ESP_REGI2C_CTRL_FUNC_IN_IRAM=y
 #
 # GDMA Configurations
 #
-# CONFIG_GDMA_CTRL_FUNC_IN_IRAM is not set
+CONFIG_GDMA_CTRL_FUNC_IN_IRAM=y
 CONFIG_GDMA_ISR_HANDLER_IN_IRAM=y
 CONFIG_GDMA_OBJ_DRAM_SAFE=y
 # CONFIG_GDMA_ENABLE_DEBUG_LOG is not set
@@ -680,6 +689,7 @@ CONFIG_ESP_BROWNOUT_USE_INTR=y
 # end of Brownout Detector
 # end of Power Supplier
 
+CONFIG_ESP_SPI_BUS_LOCK_ISR_FUNCS_IN_IRAM=y
 CONFIG_ESP_INTR_IN_IRAM=y
 # end of Hardware Settings
 
@@ -701,6 +711,10 @@ CONFIG_ESP_INTR_IN_IRAM=y
 # CONFIG_PM_SLP_IRAM_OPT is not set
 CONFIG_PM_POWER_DOWN_CPU_IN_LIGHT_SLEEP=y
 # end of Power Management
+
+#
+# ESP PSRAM
+#
 
 #
 # ESP-ROM

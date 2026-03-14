@@ -1,1 +1,1 @@
-idf.py -p /dev/ttyACM0 build flash
+idf.py -p /dev/ttyACM0 build flash monitor

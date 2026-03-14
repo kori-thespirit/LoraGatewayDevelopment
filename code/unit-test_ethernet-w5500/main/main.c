@@ -1,58 +1,31 @@
 #include "driver/gpio.h"
+#include "esp_err.h"
+#include "ethernet_w5500.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
+#include <stdint.h>
 
-#define W5500_SCK 4
-#define W5500_MISO 5
-#define W5500_MOSI 6
-#define W5500_CS 7
-
-const gpio_config_t w5500_pin_cfg[4] = {{.pin_bit_mask = 1ULL << W5500_SCK,
-                                         .mode = GPIO_MODE_OUTPUT,
-                                         .pull_up_en = GPIO_PULLUP_DISABLE,
-                                         .pull_down_en = GPIO_PULLDOWN_DISABLE,
-                                         .intr_type = GPIO_INTR_DISABLE},
-                                        {.pin_bit_mask = 1ULL << W5500_MISO,
-                                         .mode = GPIO_MODE_OUTPUT,
-                                         .pull_up_en = GPIO_PULLUP_DISABLE,
-                                         .pull_down_en = GPIO_PULLDOWN_DISABLE,
-                                         .intr_type = GPIO_INTR_DISABLE},
-                                        {.pin_bit_mask = 1ULL << W5500_MOSI,
-                                         .mode = GPIO_MODE_OUTPUT,
-                                         .pull_up_en = GPIO_PULLUP_DISABLE,
-                                         .pull_down_en = GPIO_PULLDOWN_DISABLE,
-                                         .intr_type = GPIO_INTR_DISABLE},
-                                        {.pin_bit_mask = 1ULL << W5500_CS,
-                                         .mode = GPIO_MODE_OUTPUT,
-                                         .pull_up_en = GPIO_PULLUP_DISABLE,
-                                         .pull_down_en = GPIO_PULLDOWN_DISABLE,
-                                         .intr_type = GPIO_INTR_DISABLE}};
+#define ESP32C3_SUPERMINI_BUILTIN_BLUE_LED 8
+uint8_t data[1500] = {0};
 
 void app_main(void) {
-
-  for (int i = 0; i < sizeof(w5500_pin_cfg) / sizeof(gpio_config_t); i++) {
-    gpio_config(w5500_pin_cfg + i);
+  for (uint16_t i = 0; i < sizeof(data); i++) {
+    data[i] = i % 256;
   }
+  const gpio_config_t blueled = {.pin_bit_mask =
+                                     1 << ESP32C3_SUPERMINI_BUILTIN_BLUE_LED,
+                                 .mode = GPIO_MODE_OUTPUT,
+                                 .pull_up_en = GPIO_PULLUP_DISABLE,
+                                 .pull_down_en = GPIO_PULLDOWN_DISABLE,
+                                 .intr_type = GPIO_INTR_DISABLE};
+  ESP_ERROR_CHECK(gpio_config(&blueled));
+  spi_bus_init();
   while (1) {
-    gpio_set_level(W5500_SCK, 0);
+    w5500_transmit(data, sizeof(data));
+    gpio_set_level(ESP32C3_SUPERMINI_BUILTIN_BLUE_LED, 0);
     vTaskDelay(500 / portTICK_PERIOD_MS);
-    gpio_set_level(W5500_SCK, 1);
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-
-    gpio_set_level(W5500_MOSI, 0);
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-    gpio_set_level(W5500_MOSI, 1);
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-
-    gpio_set_level(W5500_MISO, 0);
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-    gpio_set_level(W5500_MISO, 1);
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-
-    gpio_set_level(W5500_CS, 0);
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-    gpio_set_level(W5500_CS, 1);
+    gpio_set_level(ESP32C3_SUPERMINI_BUILTIN_BLUE_LED, 1);
     vTaskDelay(500 / portTICK_PERIOD_MS);
   }
 }
