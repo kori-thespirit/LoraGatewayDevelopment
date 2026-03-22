@@ -20,9 +20,8 @@ void app_main(void) {
                                  .pull_down_en = GPIO_PULLDOWN_DISABLE,
                                  .intr_type = GPIO_INTR_DISABLE};
   ESP_ERROR_CHECK(gpio_config(&blueled));
-  spi_bus_init();
+  w5500_init();
   while (1) {
-    w5500_transmit(data, sizeof(data));
     gpio_set_level(ESP32C3_SUPERMINI_BUILTIN_BLUE_LED, 0);
     vTaskDelay(500 / portTICK_PERIOD_MS);
     gpio_set_level(ESP32C3_SUPERMINI_BUILTIN_BLUE_LED, 1);
