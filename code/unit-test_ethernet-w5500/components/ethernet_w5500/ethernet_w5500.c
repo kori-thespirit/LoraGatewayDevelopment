@@ -9,6 +9,7 @@
 #include "driver/spi_master.h"
 #include "esp_bit_defs.h"
 #include "esp_err.h"
+#include "esp_log.h"
 #include "ethernet_init.h"
 #include "hal/gpio_types.h"
 #include "hal/spi_types.h"
@@ -16,9 +17,25 @@
 #include <stddef.h>
 #include <stdint.h>
 
+static char TAG[] = "W5500-app";
+
 // static void cs_high();
 // static void cs_low();
 static spi_device_handle_t spi;
+
+/** Event handler for IP_EVENT_ETH_GOT_IP */
+static void got_ip_event_handler(void *arg, esp_event_base_t event_base,
+                                 int32_t event_id, void *event_data) {
+  ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
+  const esp_netif_ip_info_t *ip_info = &event->ip_info;
+
+  ESP_LOGI(TAG, "Ethernet Got IP Address");
+  ESP_LOGI(TAG, "~~~~~~~~~~~");
+  ESP_LOGI(TAG, "ETHIP:" IPSTR, IP2STR(&ip_info->ip));
+  ESP_LOGI(TAG, "ETHMASK:" IPSTR, IP2STR(&ip_info->netmask));
+  ESP_LOGI(TAG, "ETHGW:" IPSTR, IP2STR(&ip_info->gw));
+  ESP_LOGI(TAG, "~~~~~~~~~~~");
+}
 
 void spi_bus_init() {
   const gpio_config_t spi_cs_cfg = {
@@ -85,6 +102,10 @@ void w5500_init() {
   ESP_ERROR_CHECK(esp_event_loop_create_default());
 
   ethernet_init_all(&eth_handles, &eth_port_cnt);
+  ESP_ERROR_CHECK(esp_netif_init());
+  // ESP_LOGI(TAG, "Register ETH_GOT_IP event");
+  // ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP,
+  // &got_ip_event_handler, NULL));
   // Create instance(s) of esp-netif for Ethernet(s)
   if (eth_port_cnt == 1) {
     // Use ESP_NETIF_DEFAULT_ETH when just one Ethernet interface is used and
@@ -94,6 +115,7 @@ void w5500_init() {
     // Attach Ethernet driver to TCP/IP stack
     ESP_ERROR_CHECK(
         esp_netif_attach(eth_netif, esp_eth_new_netif_glue(eth_handles[0])));
+
   } else {
     // Use ESP_NETIF_INHERENT_DEFAULT_ETH when multiple Ethernet interfaces are
     // used and so you need to modify esp-netif configuration parameters for
@@ -118,6 +140,12 @@ void w5500_init() {
       ESP_ERROR_CHECK(esp_eth_start(eth_handles[i]));
     }
   }
+  // Start Ethernet driver state machine
+  for (int i = 0; i < eth_port_cnt; i++) {
+    ESP_ERROR_CHECK(esp_eth_start(eth_handles[i]));
+  }
+  // ESP_LOGI(TAG, "Start DHCP");
+  // ESP_ERROR_CHECK(esp_netif_dhcpc_start(eth_netif));
 }
 
 // static void cs_high() { gpio_set_level(SPI2_CS, 1); }
