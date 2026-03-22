@@ -9,7 +9,6 @@
 #include "driver/spi_master.h"
 #include "esp_bit_defs.h"
 #include "esp_err.h"
-#include "esp_log.h"
 #include "ethernet_init.h"
 #include "hal/gpio_types.h"
 #include "hal/spi_types.h"
@@ -17,25 +16,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
-static char TAG[] = "W5500-app";
-
 // static void cs_high();
 // static void cs_low();
 static spi_device_handle_t spi;
-
-/** Event handler for IP_EVENT_ETH_GOT_IP */
-static void got_ip_event_handler(void *arg, esp_event_base_t event_base,
-                                 int32_t event_id, void *event_data) {
-  ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
-  const esp_netif_ip_info_t *ip_info = &event->ip_info;
-
-  ESP_LOGI(TAG, "Ethernet Got IP Address");
-  ESP_LOGI(TAG, "~~~~~~~~~~~");
-  ESP_LOGI(TAG, "ETHIP:" IPSTR, IP2STR(&ip_info->ip));
-  ESP_LOGI(TAG, "ETHMASK:" IPSTR, IP2STR(&ip_info->netmask));
-  ESP_LOGI(TAG, "ETHGW:" IPSTR, IP2STR(&ip_info->gw));
-  ESP_LOGI(TAG, "~~~~~~~~~~~");
-}
 
 void spi_bus_init() {
   const gpio_config_t spi_cs_cfg = {
@@ -52,12 +35,12 @@ void spi_bus_init() {
       .quadwp_io_num = -1,
       .max_transfer_sz = 32,
   };
-  const spi_device_interface_config_t w5500 = {
+  const spi_device_interface_config_t spi_dut = {
       .command_bits = 8,
       .spics_io_num = SPI2_CS,
       .mode = 0,
-      // clock_speed_hz range from 20MHz to 40MHz
-      .clock_speed_hz = 10 * 1000 * 100,
+      .clock_speed_hz =
+          1 * 1000 * 1000, // 1MHz for Salae logic analyzer can capture
       .flags = SPI_DEVICE_HALFDUPLEX,
       // .pre_cb = cs_low,
       // .post_cb = cs_high,
@@ -66,22 +49,65 @@ void spi_bus_init() {
   ret = spi_bus_initialize(SPI2_HOST, &spi2_bus_cfg, SPI_DMA_CH_AUTO);
   assert(!ret);
 
-  ret = spi_bus_add_device(SPI2_HOST, &w5500, &spi);
+  ret = spi_bus_add_device(SPI2_HOST, &spi_dut, &spi);
   ESP_ERROR_CHECK(ret); // same as assert
 }
 
-void w5500_transmit(uint8_t *data, size_t datasize) {
+void test_spi_txdata() {
+
   spi_transaction_t t = {0};
-  t.length = 24;
+
+  /* transfer 8 bit length */
+  t.length = 8;
+  /* transfer command before transfer payload in tx_data */
   t.cmd = 0x10;
-  /* Not use data input argument, use tx_data instead, command is 0x10 */
+  /* Use internal tx_data */
+  t.flags = SPI_TRANS_USE_TXDATA;
+  t.tx_data[0] = 0x01;
+  t.user =
+      (void *)0; // this is transaction 0, use in interrupt transfer with queue
+  ESP_ERROR_CHECK(spi_device_polling_transmit(spi, &t));
+
+  /* transfer 16 bit length */
+  t.length = 16;
+  /* transfer command before transfer payload in tx_data */
+  t.cmd = 0x11;
+  /* Use internal tx_data */
+  t.flags = SPI_TRANS_USE_TXDATA;
+  t.tx_data[0] = 0x01;
+  t.tx_data[1] = 0x02;
+  t.user = (void *)1;
+  ESP_ERROR_CHECK(spi_device_polling_transmit(spi, &t));
+
+  /* transfer 24 bit length */
+  t.length = 24;
+  /* transfer command before transfer payload in tx_data */
+  t.cmd = 0x12;
+  /* Use internal tx_data */
+  t.flags = SPI_TRANS_USE_TXDATA;
+  t.tx_data[0] = 0x01;
+  t.tx_data[1] = 0x02;
+  t.tx_data[2] = 0x03;
+  t.user = (void *)2;
+  ESP_ERROR_CHECK(spi_device_polling_transmit(spi, &t));
+
+  /* transfer 32 bit length */
+  t.length = 32;
+  /* transfer command before transfer payload in tx_data */
+  t.cmd = 0x13;
+  /* Use internal tx_data */
   t.flags = SPI_TRANS_USE_TXDATA;
   t.tx_data[0] = 0x01;
   t.tx_data[1] = 0x02;
   t.tx_data[2] = 0x03;
   t.tx_data[3] = 0x04;
-  t.user = (void *)0; // this is transaction 0
-  esp_err_t ret = spi_device_polling_transmit(spi, &t);
+  t.user = (void *)3;
+  ESP_ERROR_CHECK(spi_device_polling_transmit(spi, &t));
+}
+
+void spi_burst_transmit(uint8_t *data, size_t datasize) {
+
+  spi_transaction_t t = {0};
 
   /* Transfer burst data with command 0x22 */
   t.length = 8 * datasize;
@@ -89,9 +115,19 @@ void w5500_transmit(uint8_t *data, size_t datasize) {
   t.cmd = 0x22;
   t.tx_buffer = data;
   t.user = (void *)1; // this is transaction 1
-  ret = spi_device_polling_transmit(spi, &t);
+  esp_err_t ret = spi_device_polling_transmit(spi, &t);
 
   assert(!ret);
+}
+
+#define TEST_SPI_BURST_BUFFER_SIZE 1500
+
+void test_spi_burst_transmit() {
+  static uint8_t data[1500] = {0};
+  for (uint16_t i = 0; i < sizeof(data); i++) {
+    data[i] = i % 256;
+  }
+  spi_burst_transmit(data, sizeof(data));
 }
 
 void w5500_init() {
@@ -144,8 +180,6 @@ void w5500_init() {
   for (int i = 0; i < eth_port_cnt; i++) {
     ESP_ERROR_CHECK(esp_eth_start(eth_handles[i]));
   }
-  // ESP_LOGI(TAG, "Start DHCP");
-  // ESP_ERROR_CHECK(esp_netif_dhcpc_start(eth_netif));
 }
 
 // static void cs_high() { gpio_set_level(SPI2_CS, 1); }
