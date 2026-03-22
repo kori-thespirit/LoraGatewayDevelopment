@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 1.2,
-          "height": 3.0,
-          "width": 2.0
+          "drill": 1.3,
+          "height": 2.475,
+          "width": 2.475
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -233,8 +233,20 @@
           "drill": 0.0
         },
         {
+          "diameter": 0.4,
+          "drill": 0.2
+        },
+        {
           "diameter": 0.5,
           "drill": 0.3
+        },
+        {
+          "diameter": 0.6,
+          "drill": 0.3
+        },
+        {
+          "diameter": 0.8,
+          "drill": 0.5
         },
         {
           "diameter": 1.2,
@@ -484,7 +496,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "DATN_SCHEMATIC.kicad_pro",
+    "filename": "Schematic_V2_backup.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -528,7 +540,7 @@
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "Schematic_V2_backup.step",
       "svg": "",
       "vrml": ""
     },
