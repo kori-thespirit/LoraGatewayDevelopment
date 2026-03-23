@@ -1,4 +1,4 @@
-26393357504717935
+26400502136129508
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -59540,7 +59540,7 @@ Conn_IPEX_ANT
 
 0
 3
-3
+2
 IVS_NEW_FOOTPRINT
 Conn_JST_S2B-ZR-SM4A-TF_LF__SN_
 
@@ -72107,6 +72107,13 @@ LOGO_AIoTVisionLab_02
 0
 0
 LOGOLAB30
+Logolab_new_24x5.6mm
+
+
+0
+0
+0
+LOGOLAB30
 NINHDIEU
 
 
@@ -72234,6 +72241,13 @@ LOGO_AIoTVisionLab_01
 0
 LOGOLAB123
 LOGO_AIoTVisionLab_02
+
+
+0
+0
+0
+LOGOLAB123
+Logolab_new_24x5.6mm
 
 
 0
@@ -106043,6 +106057,13 @@ LOGO_AIoTVisionLab_02
 0
 0
 logolab
+Logolab_new_24x5.6mm
+
+
+0
+0
+0
+logolab
 NINHDIEU
 
 
@@ -106170,6 +106191,13 @@ LOGO_AIoTVisionLab_01
 0
 logolab_s
 LOGO_AIoTVisionLab_02
+
+
+0
+0
+0
+logolab_s
+Logolab_new_24x5.6mm
 
 
 0
