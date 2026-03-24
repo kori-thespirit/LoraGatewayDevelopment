@@ -232,7 +232,7 @@
 			)
 		)
 		(instances
-			(project "Schematic_V2_backup"
+			(project "Gateway_Schematic_V3"
 				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
 					(page "6")
 				)
@@ -315,7 +315,7 @@
 			)
 		)
 		(instances
-			(project "Schematic_V2_backup"
+			(project "Gateway_Schematic_V3"
 				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
 					(page "11")
 				)
@@ -418,7 +418,7 @@
 			)
 		)
 		(instances
-			(project "Schematic_V2_backup"
+			(project "Gateway_Schematic_V3"
 				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
 					(page "9")
 				)
@@ -472,7 +472,7 @@
 			)
 		)
 		(instances
-			(project "Schematic_V2_backup"
+			(project "Gateway_Schematic_V3"
 				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
 					(page "10")
 				)
@@ -696,7 +696,7 @@
 			)
 		)
 		(instances
-			(project "Schematic_V2_backup"
+			(project "Gateway_Schematic_V3"
 				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
 					(page "2")
 				)
@@ -759,7 +759,7 @@
 			)
 		)
 		(instances
-			(project "Schematic_V2_backup"
+			(project "Gateway_Schematic_V3"
 				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
 					(page "3")
 				)
@@ -813,7 +813,7 @@
 			)
 		)
 		(instances
-			(project "Schematic_V2_backup"
+			(project "Gateway_Schematic_V3"
 				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
 					(page "7")
 				)
@@ -857,7 +857,7 @@
 			)
 		)
 		(instances
-			(project "Schematic_V2_backup"
+			(project "Gateway_Schematic_V3"
 				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
 					(page "4")
 				)
@@ -931,7 +931,7 @@
 			)
 		)
 		(instances
-			(project "Schematic_V2_backup"
+			(project "Gateway_Schematic_V3"
 				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9"
 					(page "8")
 				)
