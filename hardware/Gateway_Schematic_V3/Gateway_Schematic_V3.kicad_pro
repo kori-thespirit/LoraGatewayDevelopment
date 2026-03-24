@@ -37,7 +37,7 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.0,
+          "drill": 0.5,
           "height": 1.0,
           "width": 1.0
         },
@@ -496,7 +496,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "Schematic_V2_backup.kicad_pro",
+    "filename": "Gateway_Schematic_V3.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -540,7 +540,7 @@
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "Schematic_V2_backup.step",
+      "step": "Gateway_Schematic_V3.step",
       "svg": "",
       "vrml": ""
     },
