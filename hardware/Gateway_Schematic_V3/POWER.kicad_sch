@@ -8841,7 +8841,7 @@
 			)
 		)
 		(property "Value" "0.1uF/275VAC"
-			(at 104.394 51.816 0)
+			(at 104.902 55.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
