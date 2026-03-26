@@ -5165,8 +5165,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "21d0f0e8-2c4e-43de-b106-d438c2f39b54")
-		(property "Reference" "TP3"
-			(at 181.61 110.4899 90)
+		(property "Reference" "RX0"
+			(at 181.61 111.1249 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5175,7 +5175,7 @@
 			)
 		)
 		(property "Value" "~"
-			(at 181.61 113.0299 90)
+			(at 181.61 113.03 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5216,7 +5216,7 @@
 		(instances
 			(project "Schematic_V2_backup"
 				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9/9fd5b551-28b1-42e9-a33d-c957f6949690"
-					(reference "TP3")
+					(reference "RX0")
 					(unit 1)
 				)
 			)
@@ -5232,8 +5232,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "29af5fe3-28d4-4ca1-9850-004a3edad454")
-		(property "Reference" "TP2"
-			(at 181.61 105.4099 90)
+		(property "Reference" "TX0"
+			(at 181.61 106.0449 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5242,7 +5242,7 @@
 			)
 		)
 		(property "Value" "~"
-			(at 181.61 107.9499 90)
+			(at 181.61 107.95 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5283,7 +5283,7 @@
 		(instances
 			(project ""
 				(path "/08b065f5-231d-43cb-bb9e-87dca43beac9/9fd5b551-28b1-42e9-a33d-c957f6949690"
-					(reference "TP2")
+					(reference "TX0")
 					(unit 1)
 				)
 			)
