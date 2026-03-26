@@ -7020,7 +7020,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Button_Switch_SMD:SW_SPST_B3U-1000P"
+		(property "Footprint" "IVS_NEW_FOOTPRINT:SW_SPST_PTS810"
 			(at 68.58 69.85 0)
 			(effects
 				(font
@@ -7536,7 +7536,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Button_Switch_SMD:SW_SPST_B3U-1000P"
+		(property "Footprint" "IVS_NEW_FOOTPRINT:SW_SPST_PTS810"
 			(at 67.31 69.85 0)
 			(effects
 				(font
