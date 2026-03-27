@@ -2158,15 +2158,15 @@
 		(fields_autoplaced yes)
 		(uuid "33cfee00-bc3d-4eba-b6fe-b8fd74242f21")
 		(property "Reference" "C1"
-			(at 133.35 62.23 90)
+			(at 133.35 60.96 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "1uF"
-			(at 133.35 64.77 90)
+		(property "Value" "10uF"
+			(at 133.35 63.5 90)
 			(effects
 				(font
 					(size 1.27 1.27)
