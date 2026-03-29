@@ -1,17 +1,15 @@
 #include "ethernet_w5500.h"
+#include "esp_check.h"
+#include "esp_err.h"
 #include "esp_eth_netif_glue.h"
 #include "esp_event.h"
 #include "esp_netif.h"
 #include "ethernet_init.h"
+#include "lwip/inet.h"
+#include "lwip/netdb.h"
+#include "lwip/sockets.h"
+#include "ping/ping_sock.h"
 
-#include "driver/gpio.h"
-#include "driver/spi_common.h"
-#include "driver/spi_master.h"
-#include "esp_bit_defs.h"
-#include "esp_err.h"
-#include "ethernet_init.h"
-#include "hal/gpio_types.h"
-#include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -62,4 +60,80 @@ void w5500_init() {
   for (int i = 0; i < eth_port_cnt; i++) {
     ESP_ERROR_CHECK(esp_eth_start(eth_handles[i]));
   }
+}
+
+static void test_on_ping_success(esp_ping_handle_t hdl, void *args) {
+  // optionally, get callback arguments
+  // const char* str = (const char*) args;
+  // printf("%s\r\n", str); // "foo"
+  uint8_t ttl;
+  uint16_t seqno;
+  uint32_t elapsed_time, recv_len;
+  ip_addr_t target_addr;
+  esp_ping_get_profile(hdl, ESP_PING_PROF_SEQNO, &seqno, sizeof(seqno));
+  esp_ping_get_profile(hdl, ESP_PING_PROF_TTL, &ttl, sizeof(ttl));
+  esp_ping_get_profile(hdl, ESP_PING_PROF_IPADDR, &target_addr,
+                       sizeof(target_addr));
+  esp_ping_get_profile(hdl, ESP_PING_PROF_SIZE, &recv_len, sizeof(recv_len));
+  esp_ping_get_profile(hdl, ESP_PING_PROF_TIMEGAP, &elapsed_time,
+                       sizeof(elapsed_time));
+  printf("%ld bytes from %s icmp_seq=%d ttl=%d time=%ld ms\n", recv_len,
+         inet_ntoa(target_addr.u_addr.ip4), seqno, ttl, elapsed_time);
+}
+
+static void test_on_ping_timeout(esp_ping_handle_t hdl, void *args) {
+  uint16_t seqno;
+  ip_addr_t target_addr;
+  esp_ping_get_profile(hdl, ESP_PING_PROF_SEQNO, &seqno, sizeof(seqno));
+  esp_ping_get_profile(hdl, ESP_PING_PROF_IPADDR, &target_addr,
+                       sizeof(target_addr));
+  printf("From %s icmp_seq=%d timeout\n", inet_ntoa(target_addr.u_addr.ip4),
+         seqno);
+}
+
+static void test_on_ping_end(esp_ping_handle_t hdl, void *args) {
+  uint32_t transmitted;
+  uint32_t received;
+  uint32_t total_time_ms;
+
+  esp_ping_get_profile(hdl, ESP_PING_PROF_REQUEST, &transmitted,
+                       sizeof(transmitted));
+  esp_ping_get_profile(hdl, ESP_PING_PROF_REPLY, &received, sizeof(received));
+  esp_ping_get_profile(hdl, ESP_PING_PROF_DURATION, &total_time_ms,
+                       sizeof(total_time_ms));
+  printf("%ld packets transmitted, %lu received, time %lums\n", transmitted,
+         received, total_time_ms);
+}
+
+int initialize_ping() {
+  /* convert URL to IP address */
+  ip_addr_t target_addr;
+  struct addrinfo hint;
+  struct addrinfo *res = NULL;
+  memset(&hint, 0, sizeof(hint));
+  memset(&target_addr, 0, sizeof(target_addr));
+  getaddrinfo("www.google.com", NULL, &hint, &res);
+  struct in_addr addr4 = ((struct sockaddr_in *)(res->ai_addr))->sin_addr;
+  inet_addr_to_ip4addr(ip_2_ip4(&target_addr), &addr4);
+  freeaddrinfo(res);
+
+  esp_ping_config_t ping_config = ESP_PING_DEFAULT_CONFIG();
+  ping_config.target_addr = target_addr;       // target IP address
+  ping_config.count = ESP_PING_COUNT_INFINITE; // ping in infinite mode,
+                                               // esp_ping_stop can stop it
+
+  /* set callback functions */
+  esp_ping_callbacks_t cbs;
+  cbs.on_ping_success = test_on_ping_success;
+  cbs.on_ping_timeout = test_on_ping_timeout;
+  cbs.on_ping_end = test_on_ping_end;
+  cbs.cb_args =
+      "foo"; // arguments that feeds to all callback functions, can be NULL
+  // cbs.cb_args = eth_event_group;
+
+  esp_ping_handle_t ping;
+  esp_ping_new_session(&ping_config, &cbs, &ping);
+  ESP_RETURN_ON_FALSE(esp_ping_start(ping) == ESP_OK, -1, "ping_eth",
+                      "esp_ping_start() failed");
+  return 0;
 }

@@ -1,3 +1,4 @@
+#include "esp_err.h"
 #include "ethernet_w5500.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
@@ -6,6 +7,9 @@
 
 void app_main(void) {
   w5500_init();
+  /* Wait until obtain IP address before pinging */
+  vTaskDelay(10000 / portTICK_PERIOD_MS);
+  ESP_ERROR_CHECK(initialize_ping());
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }

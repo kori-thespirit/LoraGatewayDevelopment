@@ -12,5 +12,6 @@ void spi_bus_init();
 void w5500_transmit(uint8_t *data, size_t datasize);
 void w5500_init();
 void w5500_test_mosi();
+int initialize_ping();
 
 #endif // !ETHERNET_W5500_H
