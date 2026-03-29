@@ -1,0 +1,558 @@
+Command: /home/tathuan/.espressif/python_env/idf6.1_py3.12_env/bin/python /home/tathuan/esp-idf/tools/idf_monitor.py -p /dev/ttyACM0 -b 115200 --toolchain-prefix riscv32-esp-elf- --target esp32c3 --revision 3 --decode-panic backtrace /home/tathuan/Project_B/usb_serial_jtag_echo/build/usb_serial_jtag_echo.elf /home/tathuan/Project_B/usb_serial_jtag_echo/build/bootloader/bootloader.elf -m '/home/tathuan/.espressif/python_env/idf6.1_py3.12_env/bin/python' '/home/tathuan/esp-idf/tools/idf.py'
+ESP-ROM:esp32c3-api1-20210207
+Build:Feb  7 2021
+rst:0x15 (USB_UART_CHIP_RESET),boot:0xf (SPI_FAST_FLASH_BOOT)
+Saved PC:0x4004c98c
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fcd5830,len:0x155c
+load:0x403cbf10,len:0xce0
+load:0x403ce710,len:0x2fc0
+entry 0x403cbf1a
+[0;32mI (24) boot: ESP-IDF v6.1-dev-2938-g12f36a021f 2nd stage bootloader[0m
+[0;32mI (24) boot: compile time Mar 22 2026 07:20:34[0m
+[0;32mI (25) boot: chip revision: v0.4[0m
+[0;32mI (26) boot: efuse block revision: v1.3[0m
+[0;32mI (30) boot.esp32c3: SPI Speed      : 80MHz[0m
+[0;32mI (34) boot.esp32c3: SPI Mode       : DIO[0m
+[0;32mI (37) boot.esp32c3: SPI Flash Size : 2MB[0m
+[0;32mI (41) boot: Enabling RNG early entropy source...[0m
+[0;32mI (45) boot: Partition Table:[0m
+[0;32mI (48) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (54) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (61) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (67) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (74) boot: End of partition table[0m
+[0;32mI (77) esp_image: segment 0: paddr=00010020 vaddr=3c010020 size=068c8h ( 26824) map[0m
+[0;32mI (89) esp_image: segment 1: paddr=000168f0 vaddr=3fc89e00 size=0174ch (  5964) load[0m
+[0;32mI (93) esp_image: segment 2: paddr=00018044 vaddr=40380000 size=07fd4h ( 32724) load[0m
+[0;32mI (105) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=0e6dch ( 59100) map[0m
+[0;32mI (116) esp_image: segment 4: paddr=0002e704 vaddr=40387fd4 size=01de8h (  7656) load[0m
+[0;32mI (118) esp_image: segment 5: paddr=000304f4 vaddr=50000000 size=00024h (    36) load[0m
+[0;32mI (125) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (127) boot: Disabling RNG early entropy source...[0m
+[0;32mI (143) cpu_start: Unicore app[0m
+[0;32mI (151) cpu_start: GPIO 20 and 21 are used as console UART I/O pins[0m
+[0;32mI (152) cpu_start: Pro cpu start user code[0m
+[0;32mI (152) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (154) app_init: Application information:[0m
+[0;32mI (157) app_init: Project name:     usb_serial_jtag_echo[0m
+[0;32mI (162) app_init: App version:      1[0m
+[0;32mI (166) app_init: Compile time:     Mar 22 2026 07:20:57[0m
+[0;32mI (171) app_init: ELF file SHA256:  194904039...[0m
+[0;32mI (175) app_init: ESP-IDF:          v6.1-dev-2938-g12f36a021f[0m
+[0;32mI (181) efuse_init: Min chip rev:     v0.3[0m
+[0;32mI (185) efuse_init: Max chip rev:     v1.99 [0m
+[0;32mI (189) efuse_init: Chip rev:         v0.4[0m
+[0;32mI (192) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (199) heap_init: At 3FC8C460 len 00033BA0 (206 KiB): RAM[0m
+[0;32mI (204) heap_init: At 3FCC0000 len 0001C710 (113 KiB): Retention RAM[0m
+[0;32mI (210) heap_init: At 3FCDC710 len 00002950 (10 KiB): Retention RAM[0m
+[0;32mI (216) heap_init: At 50000024 len 00001FC4 (7 KiB): RTCRAM[0m
+[0;32mI (222) spi_flash: detected chip: generic[0m
+[0;32mI (225) spi_flash: flash io: dio[0m
+[0;33mW (228) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (240) sleep_gpio: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (246) sleep_gpio: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (253) main_task: Started on CPU0[0m
+[0;32mI (253) main_task: Calling app_main()[0m
+[0;32mI (253) usb_serial_jtag echo: USB_SERIAL_JTAG init done[0m
+[1;31mE (263) Tag: Hello world[0m
+[0;32mI (263) main_task: Returned from app_main()[0m
+[1;31mE (1283) Tag: Hello world[0m
+[1;31mE (2303) Tag: Hello world[0m
+[1;31mE (3323) Tag: Hello world[0m
+[1;31mE (4343) Tag: Hello world[0m
+[1;31mE (5363) Tag: Hello world[0m
+[1;31mE (6383) Tag: Hello world[0m
+[1;31mE (7403) Tag: Hello world[0m
+[1;31mE (8423) Tag: Hello world[0m
+[1;31mE (9443) Tag: Hello world[0m
+[1;31mE (10463) Tag: Hello world[0m
+[1;31mE (11483) Tag: Hello world[0m
+[1;31mE (12503) Tag: Hello world[0m
+[1;31mE (13523) Tag: Hello world[0m
+[1;31mE (14543) Tag: Hello world[0m
+[1;31mE (15563) Tag: Hello world[0m
+[1;31mE (16583) Tag: Hello world[0m
+[1;31mE (17603) Tag: Hello world[0m
+[1;31mE (18623) Tag: Hello world[0m
+[1;31mE (19643) Tag: Hello world[0m
+[1;31mE (20663) Tag: Hello world[0m
+[1;31mE (21683) Tag: Hello world[0m
+[1;31mE (22703) Tag: Hello world[0m
+[1;31mE (23723) Tag: Hello world[0m
+[1;31mE (24743) Tag: Hello world[0m
+[1;31mE (25763) Tag: Hello world[0m
+[1;31mE (26783) Tag: Hello world[0m
+[1;31mE (27803) Tag: Hello world[0m
+[1;31mE (28823) Tag: Hello world[0m
+[1;31mE (29843) Tag: Hello world[0m
+[1;31mE (30863) Tag: Hello world[0m
+[1;31mE (31883) Tag: Hello world[0m
+[1;31mE (32903) Tag: Hello world[0m
+[1;31mE (33923) Tag: Hello world[0m
+[1;31mE (34943) Tag: Hello world[0m
+[1;31mE (35963) Tag: Hello world[0m
+[1;31mE (36983) Tag: Hello world[0m
+[1;31mE (38003) Tag: Hello world[0m
+[1;31mE (39023) Tag: Hello world[0m
+[1;31mE (40043) Tag: Hello world[0m
+[1;31mE (41063) Tag: Hello world[0m
+[1;31mE (42083) Tag: Hello world[0m
+[1;31mE (43103) Tag: Hello world[0m
+[1;31mE (44123) Tag: Hello world[0m
+[1;31mE (45143) Tag: Hello world[0m
+[1;31mE (46163) Tag: Hello world[0m
+[1;31mE (47183) Tag: Hello world[0m
+[1;31mE (48203) Tag: Hello world[0m
+[1;31mE (49223) Tag: Hello world[0m
+[1;31mE (50243) Tag: Hello world[0m
+[1;31mE (51263) Tag: Hello world[0m
+[1;31mE (52283) Tag: Hello world[0m
+[1;31mE (53303) Tag: Hello world[0m
+[1;31mE (54323) Tag: Hello world[0m
+[1;31mE (55343) Tag: Hello world[0m
+[1;31mE (56363) Tag: Hello world[0m
+[1;31mE (57383) Tag: Hello world[0m
+[1;31mE (58403) Tag: Hello world[0m
+[1;31mE (59423) Tag: Hello world[0m
+[1;31mE (60443) Tag: Hello world[0m
+[1;31mE (61463) Tag: Hello world[0m
+[1;31mE (62483) Tag: Hello world[0m
+[1;31mE (63503) Tag: Hello world[0m
+[1;31mE (64523) Tag: Hello world[0m
+[1;31mE (65543) Tag: Hello world[0m
+[1;31mE (66563) Tag: Hello world[0m
+[1;31mE (67583) Tag: Hello world[0m
+[1;31mE (68603) Tag: Hello world[0m
+[1;31mE (69623) Tag: Hello world[0m
+[1;31mE (70643) Tag: Hello world[0m
+[1;31mE (71663) Tag: Hello world[0m
+[1;31mE (72683) Tag: Hello world[0m
+[1;31mE (73703) Tag: Hello world[0m
+[1;31mE (74723) Tag: Hello world[0m
+[1;31mE (75743) Tag: Hello world[0m
+[1;31mE (76763) Tag: Hello world[0m
+[1;31mE (77783) Tag: Hello world[0m
+[1;31mE (78803) Tag: Hello world[0m
+[1;31mE (79823) Tag: Hello world[0m
+[1;31mE (80843) Tag: Hello world[0m
+[1;31mE (81863) Tag: Hello world[0m
+[1;31mE (82883) Tag: Hello world[0m
+[1;31mE (83903) Tag: Hello world[0m
+[1;31mE (84923) Tag: Hello world[0m
+[1;31mE (85943) Tag: Hello world[0m
+[1;31mE (86963) Tag: Hello world[0m
+[1;31mE (87983) Tag: Hello world[0m
+[1;31mE (89003) Tag: Hello world[0m
+[1;31mE (90023) Tag: Hello world[0m
+[1;31mE (91043) Tag: Hello world[0m
+[1;31mE (92063) Tag: Hello world[0m
+[1;31mE (93083) Tag: Hello world[0m
+[1;31mE (94103) Tag: Hello world[0m
+[1;31mE (95123) Tag: Hello world[0m
+[1;31mE (96143) Tag: Hello world[0m
+[1;31mE (97163) Tag: Hello world[0m
+[1;31mE (98183) Tag: Hello world[0m
+[1;31mE (99203) Tag: Hello world[0m
+[1;31mE (100223) Tag: Hello world[0m
+[1;31mE (101243) Tag: Hello world[0m
+[1;31mE (102263) Tag: Hello world[0m
+[1;31mE (103283) Tag: Hello world[0m
+[1;31mE (104303) Tag: Hello world[0m
+[1;31mE (105323) Tag: Hello world[0m
+[1;31mE (106343) Tag: Hello world[0m
+[1;31mE (107363) Tag: Hello world[0m
+[1;31mE (108383) Tag: Hello world[0m
+[1;31mE (109403) Tag: Hello world[0m
+[1;31mE (110423) Tag: Hello world[0m
+[1;31mE (111443) Tag: Hello world[0m
+[1;31mE (112463) Tag: Hello world[0m
+[1;31mE (113483) Tag: Hello world[0m
+[1;31mE (114503) Tag: Hello world[0m
+[1;31mE (115523) Tag: Hello world[0m
+[1;31mE (116543) Tag: Hello world[0m
+[1;31mE (117563) Tag: Hello world[0m
+[1;31mE (118583) Tag: Hello world[0m
+[1;31mE (119603) Tag: Hello world[0m
+[1;31mE (120623) Tag: Hello world[0m
+[1;31mE (121643) Tag: Hello world[0m
+[1;31mE (122663) Tag: Hello world[0m
+[1;31mE (123683) Tag: Hello world[0m
+[1;31mE (124703) Tag: Hello world[0m
+[1;31mE (125723) Tag: Hello world[0m
+[1;31mE (126743) Tag: Hello world[0m
+[1;31mE (127763) Tag: Hello world[0m
+[1;31mE (128783) Tag: Hello world[0m
+[1;31mE (129803) Tag: Hello world[0m
+[1;31mE (130823) Tag: Hello world[0m
+[1;31mE (131843) Tag: Hello world[0m
+[1;31mE (132863) Tag: Hello world[0m
+[1;31mE (133883) Tag: Hello world[0m
+[1;31mE (134903) Tag: Hello world[0m
+[1;31mE (135923) Tag: Hello world[0m
+[1;31mE (136943) Tag: Hello world[0m
+[1;31mE (137963) Tag: Hello world[0m
+[1;31mE (138983) Tag: Hello world[0m
+[1;31mE (140003) Tag: Hello world[0m
+[1;31mE (141023) Tag: Hello world[0m
+[1;31mE (142043) Tag: Hello world[0m
+[1;31mE (143063) Tag: Hello world[0m
+[1;31mE (144083) Tag: Hello world[0m
+[1;31mE (145103) Tag: Hello world[0m
+[1;31mE (146123) Tag: Hello world[0m
+[1;31mE (147143) Tag: Hello world[0m
+[1;31mE (148163) Tag: Hello world[0m
+[1;31mE (149183) Tag: Hello world[0m
+[1;31mE (150203) Tag: Hello world[0m
+[1;31mE (151223) Tag: Hello world[0m
+[1;31mE (152243) Tag: Hello world[0m
+[1;31mE (153263) Tag: Hello world[0m
+[1;31mE (154283) Tag: Hello world[0m
+[1;31mE (155303) Tag: Hello world[0m
+[1;31mE (156323) Tag: Hello world[0m
+[1;31mE (157343) Tag: Hello world[0m
+[1;31mE (158363) Tag: Hello world[0m
+[1;31mE (159383) Tag: Hello world[0m
+[1;31mE (160403) Tag: Hello world[0m
+[1;31mE (161423) Tag: Hello world[0m
+[1;31mE (162443) Tag: Hello world[0m
+[1;31mE (163463) Tag: Hello world[0m
+[1;31mE (164483) Tag: Hello world[0m
+[1;31mE (165503) Tag: Hello world[0m
+[1;31mE (166523) Tag: Hello world[0m
+[1;31mE (167543) Tag: Hello world[0m
+[1;31mE (168563) Tag: Hello world[0m
+[1;31mE (169583) Tag: Hello world[0m
+[1;31mE (170603) Tag: Hello world[0m
+[1;31mE (171623) Tag: Hello world[0m
+[1;31mE (172643) Tag: Hello world[0m
+[1;31mE (173663) Tag: Hello world[0m
+[1;31mE (174683) Tag: Hello world[0m
+[1;31mE (175703) Tag: Hello world[0m
+[1;31mE (176723) Tag: Hello world[0m
+[1;31mE (177743) Tag: Hello world[0m
+[1;31mE (178763) Tag: Hello world[0m
+[1;31mE (179783) Tag: Hello world[0m
+[1;31mE (180803) Tag: Hello world[0m
+[1;31mE (181823) Tag: Hello world[0m
+[1;31mE (182843) Tag: Hello world[0m
+[1;31mE (183863) Tag: Hello world[0m
+[1;31mE (184883) Tag: Hello world[0m
+[1;31mE (185903) Tag: Hello world[0m
+[1;31mE (186923) Tag: Hello world[0m
+[1;31mE (187943) Tag: Hello world[0m
+[1;31mE (188963) Tag: Hello world[0m
+[1;31mE (189983) Tag: Hello world[0m
+[1;31mE (191003) Tag: Hello world[0m
+[1;31mE (192023) Tag: Hello world[0m
+[1;31mE (193043) Tag: Hello world[0m
+[1;31mE (194063) Tag: Hello world[0m
+[1;31mE (195083) Tag: Hello world[0m
+[1;31mE (196103) Tag: Hello world[0m
+[1;31mE (197123) Tag: Hello world[0m
+[1;31mE (198143) Tag: Hello world[0m
+[1;31mE (199163) Tag: Hello world[0m
+[1;31mE (200183) Tag: Hello world[0m
+[1;31mE (201203) Tag: Hello world[0m
+[1;31mE (202223) Tag: Hello world[0m
+[1;31mE (203243) Tag: Hello world[0m
+[1;31mE (204263) Tag: Hello world[0m
+[1;31mE (205283) Tag: Hello world[0m
+[1;31mE (206303) Tag: Hello world[0m
+[1;31mE (207323) Tag: Hello world[0m
+[1;31mE (208343) Tag: Hello world[0m
+[1;31mE (209363) Tag: Hello world[0m
+[1;31mE (210383) Tag: Hello world[0m
+[1;31mE (211403) Tag: Hello world[0m
+[1;31mE (212423) Tag: Hello world[0m
+[1;31mE (213443) Tag: Hello world[0m
+[1;31mE (214463) Tag: Hello world[0m
+[1;31mE (215483) Tag: Hello world[0m
+[1;31mE (216503) Tag: Hello world[0m
+[1;31mE (217523) Tag: Hello world[0m
+[1;31mE (218543) Tag: Hello world[0m
+[1;31mE (219563) Tag: Hello world[0m
+[1;31mE (220583) Tag: Hello world[0m
+[1;31mE (221603) Tag: Hello world[0m
+[1;31mE (222623) Tag: Hello world[0m
+[1;31mE (223643) Tag: Hello world[0m
+[1;31mE (224663) Tag: Hello world[0m
+[1;31mE (225683) Tag: Hello world[0m
+[1;31mE (226703) Tag: Hello world[0m
+[1;31mE (227723) Tag: Hello world[0m
+[1;31mE (228743) Tag: Hello world[0m
+[1;31mE (229763) Tag: Hello world[0m
+[1;31mE (230783) Tag: Hello world[0m
+[1;31mE (231803) Tag: Hello world[0m
+[1;31mE (232823) Tag: Hello world[0m
+[1;31mE (233843) Tag: Hello world[0m
+[1;31mE (234863) Tag: Hello world[0m
+[1;31mE (235883) Tag: Hello world[0m
+[1;31mE (236903) Tag: Hello world[0m
+[1;31mE (237923) Tag: Hello world[0m
+[1;31mE (238943) Tag: Hello world[0m
+[1;31mE (239963) Tag: Hello world[0m
+[1;31mE (240983) Tag: Hello world[0m
+[1;31mE (242003) Tag: Hello world[0m
+[1;31mE (243023) Tag: Hello world[0m
+[1;31mE (244043) Tag: Hello world[0m
+[1;31mE (245063) Tag: Hello world[0m
+[1;31mE (246083) Tag: Hello world[0m
+[1;31mE (247103) Tag: Hello world[0m
+[1;31mE (248123) Tag: Hello world[0m
+[1;31mE (249143) Tag: Hello world[0m
+[1;31mE (250163) Tag: Hello world[0m
+[1;31mE (251183) Tag: Hello world[0m
+[1;31mE (252203) Tag: Hello world[0m
+[1;31mE (253223) Tag: Hello world[0m
+[1;31mE (254243) Tag: Hello world[0m
+[1;31mE (255263) Tag: Hello world[0m
+[1;31mE (256283) Tag: Hello world[0m
+[1;31mE (257303) Tag: Hello world[0m
+[1;31mE (258323) Tag: Hello world[0m
+[1;31mE (259343) Tag: Hello world[0m
+[1;31mE (260363) Tag: Hello world[0m
+[1;31mE (261383) Tag: Hello world[0m
+[1;31mE (262403) Tag: Hello world[0m
+[1;31mE (263423) Tag: Hello world[0m
+[1;31mE (264443) Tag: Hello world[0m
+[1;31mE (265463) Tag: Hello world[0m
+[1;31mE (266483) Tag: Hello world[0m
+[1;31mE (267503) Tag: Hello world[0m
+[1;31mE (268523) Tag: Hello world[0m
+[1;31mE (269543) Tag: Hello world[0m
+[1;31mE (270563) Tag: Hello world[0m
+[1;31mE (271583) Tag: Hello world[0m
+[1;31mE (272603) Tag: Hello world[0m
+[1;31mE (273623) Tag: Hello world[0m
+[1;31mE (274643) Tag: Hello world[0m
+[1;31mE (275663) Tag: Hello world[0m
+âI (276663) Recv str: : 0x3fc901c4   08 c3 a2                                          |...|
+[1;31mE (276663) Tag: Hello world[0m
+[1;31mE (277683) Tag: Hello world[0m
+saoI (278683) Recv str: : 0x3fc901c4   73 61 6f                                          |sao|
+[1;31mE (278683) Tag: Hello world[0m
+[1;31mE (279703) Tag: Hello world[0m
+cung duocwI (280703) Recv str: : 0x3fc901c4   63 75 6e 67 20 64 75 6f  63 77                    |cung duocw|
+[1;31mE (280703) Tag: Hello world[0m
+[1;31mE (281723) Tag: Hello world[0m
+asI (282723) Recv str: : 0x3fc901c4   61 73                                             |as|
+[1;31mE (282723) Tag: Hello world[0m
+I (283723) Recv str: : 0x3fc901c4   0d                                                |.|
+[1;31mE (283723) Tag: Hello world[0m
+duuI (284723) Recv str: : 0x3fc901c4   64 75 75                                          |duu|
+[1;31mE (284723) Tag: Hello world[0m
+ma m nI (285723) Recv str: : 0x3fc901c4   6d 61 20 6d 20 6e                                 |ma m n|
+[1;31mE (285723) Tag: Hello world[0m
+ha[0;32mI (286723) Recv str: : 0x3fc901c4   68 61 0d                                          |ha.|[0m
+[1;31mE (286723) Tag: Hello world[0m
+[1;31mE (287743) Tag: Hello world[0m
+[1;31mE (288763) Tag: Hello world[0m
+[1;31mE (289783) Tag: Hello world[0m
+[1;31mE (290803) Tag: Hello world[0m
+[1;31mE (291823) Tag: Hello world[0m
+[1;31mE (292843) Tag: Hello world[0m
+[1;31mE (293863) Tag: Hello world[0m
+[1;31mE (294883) Tag: Hello world[0m
+[1;31mE (295903) Tag: Hello world[0m
+[1;31mE (296923) Tag: Hello world[0m
+[1;31mE (297943) Tag: Hello world[0m
+[1;31mE (298963) Tag: Hello world[0m
+[1;31mE (299983) Tag: Hello world[0m
+[1;31mE (301003) Tag: Hello world[0m
+[1;31mE (302023) Tag: Hello world[0m
+[1;31mE (303043) Tag: Hello world[0m
+[1;31mE (304063) Tag: Hello world[0m
+[1;31mE (305083) Tag: Hello world[0m
+[1;31mE (306103) Tag: Hello world[0m
+[1;31mE (307123) Tag: Hello world[0m
+[1;31mE (308143) Tag: Hello world[0m
+[1;31mE (309163) Tag: Hello world[0m
+[1;31mE (310183) Tag: Hello world[0m
+[1;31mE (311203) Tag: Hello world[0m
+[1;31mE (312223) Tag: Hello world[0m
+[1;31mE (313243) Tag: Hello world[0m
+[1;31mE (314263) Tag: Hello world[0m
+[1;31mE (315283) Tag: Hello world[0m
+[1;31mE (316303) Tag: Hello world[0m
+[1;31mE (317323) Tag: Hello world[0m
+[1;31mE (318343) Tag: Hello world[0m
+[1;31mE (319363) Tag: Hello world[0m
+[1;31mE (320383) Tag: Hello world[0m
+[1;31mE (321403) Tag: Hello world[0m
+[1;31mE (322423) Tag: Hello world[0m
+[1;31mE (323443) Tag: Hello world[0m
+[1;31mE (324463) Tag: Hello world[0m
+[1;31mE (325483) Tag: Hello world[0m
+[1;31mE (326503) Tag: Hello world[0m
+[1;31mE (327523) Tag: Hello world[0m
+[1;31mE (328543) Tag: Hello world[0m
+[1;31mE (329563) Tag: Hello world[0m
+[1;31mE (330583) Tag: Hello world[0m
+[1;31mE (331603) Tag: Hello world[0m
+[1;31mE (332623) Tag: Hello world[0m
+[1;31mE (333643) Tag: Hello world[0m
+[1;31mE (334663) Tag: Hello world[0m
+[1;31mE (335683) Tag: Hello world[0m
+[1;31mE (336703) Tag: Hello world[0m
+[1;31mE (337723) Tag: Hello world[0m
+[1;31mE (338743) Tag: Hello world[0m
+[1;31mE (339763) Tag: Hello world[0m
+[1;31mE (340783) Tag: Hello world[0m
+[1;31mE (341803) Tag: Hello world[0m
+[1;31mE (342823) Tag: Hello world[0m
+[1;31mE (343843) Tag: Hello world[0m
+[1;31mE (344863) Tag: Hello world[0m
+[1;31mE (345883) Tag: Hello world[0m
+[1;31mE (346903) Tag: Hello world[0m
+[1;31mE (347923) Tag: Hello world[0m
+[1;31mE (348943) Tag: Hello world[0m
+[1;31mE (349963) Tag: Hello world[0m
+[1;31mE (350983) Tag: Hello world[0m
+[1;31mE (352003) Tag: Hello world[0m
+[1;31mE (353023) Tag: Hello world[0m
+[1;31mE (354043) Tag: Hello world[0m
+[1;31mE (355063) Tag: Hello world[0m
+[1;31mE (356083) Tag: Hello world[0m
+[1;31mE (357103) Tag: Hello world[0m
+[1;31mE (358123) Tag: Hello world[0m
+[1;31mE (359143) Tag: Hello world[0m
+[1;31mE (360163) Tag: Hello world[0m
+[1;31mE (361183) Tag: Hello world[0m
+[1;31mE (362203) Tag: Hello world[0m
+[1;31mE (363223) Tag: Hello world[0m
+[1;31mE (364243) Tag: Hello world[0m
+[1;31mE (365263) Tag: Hello world[0m
+[1;31mE (366283) Tag: Hello world[0m
+[1;31mE (367303) Tag: Hello world[0m
+[1;31mE (368323) Tag: Hello world[0m
+[1;31mE (369343) Tag: Hello world[0m
+[1;31mE (370363) Tag: Hello world[0m
+[1;31mE (371383) Tag: Hello world[0m
+[1;31mE (372403) Tag: Hello world[0m
+[1;31mE (373423) Tag: Hello world[0m
+[1;31mE (374443) Tag: Hello world[0m
+[1;31mE (375463) Tag: Hello world[0m
+[1;31mE (376483) Tag: Hello world[0m
+[1;31mE (377503) Tag: Hello world[0m
+[1;31mE (378523) Tag: Hello world[0m
+[1;31mE (379543) Tag: Hello world[0m
+[1;31mE (380563) Tag: Hello world[0m
+[1;31mE (381583) Tag: Hello world[0m
+[1;31mE (382603) Tag: Hello world[0m
+[1;31mE (383623) Tag: Hello world[0m
+[1;31mE (384643) Tag: Hello world[0m
+[1;31mE (385663) Tag: Hello world[0m
+[1;31mE (386683) Tag: Hello world[0m
+[1;31mE (387703) Tag: Hello world[0m
+[1;31mE (388723) Tag: Hello world[0m
+[1;31mE (389743) Tag: Hello world[0m
+[1;31mE (390763) Tag: Hello world[0m
+[1;31mE (391783) Tag: Hello world[0m
+[1;31mE (392803) Tag: Hello world[0m
+[1;31mE (393823) Tag: Hello world[0m
+[1;31mE (394843) Tag: Hello world[0m
+[1;31mE (395863) Tag: Hello world[0m
+[1;31mE (396883) Tag: Hello world[0m
+[1;31mE (397903) Tag: Hello world[0m
+[1;31mE (398923) Tag: Hello world[0m
+[1;31mE (399943) Tag: Hello world[0m
+[1;31mE (400963) Tag: Hello world[0m
+[1;31mE (401983) Tag: Hello world[0m
+[1;31mE (403003) Tag: Hello world[0m
+[1;31mE (404023) Tag: Hello world[0m
+[1;31mE (405043) Tag: Hello world[0m
+[1;31mE (406063) Tag: Hello world[0m
+[1;31mE (407083) Tag: Hello world[0m
+[1;31mE (408103) Tag: Hello world[0m
+[1;31mE (409123) Tag: Hello world[0m
+[1;31mE (410143) Tag: Hello world[0m
+[1;31mE (411163) Tag: Hello world[0m
+[1;31mE (412183) Tag: Hello world[0m
+[1;31mE (413203) Tag: Hello world[0m
+[1;31mE (414223) Tag: Hello world[0m
+[1;31mE (415243) Tag: Hello world[0m
+[1;31mE (416263) Tag: Hello world[0m
+[1;31mE (417283) Tag: Hello world[0m
+[1;31mE (418303) Tag: Hello world[0m
+[1;31mE (419323) Tag: Hello world[0m
+[1;31mE (420343) Tag: Hello world[0m
+[1;31mE (421363) Tag: Hello world[0m
+[1;31mE (422383) Tag: Hello world[0m
+[1;31mE (423403) Tag: Hello world[0m
+[1;31mE (424423) Tag: Hello world[0m
+[1;31mE (425443) Tag: Hello world[0m
+[1;31mE (426463) Tag: Hello world[0m
+[1;31mE (427483) Tag: Hello world[0m
+[1;31mE (428503) Tag: Hello world[0m
+[1;31mE (429523) Tag: Hello world[0m
+[1;31mE (430543) Tag: Hello world[0m
+[1;31mE (431563) Tag: Hello world[0m
+[1;31mE (432583) Tag: Hello world[0m
+[1;31mE (433603) Tag: Hello world[0m
+[1;31mE (434623) Tag: Hello world[0m
+[1;31mE (435643) Tag: Hello world[0m
+[1;31mE (436663) Tag: Hello world[0m
+[1;31mE (437683) Tag: Hello world[0m
+[1;31mE (438703) Tag: Hello world[0m
+[1;31mE (439723) Tag: Hello world[0m
+[1;31mE (440743) Tag: Hello world[0m
+[1;31mE (441763) Tag: Hello world[0m
+[1;31mE (442783) Tag: Hello world[0m
+[1;31mE (443803) Tag: Hello world[0m
+[1;31mE (444823) Tag: Hello world[0m
+[1;31mE (445843) Tag: Hello world[0m
+[1;31mE (446863) Tag: Hello world[0m
+[1;31mE (447883) Tag: Hello world[0m
+[1;31mE (448903) Tag: Hello world[0m
+[1;31mE (449923) Tag: Hello world[0m
+[1;31mE (450943) Tag: Hello world[0m
+[1;31mE (451963) Tag: Hello world[0m
+[1;31mE (452983) Tag: Hello world[0m
+[1;31mE (454003) Tag: Hello world[0m
+[1;31mE (455023) Tag: Hello world[0m
+[1;31mE (456043) Tag: Hello world[0m
+[1;31mE (457063) Tag: Hello world[0m
+[1;31mE (458083) Tag: Hello world[0m
+[1;31mE (459103) Tag: Hello world[0m
+[1;31mE (460123) Tag: Hello world[0m
+[1;31mE (461143) Tag: Hello world[0m
+[1;31mE (462163) Tag: Hello world[0m
+[1;31mE (463183) Tag: Hello world[0m
+[1;31mE (464203) Tag: Hello world[0m
+[1;31mE (465223) Tag: Hello world[0m
+[1;31mE (466243) Tag: Hello world[0m
+[1;31mE (467263) Tag: Hello world[0m
+[1;31mE (468283) Tag: Hello world[0m
+[1;31mE (469303) Tag: Hello world[0m
+[1;31mE (470323) Tag: Hello world[0m
+[1;31mE (471343) Tag: Hello world[0m
+[1;31mE (472363) Tag: Hello world[0m
+[1;31mE (473383) Tag: Hello world[0m
+[1;31mE (474403) Tag: Hello world[0m
+[1;31mE (475423) Tag: Hello world[0m
+[1;31mE (476443) Tag: Hello world[0m
+[1;31mE (477463) Tag: Hello world[0m
+[1;31mE (478483) Tag: Hello world[0m
+[1;31mE (479503) Tag: Hello world[0m
+[1;31mE (480523) Tag: Hello world[0m
+[1;31mE (481543) Tag: Hello world[0m
+[1;31mE (482563) Tag: Hello world[0m
+[1;31mE (483583) Tag: Hello world[0m
+[1;31mE (484603) Tag: Hello world[0m
+[1;31mE (485623) Tag: Hello world[0m
+[1;31mE (486643) Tag: Hello world[0m
+[1;31mE (487663) Tag: Hello world[0m
+[1;31mE (488683) Tag: Hello world[0m
+[1;31mE (489703) Tag: Hello world[0m
+[1;31mE (490723) Tag: Hello world[0m
+[1;31mE (491743) Tag: Hello world[0m
+[1;31mE (492763) Tag: Hello world[0m
+[1;31mE (493783) Tag: Hello world[0m
+[1;31mE (494803) Tag: Hello world[0m
+[1;31mE (495823) Tag: Hello world[0m
+[1;31mE (496843) Tag: Hello world[0m
+[1;31mE (497863) Tag: Hello world[0m
+[1;31mE (498883) Tag: Hello world[0m

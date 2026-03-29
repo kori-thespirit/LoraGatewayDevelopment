@@ -1,0 +1,20 @@
+Command: make -j 6 all
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:18:7: error: expected ';' before 'enum'
+   18 | typdef enum { IDLE, START, RUN, STOP, Error } State_Test;
+      |       ^~~~~
+      |       ;
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:19:1: error: unknown type name 'state_test'
+   19 | state_test para_cmd(char *cmd) {
+      | ^~~~~~~~~~
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c: In function 'para_cmd':
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:29:12: error: 'wrong_Cmd' undeclared (first use in this function)
+   29 |     return wrong_Cmd;
+      |            ^~~~~~~~~
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:29:12: note: each undeclared identifier is reported only once for each function it appears in
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c: In function 'echo_task':
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:79:12: error: 'Wrong_Cmd' undeclared (first use in this function)
+   79 |       case Wrong_Cmd:
+      |            ^~~~~~~~~
+make[2]: *** [esp-idf/main/CMakeFiles/__idf_main.dir/build.make:79: esp-idf/main/CMakeFiles/__idf_main.dir/usb_serial_echo_main.c.obj] Error 1
+make[1]: *** [CMakeFiles/Makefile2:4813: esp-idf/main/CMakeFiles/__idf_main.dir/all] Error 2
+make: *** [Makefile:136: all] Error 2

@@ -1,0 +1,9 @@
+Command: make -j 6 all
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c: In function 'echo_task':
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:65:7: error: implicit declaration of function 'usb_serial_jitag_write_bytes'; did you mean 'usb_serial_jtag_write_bytes'? [-Wimplicit-function-declaration]
+   65 |       usb_serial_jitag_write_bytes(buff, strlen(buff), 20 / portTICK_PERIOD_MS);
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |       usb_serial_jtag_write_bytes
+make[2]: *** [esp-idf/main/CMakeFiles/__idf_main.dir/build.make:79: esp-idf/main/CMakeFiles/__idf_main.dir/usb_serial_echo_main.c.obj] Error 1
+make[1]: *** [CMakeFiles/Makefile2:4813: esp-idf/main/CMakeFiles/__idf_main.dir/all] Error 2
+make: *** [Makefile:136: all] Error 2

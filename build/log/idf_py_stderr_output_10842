@@ -1,0 +1,29 @@
+Command: make -j 6 all
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:18:7: error: expected ';' before 'enum'
+   18 | typdef enum { IDE, START, RUN, STOP, NULL } State_Test;
+      |       ^~~~~
+      |       ;
+In file included from /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/string.h:47,
+                 from /home/tathuan/esp-idf/components/log/include/esp_log_args.h:10,
+                 from /home/tathuan/esp-idf/components/log/include/esp_log.h:21,
+                 from /home/tathuan/esp-idf/components/esp_common/include/esp_check.h:9,
+                 from /home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:8:
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:18:38: error: expected identifier before '(' token
+   18 | typdef enum { IDE, START, RUN, STOP, NULL } State_Test;
+      |                                      ^~~~
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:19:1: error: unknown type name 'state_test'
+   19 | state_test para_cmd(char *cmd) {
+      | ^~~~~~~~~~
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c: In function 'para_cmd':
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:29:12: error: returning 'void *' from a function with return type 'int' makes integer from pointer without a cast [-Wint-conversion]
+   29 |     return NULL;
+      |            ^~~~
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c: In function 'echo_task':
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:66:12: error: 'IDLE' undeclared (first use in this function); did you mean 'IDE'?
+   66 |       case IDLE:
+      |            ^~~~
+      |            IDE
+/home/tathuan/Project_B/usb_serial_jtag_echo/main/usb_serial_echo_main.c:66:12: note: each undeclared identifier is reported only once for each function it appears in
+make[2]: *** [esp-idf/main/CMakeFiles/__idf_main.dir/build.make:79: esp-idf/main/CMakeFiles/__idf_main.dir/usb_serial_echo_main.c.obj] Error 1
+make[1]: *** [CMakeFiles/Makefile2:4813: esp-idf/main/CMakeFiles/__idf_main.dir/all] Error 2
+make: *** [Makefile:136: all] Error 2

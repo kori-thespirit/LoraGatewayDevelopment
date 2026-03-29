@@ -1,0 +1,28 @@
+esp-idf/esp_hal_dma/CMakeFiles/__idf_esp_hal_dma.dir/gdma_hal_top.c.obj: \
+ /home/tathuan/esp-idf/components/esp_hal_dma/gdma_hal_top.c \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/stdlib.h \
+ /home/tathuan/esp-idf/components/esp_libc/platform_include/sys/cdefs.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/sys/cdefs.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/sys/config.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/machine/ieeefp.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/sys/features.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/picolibc.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/lib/gcc/riscv32-esp-elf/15.2.0/include/float.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/machine/_default_types.h \
+ /home/tathuan/Project_B/usb_serial_jtag_echo/build/bootloader/config/sdkconfig.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/stdint.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/lib/gcc/riscv32-esp-elf/15.2.0/include/stddef.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/sys/_intsup.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/sys/_stdint.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/machine/stdlib.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/alloca.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/sys/_locale.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/picolibc/include/sys/_wait.h \
+ /home/tathuan/esp-idf/components/hal/platform_port/include/hal/assert.h \
+ /home/tathuan/esp-idf/components/esp_hal_dma/include/hal/gdma_hal.h \
+ /home/tathuan/.espressif/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/lib/gcc/riscv32-esp-elf/15.2.0/include/stdbool.h \
+ /home/tathuan/esp-idf/components/soc/esp32c3/include/soc/soc_caps.h \
+ /home/tathuan/esp-idf/components/soc/include/soc/soc_caps_eval.h \
+ /home/tathuan/esp-idf/components/esp_hal_dma/include/hal/gdma_types.h \
+ /home/tathuan/esp-idf/components/esp_hal_dma/esp32c3/include/hal/gdma_channel.h \
+ /home/tathuan/esp-idf/components/soc/esp32c3/register/soc/gdma_struct.h
