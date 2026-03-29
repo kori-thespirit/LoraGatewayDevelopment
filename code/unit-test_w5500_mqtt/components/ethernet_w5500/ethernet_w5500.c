@@ -3,15 +3,19 @@
 #include "esp_err.h"
 #include "esp_eth_netif_glue.h"
 #include "esp_event.h"
+#include "esp_log.h"
 #include "esp_netif.h"
 #include "ethernet_init.h"
-#include "lwip/inet.h"
-#include "lwip/netdb.h"
-#include "lwip/sockets.h"
-#include "ping/ping_sock.h"
+#include "mqtt_client.h"
 
 #include <stddef.h>
 #include <stdint.h>
+extern const uint8_t
+    mosquitto_org_crt_start[] asm("_binary_mosquitto_org_crt_start");
+extern const uint8_t
+    mosquitto_org_crt_end[] asm("_binary_mosquitto_org_crt_end");
+
+static char TAG[] = "MQTT";
 
 void w5500_init() {
   uint8_t eth_port_cnt = 0;
@@ -62,78 +66,94 @@ void w5500_init() {
   }
 }
 
-static void test_on_ping_success(esp_ping_handle_t hdl, void *args) {
-  // optionally, get callback arguments
-  // const char* str = (const char*) args;
-  // printf("%s\r\n", str); // "foo"
-  uint8_t ttl;
-  uint16_t seqno;
-  uint32_t elapsed_time, recv_len;
-  ip_addr_t target_addr;
-  esp_ping_get_profile(hdl, ESP_PING_PROF_SEQNO, &seqno, sizeof(seqno));
-  esp_ping_get_profile(hdl, ESP_PING_PROF_TTL, &ttl, sizeof(ttl));
-  esp_ping_get_profile(hdl, ESP_PING_PROF_IPADDR, &target_addr,
-                       sizeof(target_addr));
-  esp_ping_get_profile(hdl, ESP_PING_PROF_SIZE, &recv_len, sizeof(recv_len));
-  esp_ping_get_profile(hdl, ESP_PING_PROF_TIMEGAP, &elapsed_time,
-                       sizeof(elapsed_time));
-  printf("%ld bytes from %s icmp_seq=%d ttl=%d time=%ld ms\n", recv_len,
-         inet_ntoa(target_addr.u_addr.ip4), seqno, ttl, elapsed_time);
+/*
+ * @brief Event handler registered to receive MQTT events
+ *
+ *  This function is called by the MQTT client event loop.
+ *
+ * @param handler_args user data registered to the event.
+ * @param base Event base for the handler(always MQTT Base in this example).
+ * @param event_id The id for the received event.
+ * @param event_data The data for the event, esp_mqtt_event_handle_t.
+ */
+static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
+                               int32_t event_id, void *event_data) {
+  ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%" PRIi32,
+           base, event_id);
+  esp_mqtt_event_handle_t event = event_data;
+  esp_mqtt_client_handle_t client = event->client;
+  int msg_id;
+  switch ((esp_mqtt_event_id_t)event_id) {
+  case MQTT_EVENT_CONNECTED:
+    ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+    msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
+    ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+
+    msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
+    ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+
+    msg_id = esp_mqtt_client_unsubscribe(client, "/topic/qos1");
+    ESP_LOGI(TAG, "sent unsubscribe successful, msg_id=%d", msg_id);
+    break;
+  case MQTT_EVENT_DISCONNECTED:
+    ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
+    break;
+
+  case MQTT_EVENT_SUBSCRIBED:
+    ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d, return code=0x%02x ",
+             event->msg_id, (uint8_t)*event->data);
+    msg_id = esp_mqtt_client_publish(client, "/topic/qos0", "data", 0, 0, 0);
+    ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+    break;
+  case MQTT_EVENT_UNSUBSCRIBED:
+    ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
+    break;
+  case MQTT_EVENT_PUBLISHED:
+    ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
+    break;
+  case MQTT_EVENT_DATA:
+    ESP_LOGI(TAG, "MQTT_EVENT_DATA");
+    printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
+    printf("DATA=%.*s\r\n", event->data_len, event->data);
+    break;
+  case MQTT_EVENT_ERROR:
+    ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
+    if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT) {
+      ESP_LOGI(TAG, "Last error code reported from esp-tls: 0x%x",
+               event->error_handle->esp_tls_last_esp_err);
+      ESP_LOGI(TAG, "Last tls stack error number: 0x%x",
+               event->error_handle->esp_tls_stack_err);
+      ESP_LOGI(TAG, "Last captured errno : %d (%s)",
+               event->error_handle->esp_transport_sock_errno,
+               strerror(event->error_handle->esp_transport_sock_errno));
+    } else if (event->error_handle->error_type ==
+               MQTT_ERROR_TYPE_CONNECTION_REFUSED) {
+      ESP_LOGI(TAG, "Connection refused error: 0x%x",
+               event->error_handle->connect_return_code);
+    } else {
+      ESP_LOGW(TAG, "Unknown error type: 0x%x",
+               event->error_handle->error_type);
+    }
+    break;
+  default:
+    ESP_LOGI(TAG, "Other event id:%d", event->event_id);
+    break;
+  }
 }
 
-static void test_on_ping_timeout(esp_ping_handle_t hdl, void *args) {
-  uint16_t seqno;
-  ip_addr_t target_addr;
-  esp_ping_get_profile(hdl, ESP_PING_PROF_SEQNO, &seqno, sizeof(seqno));
-  esp_ping_get_profile(hdl, ESP_PING_PROF_IPADDR, &target_addr,
-                       sizeof(target_addr));
-  printf("From %s icmp_seq=%d timeout\n", inet_ntoa(target_addr.u_addr.ip4),
-         seqno);
-}
+esp_err_t mqtt_app_start(void) {
+  const esp_mqtt_client_config_t mqtt_cfg = {
+      .broker = {.address.uri = "mqtts://test.mosquitto.org",
+                 .verification.certificate =
+                     (const char *)mosquitto_org_crt_start},
+  };
 
-static void test_on_ping_end(esp_ping_handle_t hdl, void *args) {
-  uint32_t transmitted;
-  uint32_t received;
-  uint32_t total_time_ms;
-
-  esp_ping_get_profile(hdl, ESP_PING_PROF_REQUEST, &transmitted,
-                       sizeof(transmitted));
-  esp_ping_get_profile(hdl, ESP_PING_PROF_REPLY, &received, sizeof(received));
-  esp_ping_get_profile(hdl, ESP_PING_PROF_DURATION, &total_time_ms,
-                       sizeof(total_time_ms));
-  printf("%ld packets transmitted, %lu received, time %lums\n", transmitted,
-         received, total_time_ms);
-}
-
-int initialize_ping() {
-  /* convert URL to IP address */
-  ip_addr_t target_addr;
-  struct addrinfo hint;
-  struct addrinfo *res = NULL;
-  memset(&hint, 0, sizeof(hint));
-  memset(&target_addr, 0, sizeof(target_addr));
-  getaddrinfo("www.google.com", NULL, &hint, &res);
-  struct in_addr addr4 = ((struct sockaddr_in *)(res->ai_addr))->sin_addr;
-  inet_addr_to_ip4addr(ip_2_ip4(&target_addr), &addr4);
-  freeaddrinfo(res);
-
-  esp_ping_config_t ping_config = ESP_PING_DEFAULT_CONFIG();
-  ping_config.target_addr = target_addr;       // target IP address
-  ping_config.count = ESP_PING_COUNT_INFINITE; // ping in infinite mode,
-                                               // esp_ping_stop can stop it
-
-  /* set callback functions */
-  esp_ping_callbacks_t cbs;
-  cbs.on_ping_success = test_on_ping_success;
-  cbs.on_ping_timeout = test_on_ping_timeout;
-  cbs.on_ping_end = test_on_ping_end;
-  cbs.cb_args =
-      "foo"; // arguments that feeds to all callback functions, can be NULL
-  // cbs.cb_args = eth_event_group;
-
-  esp_ping_handle_t ping;
-  esp_ping_new_session(&ping_config, &cbs, &ping);
-  ESP_RETURN_ON_FALSE(esp_ping_start(ping) == ESP_OK, -1, "ping_eth",
-                      "esp_ping_start() failed");
-  return 0;
+  ESP_LOGI(TAG, "[APP] Free memory: %" PRIu32 " bytes",
+           esp_get_free_heap_size());
+  esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
+  /* The last argument may be used to pass data to the event handler, in this
+   * example mqtt_event_handler */
+  esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler,
+                                 NULL);
+  return esp_mqtt_client_start(client);
 }
