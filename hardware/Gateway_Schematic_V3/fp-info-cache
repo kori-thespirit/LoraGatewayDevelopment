@@ -1,4 +1,4 @@
-26400502136129508
+26402276712610236
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -59380,6 +59380,13 @@ CP_Radial_D19.0mm_P5.00mm
 0
 2
 2
+IVS_NEW_FOOTPRINT
+CUI_NSIM-1-A
+
+
+0
+11
+11
 IVS_NEW_FOOTPRINT
 C_0402_1005Metric
 Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: http://www.tortai-tech.com/upload/download/2011102023233369053.pdf), generated with kicad-footprint-generator
