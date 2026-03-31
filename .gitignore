@@ -1,8 +1,4 @@
-hardware/Schematic_Gateway/Schematic/Schematic-backups
-hardware/LIB_GATEWAY/KicadLibrary-main
-hardware/Schematic_V2_backup/Schematic_V2_backup-backups
-hardware/Schematic_V2_backup/DATN_SCHEMATIC-backups
-hardware/Gateway_Schematic_V3/Gateway_Schematic_V3-backups
-hardware/Gateway_Schematic_V3/*.lck
-hardware/GATEWAY_HARDWARE_V1/GATEWAY_HARDWARE_V1-backups
-
+hardware/*
+!hardware/Gateway_Schematic_V3/
+hardware/Gateway_Schematic_V3/*
+!hardware/Gateway_Schematic_V3/*.kicad_*
