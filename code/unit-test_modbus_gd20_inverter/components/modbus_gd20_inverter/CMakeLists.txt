@@ -1,6 +1,6 @@
-idf_component_register(SRCS "ethernet_w5500.c"
+idf_component_register(SRCS "gd20_modbus_driver.c"
                        INCLUDE_DIRS "include"
-                       PRIV_REQUIRES esp_eth esp_netif espressif__ethernet_init mqtt
+                       PRIV_REQUIRES espressif__esp-modbus
 )
 
 
