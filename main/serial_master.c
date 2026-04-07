@@ -23,7 +23,7 @@
 
 // Thông số Modbus của biến tần
 #define SLAVE_ID             0x01
-#define FUNC_WRITE_REG    0x06
+#define FUNC_WRITE_REG       0x06
 #define REG_CONTROL_CMD      0x2000  // Thanh ghi lệnh chạy/dừng
 #define REG_SET_FREQ         0x2001  // Thanh ghi cài tần số
 
