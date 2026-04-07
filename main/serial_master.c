@@ -1,3 +1,5 @@
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -7,25 +9,27 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 
-#define TAG "INVT_MASTER"
+static char TAG[] = "GD20";
 
 // Định nghĩa cứng các chân theo sơ đồ của bạn
-#define TXD_PIN                (17)
-#define RXD_PIN                (14)
-#define RTS_DE_PIN             (16) // Chân DE
-#define RE_PIN                 (15) // Chân RE riêng
+#define TXD_PIN                (4)
+#define RXD_PIN                (3)
+#define RTS_DE_PIN             (UART_PIN_NO_CHANGE) // Chân DE
+#define RE_PIN                 (UART_PIN_NO_CHANGE) // Chân RE riêng
 #define CTS_PIN                (UART_PIN_NO_CHANGE)
-#define RS485_EN_PIN           12
+#define RS485_EN_PIN           5
 
-#define UART_PORT              (UART_NUM_2)
+#define UART_PORT              (UART_NUM_1)
 #define BAUD_RATE              (9600) 
 #define BUF_SIZE               (127)
 
 // Thông số Modbus của biến tần
-#define SLAVE_ID             0x01
+#define GD20_SLAVE_ID        0x01
 #define FUNC_WRITE_REG       0x06
-#define REG_CONTROL_CMD      0x2000  // Thanh ghi lệnh chạy/dừng
-#define REG_SET_FREQ         0x2001  // Thanh ghi cài tần số
+#define FUNC_READ_REG        0x03
+#define GD20_REG_CONTROL_CMD      0x2000  // Thanh ghi lệnh chạy/dừng
+#define GD20_REG_SET_FREQ         0x2001  // Thanh ghi cài tần số
+#define GD20_REG_ID               0x2103  // GD20 ID code
 
 // Các mã lệnh điều khiển (Value cho thanh ghi 0x2000)
 #define CMD_FWD     0x0001
@@ -61,7 +65,7 @@ uint16_t crc16_modbus(const uint8_t *data, uint16_t len) {
 // --- HÀM GỬI LỆNH GHI THANH GHI (FUNCTION 06) ---
 void invt_write_register(uint16_t reg_addr, uint16_t value) {
     uint8_t frame[8];
-    frame[0] = SLAVE_ID;
+    frame[0] = GD20_SLAVE_ID;
     frame[1] = FUNC_WRITE_REG;
     frame[2] = (reg_addr >> 8) & 0xFF;
     frame[3] = reg_addr & 0xFF;
@@ -74,6 +78,31 @@ void invt_write_register(uint16_t reg_addr, uint16_t value) {
 
     uart_write_bytes(UART_PORT, (const char*)frame, 8);
     ESP_LOGI(TAG, "Gửi lệnh: Reg 0x%04X = 0x%04X (CRC: 0x%04X)", reg_addr, value, crc);
+}
+
+void gd20_read_register(uint8_t slave_id, uint16_t reg_addr, uint8_t count) {
+  uint8_t frame[10];
+  frame[0] = slave_id;
+  frame[1] = FUNC_READ_REG;
+  frame[2] = (reg_addr >> 8) & 0xFF;
+  frame[3] = reg_addr & 0xFF;
+  frame[4] = (count >> 8) & 0xFF;
+  frame[5] = count & 0xFF;
+
+  uint16_t crc = crc16_modbus(frame, 6);
+  frame[6] = crc & 0xFF;          // Byte thấp CRC
+  frame[7] = (crc >> 8) & 0xFF;   // Byte cao CRC
+
+  int len = uart_write_bytes(UART_PORT, (const char*)frame, 8);
+  ESP_LOGI("TAG","total write byte: %d", len);
+
+  memset(frame, 0, sizeof(frame));
+  len = uart_read_bytes(UART_PORT, (void*)frame, sizeof(frame), pdMS_TO_TICKS(500));
+  if(len)
+    for (uint8_t i = 0; i < sizeof(frame); i++) {
+      ESP_LOGI("TAG","frame[%u]: 0x%x", i, frame[i]);
+    }
+    
 }
 
 static void invt_task(void *arg) {
@@ -94,54 +123,16 @@ static void invt_task(void *arg) {
     ESP_ERROR_CHECK(uart_set_pin(UART_PORT, TXD_PIN, RXD_PIN, RTS_DE_PIN, UART_PIN_NO_CHANGE));
     ESP_ERROR_CHECK(uart_set_mode(UART_PORT, UART_MODE_RS485_HALF_DUPLEX));
 
-    // 3. Cấu hình chân RE (Nối đất để luôn nhận hoặc điều khiển nếu cần)
-    gpio_reset_pin(RE_PIN);
-    gpio_set_direction(RE_PIN, GPIO_MODE_OUTPUT);
-    gpio_set_level(RE_PIN, 0); 
 
     ESP_LOGI(TAG, "Khởi tạo thành công. Bắt đầu điều khiển biến tần...");
+    gd20_read_register(GD20_SLAVE_ID, GD20_REG_ID, 1);
 
     while (1) {
-        // --- CHU KỲ ĐIỀU KHIỂN ---
-
-        // BƯỚC 1: Cài tần số 40Hz (40.00Hz = 4000)
-        ESP_LOGW(TAG, ">>> Bước 1: Cài tần số 40Hz");
-        invt_write_register(REG_SET_FREQ, 4000);
         vTaskDelay(pdMS_TO_TICKS(500));
-
-        // BƯỚC 2: Chạy thuận
-        ESP_LOGW(TAG, ">>> Bước 2: Chạy thuận");
-        invt_write_register(REG_CONTROL_CMD, CMD_FWD);
-        vTaskDelay(pdMS_TO_TICKS(10000)); // Chạy trong 10 giây
-
-        // BƯỚC 3: Tăng tốc lên 50Hz khi đang chạy
-        ESP_LOGW(TAG, ">>> Bước 3: Tăng tốc lên 50Hz");
-        invt_write_register(REG_SET_FREQ, 5000);
-        vTaskDelay(pdMS_TO_TICKS(5000)); // Chạy tiếp 5 giây
-
-        // BƯỚC 4: Dừng động cơ
-        ESP_LOGW(TAG, ">>> Bước 4: Dừng động cơ");
-        invt_write_register(REG_CONTROL_CMD, CMD_STOP);
-        vTaskDelay(pdMS_TO_TICKS(10000)); // Nghỉ 10 giây trước khi lặp lại vòng đời
-
-        // BƯỚC 5:  Chạy nghịch động cơ
-        ESP_LOGW(TAG, ">>> Bước 5: Chạy nghịch động cơ");
-        invt_write_register(REG_CONTROL_CMD, CMD_REV);
-        vTaskDelay(pdMS_TO_TICKS(10000)); // Nghỉ 10 giây trước khi lặp lại vòng đời
-
-        // BƯỚC 5: Dừng động cơ
-        ESP_LOGW(TAG, ">>> Bước 5: Dừng động cơ");
-        invt_write_register(REG_CONTROL_CMD, CMD_STOP);
-        vTaskDelay(pdMS_TO_TICKS(10000)); // Nghỉ 10 giây trước khi lặp lại vòng đời
     }
 }
 
 void app_main(void) {
-    // Bật nguồn module RS485 (nếu sơ đồ của bạn yêu cầu chân 12 lên mức cao)
-    gpio_reset_pin(RS485_EN_PIN);
-    gpio_set_direction(RS485_EN_PIN, GPIO_MODE_OUTPUT);
-    gpio_set_level(RS485_EN_PIN, 1);
-
     // Tạo Task điều khiển
     xTaskCreate(invt_task, "invt_task", 4096, NULL, 10, NULL);
 }
