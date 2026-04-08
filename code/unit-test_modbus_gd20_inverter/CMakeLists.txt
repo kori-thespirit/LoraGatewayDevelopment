@@ -5,9 +5,8 @@ cmake_minimum_required(VERSION 3.22)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 # "Trim" the build. Include the minimal set of components, main, and anything it depends on.
 idf_build_set_property(MINIMAL_BUILD ON)
-project(unit-test_ethernet-w5500)
+project(unit-test_modbus_gd20_inverter)
 
-target_add_binary_data(${PROJECT_NAME}.elf "main/mosquitto.org.crt" TEXT)
 
 
 
