@@ -9,7 +9,7 @@ The **Wi-Fi Unit Test Module** is a C-based implementation for ESP32 that handle
 Simply clone the repository and navigate to the specific branch:
 
 ```bash
-git clone [Github](https://github.com/kori-thespirit/LoraGatewayDevelopment.git)
+git clone https://github.com/kori-thespirit/LoraGatewayDevelopment.git
 cd LoraGatewayDevelopment
 git checkout SCRUM-37-unit-test-wi-fi-module
 ```
