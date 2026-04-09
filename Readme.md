@@ -9,13 +9,12 @@ The **Wi-Fi Unit Test Module** is a C-based implementation for ESP32 that handle
 Simply clone the repository and navigate to the specific branch:
 
 ```bash
-git clone [https://github.com/kori-thespirit/LoraGatewayDevelopment.git](https://github.com/kori-thespirit/LoraGatewayDevelopment.git)
+git clone [Github](https://github.com/kori-thespirit/LoraGatewayDevelopment.git)
 cd LoraGatewayDevelopment
 git checkout SCRUM-37-unit-test-wi-fi-module
-
-
+```
 ## Configuration
-Using idf.py menuconfig, you can configure the Wi-Fi credentials under the "Example Connection Configuration" section:
-SSID: Your Wi-Fi name.
-Password: Your Wi-Fi password.
-Max Retries: Number of reconnection attempts.
+Using 'idf.py menuconfig', you can configure the Wi-Fi credentials under the "Example Connection Configuration" section:  
+SSID: Your Wi-Fi name.   
+Password: Your Wi-Fi password.    
+Max Retries: Number of reconnection attempts.   
