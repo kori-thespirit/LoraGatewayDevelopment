@@ -4,17 +4,17 @@ Nhánh branch_unit_test_lora_node được thiết kế để kiểm tra khả n
 Đầu tiên, bạn cần clone repository và truy cập đúng nhánh unit test dành cho Node:
 
 ### Clone toàn bộ dự án
-```
+```raw
 git clone https://github.com/kori-thespirit/LoraGatewayDevelopment.git
 cd LoraGatewayDevelopment
 ```
 ### Chuyển sang nhánh unit test gửi dữ liệu
-```
+```raw
 git checkout branch_unit_test_lora_node
 ```
 ## 2. Cấu hình thông số qua Menuconfig
 Sau khi đã ở trong nhánh phù hợp, bạn thực hiện lệnh cấu hình để khớp với phần cứng hiện có.
-```
+```raw
 idf.py set-target esp32
 idf.py menuconfig
 ```
