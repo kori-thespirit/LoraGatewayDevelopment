@@ -19,15 +19,11 @@ idf.py set-target esp32s3
 idf.py menuconfig
 ```
 ## 3.Configuration for Receiver
-<img width="702" height="346" alt="image" src="https://github.com/user-attachments/assets/ebe839d3-d548-4229-b9b3-05286996cfe8" />
-<img width="720" height="225" alt="image" src="https://github.com/user-attachments/assets/c6c4ec39-3547-4795-ace9-593bbe17e0dc" />
-<img width="299" height="167" alt="image" src="https://github.com/user-attachments/assets/f79a5ba2-dc6d-459f-9ac6-fae6bf697a9f" />
-<img width="609" height="328" alt="image" src="https://github.com/user-attachments/assets/5afdc329-9f9e-46d8-b2bd-ad6b27b7ffca" />
-<img width="609" height="328" alt="image" src="https://github.com/user-attachments/assets/12dace2f-4765-498d-924f-8e01b8aad030" />
-<img width="627" height="187" alt="image" src="https://github.com/user-attachments/assets/1dc2a1a7-9a20-4f9e-8a83-40ca4eb89373" />
-<img width="700" height="190" alt="image" src="https://github.com/user-attachments/assets/386239e7-0d73-45eb-ad35-3c4c61a8cb6a" />
-
-
+Application Configuration -> (✅)As the receiver 
+## 4. Flash to ESP32
+```
+idf.py -p COM? build flash monitor
+```
 
 
 
