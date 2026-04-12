@@ -1,20 +1,23 @@
-# Wi-Fi Unit Test Module - Lora Gateway Development
+# Hướng dẫn bắt đầu với Unit Test Wifi
+Nhánh SCRUM-37-unit-test-wi-fi-module được thiết kế để kiểm tra khả năng kết nối Wifi. Hãy làm theo các bước sau để thiết lập.
+## 1. Clone Project và Chuyển nhánh
+Đầu tiên, bạn cần clone repository và truy cập đúng nhánh unit test dành cho Wifi:
 
-This component is designed to be integrated into the **ESP-IDF v5.x** framework for testing and validating Wi-Fi connectivity on ESP32-based hardware. It is part of the **SCRUM-37** task for the Lora Gateway project.
-
-## What is it
-The **Wi-Fi Unit Test Module** is a C-based implementation for ESP32 that handles network scanning, station connection (STA mode), and event-driven communication. It ensures the Wi-Fi hardware is functional before being integrated with LoRa, Ethernet, and LTE layers.
-
-## How to install
-Simply clone the repository and navigate to the specific branch:
-
-```bash
+### Clone toàn bộ dự án
+```raw
 git clone https://github.com/kori-thespirit/LoraGatewayDevelopment.git
 cd LoraGatewayDevelopment
+```
+### Chuyển sang nhánh unit test gửi dữ liệu
+```raw
 git checkout SCRUM-37-unit-test-wi-fi-module
 ```
-## Configuration
-Using 'idf.py menuconfig', you can configure the Wi-Fi credentials under the "Example Connection Configuration" section:  
-SSID: Your Wi-Fi name.   
-Password: Your Wi-Fi password.    
-Max Retries: Number of reconnection attempts.   
+## 2. Cấu hình thông số qua Menuconfig
+Sau khi đã ở trong nhánh phù hợp, bạn thực hiện lệnh cấu hình để khớp với phần cứng hiện có.
+```raw
+idf.py set-target esp32s3
+```
+## 3. Flash to ESP32
+```raw
+idf.py -p COM? build flash monitor
+```
