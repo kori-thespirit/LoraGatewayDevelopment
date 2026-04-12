@@ -22,6 +22,7 @@ idf.py menuconfig
 ### 1. Application Configuration -> (✅)As the receiver 
 ### 2. Lora Configuration 
 | ESP32 | LORA |
+| :--- | :--- | :--- | :--- | 
 | GPIO 40 | MISO GPIO |
 | GPIO 39 | SCK GPIO |
 | GPIO 41 | MOSI GPIO |
