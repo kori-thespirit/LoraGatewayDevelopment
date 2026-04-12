@@ -18,8 +18,15 @@ Sau khi đã ở trong nhánh phù hợp, bạn thực hiện lệnh cấu hình
 idf.py set-target esp32s3
 idf.py menuconfig
 ```
-## 3.Configuration for Receiver
-Application Configuration -> (✅)As the receiver 
+## 3. Configuration for Receiver
+### 1. Application Configuration -> (✅)As the receiver 
+### 2. Lora Configuration 
+| ESP32 | LORA |
+| GPIO 40 | MISO GPIO |
+| GPIO 39 | SCK GPIO |
+| GPIO 41 | MOSI GPIO |
+| GPIO 42 | NSS GPIO |
+| GPIO 38 | RST GPIO |
 ## 4. Flash to ESP32
 ```
 idf.py -p COM? build flash monitor
