@@ -3,7 +3,7 @@ set(PROJECT_NAME "modbus_serial_master")
     idf_component_register(SRCS "serial_master.c"
                             #"modbus_params.c"
                         INCLUDE_DIRS "."
-                        PRIV_REQUIRES nvs_flash esp_driver_uart esp_driver_gpio espressif__esp-modbus
+                        PRIV_REQUIRES nvs_flash esp_driver_uart esp_driver_gpio 
                         )
 
 # Workaround to avoid static analysis false positives for some components.
