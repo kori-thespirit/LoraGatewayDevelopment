@@ -17,39 +17,39 @@ static void invt_task(void *arg) {
   while (1) {
     // --- TRƯỜNG HỢP 1: KIỂM TRA TRẠNG THÁI HIỆN TẠI ---
         ESP_LOGW(TAG, ">>> TEST 1: Kiểm tra trạng thái và thông số trước khi chạy");
-        modbud_read_single_register(GD20_REG_STATUS, 1);      // Đọc trạng thái (2100H)
+        modbud_read_single_register(GD20_SLAVE_ID,GD20_REG_STATUS, 1);      // Đọc trạng thái (2100H)
         vTaskDelay(pdMS_TO_TICKS(500));
-        modbud_read_single_register(GD20_OPERATION_FREQ, 1); // Đọc tần số thực (3000H)
+        modbud_read_single_register(GD20_SLAVE_ID,GD20_OPERATION_FREQ, 1); // Đọc tần số thực (3000H)
         vTaskDelay(pdMS_TO_TICKS(500));
 
         // --- TRƯỜNG HỢP 2: CÀI ĐẶT TẦN SỐ 50HZ ---
         ESP_LOGW(TAG, ">>> TEST 2: Cài đặt tần số mục tiêu 50Hz");
-        modbud_write_register_with_fb(GD20_REG_SET_FREQ, 50000);
+        modbud_write_register_with_fb(GD20_SLAVE_ID,GD20_REG_SET_FREQ, 50000);
         vTaskDelay(pdMS_TO_TICKS(500));
 
-        ESP_LOGW(TAG, ">>> TEST 2: Cài đặt tần số mục tiêu 50Hz");
-        modbud_write_register_with_fb(GD20_REG_SET_FREQ, 5000);
+        ESP_LOGW(TAG, ">>> TEST 3: Cài đặt tần số mục tiêu 50Hz");
+        modbud_write_register_with_fb(GD20_SLAVE_ID,GD20_REG_SET_FREQ, 5000);
         vTaskDelay(pdMS_TO_TICKS(500));
 
         // --- TRƯỜNG HỢP 3: LỆNH CHẠY THUẬN ---
-        ESP_LOGW(TAG, ">>> TEST 3: Lệnh chạy thuận (FWD)");
-        modbud_write_register(GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_FWD); // Gửi lệnh chạy thuận
+        ESP_LOGW(TAG, ">>> TEST 4: Lệnh chạy thuận (FWD)");
+        modbud_write_register(GD20_SLAVE_ID,GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_FWD); // Gửi lệnh chạy thuận
         vTaskDelay(pdMS_TO_TICKS(10000));
-        modbud_read_single_register(GD20_OPERATION_FREQ, 1); // Xem tần số đang lên chưa
+        modbud_read_single_register(GD20_SLAVE_ID,GD20_OPERATION_FREQ, 1); // Xem tần số đang lên chưa
         vTaskDelay(pdMS_TO_TICKS(500));
-        modbud_read_single_register(GD20_OUTPUT_CURRENT, 1); // Xem dòng điện
+        modbud_read_single_register(GD20_SLAVE_ID,GD20_OUTPUT_CURRENT, 1); // Xem dòng điện
         vTaskDelay(pdMS_TO_TICKS(500));
 
         // --- TRƯỜNG HỢP 4: THAY ĐỔI TẦN SỐ KHI ĐANG CHẠY (25HZ) ---
-        ESP_LOGW(TAG, ">>> TEST 4: Giảm tốc xuống 25Hz");
-        modbud_write_register(GD20_REG_SET_FREQ, GD20_SET_FREQ_25HZ); // Gửi lệnh thay đổi tần số
+        ESP_LOGW(TAG, ">>> TEST 5: Giảm tốc xuống 25Hz");
+        modbud_write_register(GD20_SLAVE_ID,GD20_REG_SET_FREQ, GD20_SET_FREQ_25HZ); // Gửi lệnh thay đổi tần số
         vTaskDelay(pdMS_TO_TICKS(500));
-        modbud_read_single_register(GD20_OPERATION_FREQ, 1); // Xem tần số đã giảm chưa
+        modbud_read_single_register(GD20_SLAVE_ID,GD20_OPERATION_FREQ, 1); // Xem tần số đã giảm chưa
         vTaskDelay(pdMS_TO_TICKS(500));
 
         // --- TRƯỜNG HỢP 5: DỪNG ĐỘNG CƠ ---
-        ESP_LOGW(TAG, ">>> TEST 5: Lệnh dừng động cơ (STOP)");
-        modbud_write_register(GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_STOP);
+        ESP_LOGW(TAG, ">>> TEST 6: Lệnh dừng động cơ (STOP)");
+        modbud_write_register(GD20_SLAVE_ID,GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_STOP);
         vTaskDelay(pdMS_TO_TICKS(10000));
       
         ESP_LOGW(TAG, "--- KẾT THÚC 1 CHU KỲ TEST - NGHỈ 10 GIÂY ---");

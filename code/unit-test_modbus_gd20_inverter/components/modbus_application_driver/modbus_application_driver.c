@@ -32,10 +32,13 @@ uint16_t crc16_modbus(const uint8_t *data, uint16_t len) {
 void process_inverter_data(uint16_t reg_addr, uint16_t value) {
     switch (reg_addr) {
         case GD20_REG_STATUS:
-            if (value == 1) ESP_LOGW("STATUS", "Biến tần: ĐANG CHẠY THUẬN");
-            else if (value == 2) ESP_LOGW("STATUS", "Biến tần: ĐANG CHẠY NGHỊCH");
-            else if (value == 3) ESP_LOGW("STATUS", "Biến tần: ĐANG DỪNG");
-            else ESP_LOGE("STATUS", "Biến tần: LỖI/KHÔNG XÁC ĐỊNH (%d)", value);
+            switch (value) {
+                    case GD20_STATUS_RUN:   ESP_LOGW("STATUS", "Biến tần: ĐANG CHẠY THUẬN");break;
+                    case GD20_STATUS_REV:   ESP_LOGW("STATUS", "Biến tần: ĐANG CHẠY NGHỊCH");break;
+                    case GD20_STATUS_STOP:  ESP_LOGW("STATUS", "Biến tần: ĐANG DỪNG");break;
+                    default:                ESP_LOGE("STATUS", "Biến tần: LỖI/KHÔNG XÁC ĐỊNH (%d)", value);break;
+
+            }
             break;
 
         case GD20_OPERATION_FREQ:
@@ -58,9 +61,9 @@ void process_inverter_data(uint16_t reg_addr, uint16_t value) {
     }
 }
 // --- HÀM GỬI LỆNH GHI THANH GHI (FUNCTION 06) ---
-void modbud_write_register(uint16_t reg_addr, uint16_t value) {
+void modbud_write_register(uint8_t slave_id,uint16_t reg_addr, uint16_t value) {
     uint8_t frame[8];
-    frame[0] = GD20_SLAVE_ID;
+    frame[0] = slave_id;
     frame[1] = FUNC_WRITE_REG;
     frame[2] = (reg_addr >> 8) & 0xFF;
     frame[3] = reg_addr & 0xFF;
@@ -75,9 +78,9 @@ void modbud_write_register(uint16_t reg_addr, uint16_t value) {
     //ESP_LOGI(TAG, "Gửi lệnh: Reg 0x%04X = 0x%04X (CRC: 0x%04X)", reg_addr, value, crc);
     ESP_LOGI(MASTER, "Gửi lệnh: %02X %02X %04X %04X %02X%02X", GD20_SLAVE_ID, FUNC_WRITE_REG, reg_addr, value, frame[6], frame[7]);
 }
-esp_err_t modbud_write_register_with_fb(uint16_t reg_addr, uint16_t value) {
+esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint16_t value) {
     uint8_t frame[8];
-    frame[0] = GD20_SLAVE_ID;
+    frame[0] = slave_id;
     frame[1] = FUNC_WRITE_REG;
     frame[2] = (reg_addr >> 8) & 0xFF;
     frame[3] = reg_addr & 0xFF;
@@ -90,7 +93,7 @@ esp_err_t modbud_write_register_with_fb(uint16_t reg_addr, uint16_t value) {
 
     uart_write_bytes(UART_PORT, (const char*)frame, 8);
     //ESP_LOGI(TAG, "Gửi lệnh: Reg 0x%04X = 0x%04X (CRC: 0x%04X)", reg_addr, value, crc);
-    ESP_LOGI(MASTER, "Gửi lệnh: %02X %02X %04X %04X %02X%02X", GD20_SLAVE_ID, FUNC_WRITE_REG, reg_addr, value, frame[6], frame[7]);
+    ESP_LOGI(MASTER, "Gửi lệnh: %02X %02X %04X %04X %02X%02X", slave_id, FUNC_WRITE_REG, reg_addr, value, frame[6], frame[7]);
     uint8_t response[10];
     // Đợi phản hồi (Timeout thường khoảng 100-500ms)
     int len = uart_read_bytes(UART_PORT, response, 8, pdMS_TO_TICKS(500));
@@ -99,13 +102,13 @@ esp_err_t modbud_write_register_with_fb(uint16_t reg_addr, uint16_t value) {
         if (response[1] & 0x80) {
         uint8_t exception_code = response[2];
         switch (exception_code) {
-            case 0x01: ESP_LOGE(GD20, "Lỗi: Lệnh không hợp lệ!"); break;
-            case 0x02: ESP_LOGE(GD20, "Lỗi: Địa chỉ data không hợp lệ!"); break;
-            case 0x03: ESP_LOGE(GD20, "Lỗi: Giá trị dữ liệu gửi đi không hợp lệ!"); break;
-            case 0x04: ESP_LOGE(GD20, "Lỗi: Thông số không hợp lệ!"); break;
-            case 0x05: ESP_LOGE(GD20, "Lỗi: Password không đúng!"); break;
-            case 0x06: ESP_LOGW(GD20, "Lỗi: Lỗi khung dữ liệu!"); break;
-            default:   ESP_LOGE(GD20, "Lỗi Modbus chưa xác định: 0x%02X", exception_code); break;
+            case GD20_EXC_ILLEGAL_CMD:          ESP_LOGE(GD20, "Lỗi: Lệnh không hợp lệ!"); break;
+            case GD20_EXC_ILLEGAL_DATA_ADDR:    ESP_LOGE(GD20, "Lỗi: Địa chỉ data không hợp lệ!"); break;
+            case GD20_EXC_ILLEGAL_VALUE:        ESP_LOGE(GD20, "Lỗi: Giá trị dữ liệu gửi đi không hợp lệ!"); break;
+            case GD20_EXC_OPERATION_FAILED:     ESP_LOGE(GD20, "Lỗi: Thông số không hợp lệ!"); break;
+            case GD20_EXC_PASSWORD_ERROR:       ESP_LOGE(GD20, "Lỗi: Password không đúng!"); break;
+            case GD20_EXC_DATA_FRAME_ERROR:     ESP_LOGW(GD20, "Lỗi: Lỗi khung dữ liệu!"); break;
+            default:                            ESP_LOGE(GD20, "Lỗi Modbus chưa xác định: 0x%02X", exception_code); break;
             }
         return ESP_FAIL;
         }
@@ -127,9 +130,9 @@ esp_err_t modbud_write_register_with_fb(uint16_t reg_addr, uint16_t value) {
     }
     return ESP_OK;
 }
-void modbud_read_single_register( uint16_t reg_addr, uint8_t count) {
+void modbud_read_single_register(uint8_t slave_id, uint16_t reg_addr, uint8_t count) {
   uint8_t frame[10];
-  frame[0] = GD20_SLAVE_ID;
+  frame[0] = slave_id;
   frame[1] = FUNC_READ_REG;
   frame[2] = (reg_addr >> 8) & 0xFF;
   frame[3] = reg_addr & 0xFF;
@@ -141,7 +144,7 @@ void modbud_read_single_register( uint16_t reg_addr, uint8_t count) {
   frame[7] = (crc >> 8) & 0xFF;   // Byte cao CRC
 
   int len = uart_write_bytes(UART_PORT, (const char*)frame, 8);
-  ESP_LOGI(MASTER,"Gửi lệnh đọc: %02X %02X %04X %04X %02X%02X", GD20_SLAVE_ID, FUNC_READ_REG, reg_addr, count, frame[6], frame[7]);
+  ESP_LOGI(MASTER,"Gửi lệnh đọc: %02X %02X %04X %04X %02X%02X", slave_id, FUNC_READ_REG, reg_addr, count, frame[6], frame[7]);
   ESP_LOGI(MASTER,"total write byte: %d", len);
 
   // THÊM DÒNG NÀY: Xóa rác còn sót lại trong bộ đệm UART
@@ -153,7 +156,7 @@ void modbud_read_single_register( uint16_t reg_addr, uint8_t count) {
 
     if (len > 0) {
         // 2. Phân tích giá trị
-        if (response[1] == 0x03) { // Nếu là hàm đọc thành công
+        if (response[1] == FUNC_READ_REG) { // Nếu là hàm đọc thành công
 
             uint8_t bytes = response[2];
             ESP_LOGI(MASTER, "Số byte dữ liệu nhận được: %d", bytes);
@@ -162,7 +165,7 @@ void modbud_read_single_register( uint16_t reg_addr, uint8_t count) {
             uint16_t val = (response[3 + 0] << 8) | response[4 + 0];
             process_inverter_data(reg_addr, val);
         }
-        if (response[1] == 0x86) { // Nếu là lỗi (hàm trả về mã lỗi)
+        if (response[1] == GD20_RESP_CODE_FAULT) { // Nếu là lỗi (hàm trả về mã lỗi)
             uint8_t error_code = response[2];
             ESP_LOGE(MASTER, "Biến tần trả về lỗi: Mã lỗi 0x%02X", error_code);
         }

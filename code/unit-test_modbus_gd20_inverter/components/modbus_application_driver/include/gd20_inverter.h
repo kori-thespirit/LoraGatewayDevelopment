@@ -3,6 +3,7 @@
 
 // GD20 registers
 #define GD20_SLAVE_ID                       0x01
+#define GD20_RESP_CODE_FAULT                0x86
 #define GD20_REG_CONTROL_CMD                0x2000  // Thanh ghi lệnh chạy/dừng
 #define GD20_REG_SET_FREQ                   0x2001  // Thanh ghi đặt tần số
 #define GD20_REG_SET_TORQUE                 0x2004  // Thanh ghi đặt moment
@@ -57,4 +58,15 @@
 #define GD20_STATUS_FAULT                   0x0004  //Lỗi
 #define GD20_STATUS_COAST                   0x0005  //Trạng thái POFF
 #define GD20_STATUS_RESET                   0x0006  //Trạng thái tiền kích thích
+
+/* GD20 Modbus Fault messege respone */
+#define GD20_EXC_ILLEGAL_CMD                0x01  // Lệnh không hợp lệ (Illegal command)
+#define GD20_EXC_ILLEGAL_DATA_ADDR          0x02  // Địa chỉ dữ liệu không hợp lệ (Illegal data address)
+#define GD20_EXC_ILLEGAL_VALUE              0x03  // Giá trị dữ liệu không hợp lệ (Illegal value)
+#define GD20_EXC_OPERATION_FAILED           0x04  // Thao tác thất bại (Operation failed)
+#define GD20_EXC_PASSWORD_ERROR             0x05  // Lỗi mật khẩu (Password error)
+#define GD20_EXC_DATA_FRAME_ERROR           0x06  // Lỗi khung dữ liệu (Data frame error)
+#define GD20_EXC_WRITTEN_NOT_ALLOWED        0x07  // Không được phép ghi (Written not allowed)
+#define GD20_EXC_PARAM_CANNOT_MODIFY        0x08  // Thông số không thể sửa đổi khi đang chạy
+#define GD20_EXC_PASSWORD_PROTECTION        0x09  // Bảo vệ mật khẩu (System locked)
 #endif  // !GD20_INVERTER_H
