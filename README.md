@@ -1,128 +1,29 @@
-# ESP32-S3 Pin Mapping Documentation
-
-Tài liệu này mô tả sơ đồ kết nối chân giữa ESP32-S3 và các module sử dụng trong hệ thống.
-
----
-
-# 1. Strapping Pins (Boot Configuration)
-
-Các chân này được đọc khi ESP32 khởi động, ảnh hưởng đến chế độ boot và cấu hình phần cứng.
-
-| ESP32-S3 | FUNCTION |
-|:---------|:---------|
-| GPIO0    | Boot mode select |
-| GPIO3    | JTAG source select |
-| GPIO45   | Flash voltage select |
-| GPIO46   | Boot mode / ROM log control |
-
----
-
-# 2. LoRa Module (SPI)
-
-Ví dụ module: SX1278 / Ra-02
-
-| ESP32-S3 | LORA |
-|:---------|:-----|
-| GPIO40   | MISO |
-| GPIO39   | SCK |
-| GPIO41   | MOSI |
-| GPIO42   | NSS (CS) |
-| GPIO38   | RST |
-| GPIO37   | DIO0 |
-
----
-
-# 3. RS485 Module (UART)
-
-Ví dụ module: MAX3485 / SP3485
-
-| ESP32-S3 | RS485 |
-|:---------|:------|
-| GPIO17   | TX |
-| GPIO18   | RX |
-| GPIO16   | DE |
-| GPIO15   | RE |
-
----
-
-# 4. I2C Devices
-
-Ví dụ: Sensor, LCD, EEPROM
-
-| ESP32-S3 | I2C |
-|:---------|:----|
-| GPIO8    | SDA |
-| GPIO9    | SCL |
-
----
-
-# 5. SPI Devices (General)
-
-| ESP32-S3 | SPI DEVICE |
-|:---------|:-----------|
-| GPIO12   | MISO |
-| GPIO13   | MOSI |
-| GPIO14   | SCK |
-| GPIO10   | CS |
-
----
-
-# 6. UART Debug / Programming
-
-| ESP32-S3 | UART |
-|:---------|:-----|
-| GPIO43   | TXD0 |
-| GPIO44   | RXD0 |
-
----
-
-# 7. Control Signals
-
-| ESP32-S3 | CONTROL |
-|:---------|:--------|
-| EN       | Chip enable / Reset |
-| 3V3      | Power supply |
-| GND      | Ground |
-
----
-
-# 8. Important Notes
-
-## Strapping Pins Warning
-
-Không nên kéo các chân sau xuống mức LOW khi khởi động:
-
-- GPIO0
-- GPIO3
-- GPIO45
-- GPIO46
-
-Sai cấu hình có thể gây:
-
-- Không boot
-- Không nạp code
-- Treo hệ thống
-
-## Recommended Pull-up / Pull-down
-
-- GPIO0 → Pull-up 10kΩ
-- EN → Pull-up 10kΩ
-
----
-
-# 9. Project Information
-
-## MCU
-
-ESP32-S3
-
-## Communication
-
-- SPI
-- UART
-- RS485
-- I2C
-
----
-
-# End of Document
+# ESP32-S3 Pin
+| Pin Number | Pin Name | Function | Device |
+| :--- | :--- | :--- | :--- |
+| 5 | GPIO5 (ESP_TX) | HMI_RX | HMI Dwin |
+| 6 | GPIO6 (ESP_RX) | HMI_TX | HMI Dwin |
+| 39 | GPIO1 | LoRA_INTERRUPT | LoRA Module |
+| 31 | GPIO38 | RESET | LoRA Module |
+| 32 | GPIO39 | SCK | LoRA Module |
+| 33 | GPIO40 | MISO | LoRA Module |
+| 34 | GPIO41 | MOSI | LoRA Module |
+| 35 | GPIO42 | CS | LoRA Module |
+| 18 | GPIO10 | I2C_SCL | Module RTC_DS3231 |
+| 19 | GPIO11 | I2C_SDA | Module RTC_DS3231 |
+| 15 | GPIO3 | SIM_PWRKEY | SIMCOM |
+| 7 | GPIO7 | SIM_RESET | SIMCOM |
+| 23 | GPIO21 (ESP_TX) | SIM_RX | SIMCOM |
+| 24 | GPIO47 (ESP_RX) | SIM_TX | SIMCOM |
+| 12 | GPIO8 | CS | W5500_ETHERNET |
+| 17 | GPIO9 | INTERRUPT | W5500_ETHERNET |
+| 9 | GPIO16 | MOSI | W5500_ETHERNET |
+| 10 | GPIO17 | MISO | W5500_ETHERNET |
+| 11 | GPIO18 | SPI_CLK | W5500_ETHERNET |
+| 22 | GPIO14 | SDIO_CLK | SD CARD |
+| 8 | GPIO15 | SDIO_CMD | SD CARD |
+| 20 | GPIO12 | SDIO_DATA0 | SD CARD |
+| 21 | GPIO13 | SDIO_DATA1 | SD CARD |
+| 4 | GPIO4 | SDIO_DATA2 | SD CARD |
+| 38 | GPIO2 | SDIO_DATA3 | SD CARD |
+| 26 | GPIO45 | SDIO_DET | SD CARD |
