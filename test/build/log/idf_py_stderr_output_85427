@@ -1,5 +1,0 @@
-Command: make -j 6 all
-/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c: In function 'test_func_51':
-/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:52:14: warning: unused variable 'cfg' [-Wunused-variable]
-   52 |   SPI_config cfg;
-      |              ^~~

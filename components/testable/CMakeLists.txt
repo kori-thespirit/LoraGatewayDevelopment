@@ -1,4 +1,4 @@
-set(src "STM32_Slave.c")
+set(src "SPI_Stub.c")
 set(include "include")
 idf_component_register(SRCS "${src}"
                        INCLUDE_DIRS "${include}"

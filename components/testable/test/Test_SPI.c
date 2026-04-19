@@ -1,4 +1,4 @@
-#include "STM32_Slave.h"
+#include "SPI_Stub.h"
 #include "esp_err.h"
 #include "esp_log.h"
 #include "unity.h"
@@ -10,7 +10,7 @@ static const int MOSI_PIN = GPIO_NUM_10;
 static const int MISO_PIN = GPIO_NUM_9;
 static const int CS_PIN = GPIO_NUM_20;
 static const int SPI_MODE_USER = SPI2_HOST;
-STM32_Slave_handle_t STM32_Handle;
+SPI_Stub_handle_t SPI_Handle;
 void setUp(void) {
 
   SPI_config cfg;
@@ -22,11 +22,11 @@ void setUp(void) {
                      .CS = CS_PIN,
                      .host = SPI_MODE_USER};
 
-  esp_err_t err = STM32_Slave_Init(&STM32_Handle, &cfg);
+  esp_err_t err = SPI_Stub_Init(&SPI_Handle, &cfg);
   assert(err == ESP_OK);
 }
 
-void tearDown(void) { STM32_Slave_Deinit(&STM32_Handle); }
+void tearDown(void) { SPI_Stub_Deinit(&SPI_Handle); }
 
 TEST_CASE("Slave Unit Test Case 1", "[SPI]") {
   ESP_LOGE(tag, "ReInitsialized SPI....");
@@ -36,7 +36,7 @@ TEST_CASE("Slave Unit Test Case 1", "[SPI]") {
                      .MISO = MISO_PIN,
                      .CS = CS_PIN,
                      .host = SPI_MODE_USER};
-  TEST_ASSERT_EQUAL_UINT8(STM32_Slave_Init(&STM32_Handle, &cfg),
+  TEST_ASSERT_EQUAL_UINT8(SPI_Stub_Init(&SPI_Handle, &cfg),
                           ESP_ERR_INVALID_ARG);
 }
 TEST_CASE("Slave Unit Test Case 2", "[SPI]") {
@@ -47,44 +47,44 @@ TEST_CASE("Slave Unit Test Case 2", "[SPI]") {
                      .CS = CS_PIN,
                      .host = SPI_MODE_USER};
 
-  TEST_ASSERT_EQUAL_UINT8(STM32_Slave_Init(NULL, &cfg), ESP_ERR_INVALID_ARG);
+  TEST_ASSERT_EQUAL_UINT8(SPI_Stub_Init(NULL, &cfg), ESP_ERR_INVALID_ARG);
 }
 TEST_CASE("Slave Unit Test Case 3", "[SPI]") {
-  TEST_ASSERT_EQUAL_UINT8(STM32_Slave_Init(&STM32_Handle, NULL),
+  TEST_ASSERT_EQUAL_UINT8(SPI_Stub_Init(&SPI_Handle, NULL),
                           ESP_ERR_INVALID_ARG);
 }
 TEST_CASE("Slave Unit Test Case 4", "[SPI]") {
-  TEST_ASSERT_EQUAL_UINT8(STM32_Slave_Deinit(&STM32_Handle), ESP_OK);
+  TEST_ASSERT_EQUAL_UINT8(SPI_Stub_Deinit(&SPI_Handle), ESP_OK);
 }
 
 TEST_CASE("Slave Unit Test Case 5", "[SPI]") {
-  TEST_ASSERT_EQUAL_UINT8(STM32_Begin_Get_Info(NULL), ESP_ERR_INVALID_ARG);
+  TEST_ASSERT_EQUAL_UINT8(SPI_Stub_Begin_Get_Info(NULL), ESP_ERR_INVALID_ARG);
 }
 TEST_CASE("Slave Unit Test Case 6", "[SPI]") {
-  TEST_ASSERT_EQUAL_UINT8(STM32_Begin_Get_Info(NULL), ESP_ERR_INVALID_ARG);
+  TEST_ASSERT_EQUAL_UINT8(SPI_Stub_Begin_Get_Info(NULL), ESP_ERR_INVALID_ARG);
 }
 TEST_CASE("Slave Unit Test Case 7", "[SPI]") {
-  TEST_ASSERT_EQUAL_UINT8(STM32_Begin_Get_Info(&STM32_Handle), ESP_OK);
+  TEST_ASSERT_EQUAL_UINT8(SPI_Stub_Begin_Get_Info(&SPI_Handle), ESP_OK);
 }
 TEST_CASE("Slave Unit Test Case 8", "[SPI]") {
   static uint8_t Data[4] = {0};
   TEST_ASSERT_EQUAL_UINT8(
-      Send_STM32_Slave_Register(&STM32_Handle, Data, sizeof(Data)), ESP_OK);
+      Send_SPI_Stub_Register(&SPI_Handle, Data, sizeof(Data)), ESP_OK);
 }
 TEST_CASE("Slave Unit Test Case 9", "[SPI]") {
   static uint8_t Data[4] = {0};
   TEST_ASSERT_EQUAL_UINT8(
-      Send_STM32_Slave_Register(&STM32_Handle, Data, sizeof(Data) + 10),
+      Send_SPI_Stub_Register(&SPI_Handle, Data, sizeof(Data) + 10),
       ESP_ERR_INVALID_ARG);
 }
 TEST_CASE("Slave Unit Test Case 10", "[SPI]") {
   static uint8_t Data[4] = {0};
-  TEST_ASSERT_EQUAL_UINT8(Send_STM32_Slave_Register(NULL, Data, sizeof(Data)),
+  TEST_ASSERT_EQUAL_UINT8(Send_SPI_Stub_Register(NULL, Data, sizeof(Data)),
                           ESP_ERR_INVALID_ARG);
 }
 TEST_CASE("Slave Unit Test Case 11", "[SPI]") {
   static uint8_t *Data = NULL;
-  TEST_ASSERT_EQUAL_UINT8(Send_STM32_Slave_Register(NULL, Data, sizeof(Data)),
+  TEST_ASSERT_EQUAL_UINT8(Send_SPI_Stub_Register(NULL, Data, sizeof(Data)),
                           ESP_ERR_INVALID_ARG);
 }
 // TEST_CASE("Slave Unit Test Case 12", "[SPI]") {
@@ -223,11 +223,11 @@ TEST_CASE("Slave Unit Test Case 11", "[SPI]") {
 //  Unit Test Case 126", "[SPI]") { TEST_ASSERT_EQUAL_UINT8(, ); }
 //  TEST_CASE("Slave Unit Test Case 127", "[SPI]") {
 //    TEST_ASSERT_EQUAL_UINT8(, );
-//  } //  TEST_CASE("STM32 Begin Get Info ", "[SPI]") { err =
-//  STM32_Begin_Get_Info(
-//   &STM32_Handle); //Get INFO Register from STM32 Slave
+//  } //  TEST_CASE("SPI_Stub Begin Get Info ", "[SPI]") { err =
+//  SPI_Stub_Begin_Get_Info(
+//   &SPI_Handle); //Get INFO Register from SPI_Stub Slave
 //   TEST_ASSERT_EQUAL_UINT8(ESP_OK, err); } TEST_CASE("SPI Add Device ",
-//   "[SPI]") { STM32_Slave_handle_t STM32_Handle; // Arrange SPI_config cfg =
+//   "[SPI]") { SPI_Stub_handle_t SPI_Handle; // Arrange SPI_config cfg =
 //   {.SCK = SCK_PIN, .MOSI = MOSI_PIN, .MISO = MISO_PIN, .CS = CS_PIN, .host =
-//   SPI_MODE_USER}; esp_err_t err = SPI_add_device(&STM32_Handle, &cfg); //
+//   SPI_MODE_USER}; esp_err_t err = SPI_add_device(&SPI_Handle, &cfg); //
 //   Assert TEST_ASSERT_EQUAL_UINT8(ESP_OK, err); }

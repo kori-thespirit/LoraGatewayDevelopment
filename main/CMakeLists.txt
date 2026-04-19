@@ -1,4 +1,4 @@
-set(src "Chuongtrinhchinh.c")
+set(src "main.c")
 set(include ".")
 
 idf_component_register(SRCS "${src}"
