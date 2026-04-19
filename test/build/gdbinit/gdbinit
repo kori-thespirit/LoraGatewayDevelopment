@@ -1,0 +1,2 @@
+source /home/tathuan/Project_B/SPI_Unit_Test/test/build/gdbinit/symbols
+source /home/tathuan/Project_B/SPI_Unit_Test/test/build/gdbinit/connect

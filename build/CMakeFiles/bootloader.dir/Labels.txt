@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+/home/tathuan/Project_B/SPI_Unit_Test/build/CMakeFiles/bootloader
+/home/tathuan/Project_B/SPI_Unit_Test/build/CMakeFiles/bootloader.rule
+/home/tathuan/Project_B/SPI_Unit_Test/build/CMakeFiles/bootloader-complete.rule
+/home/tathuan/Project_B/SPI_Unit_Test/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+/home/tathuan/Project_B/SPI_Unit_Test/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+/home/tathuan/Project_B/SPI_Unit_Test/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+/home/tathuan/Project_B/SPI_Unit_Test/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+/home/tathuan/Project_B/SPI_Unit_Test/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+/home/tathuan/Project_B/SPI_Unit_Test/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+/home/tathuan/Project_B/SPI_Unit_Test/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule

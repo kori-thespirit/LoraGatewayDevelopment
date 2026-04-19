@@ -1,0 +1,52 @@
+Command: make -j 6 all
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c: In function 'test_func_69':
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:72:75: error: macro 'TEST_ASSERT_EQUAL_UINT8' requires 2 arguments, but only 1 given
+   72 |       Send_STM32_Slave_Register(&STM32_Handle, Data, sizeof(Data), ESP_OK));
+      |                                                                           ^
+In file included from /home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:4:
+/home/tathuan/esp-idf/components/unity/unity/src/unity.h:151:9: note: macro 'TEST_ASSERT_EQUAL_UINT8' defined here
+  151 | #define TEST_ASSERT_EQUAL_UINT8(expected, actual)                                                  UNITY_TEST_ASSERT_EQUAL_UINT8( (expected), (actual), __LINE__, NULL)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:71:3: error: 'TEST_ASSERT_EQUAL_UINT8' undeclared (first use in this function)
+   71 |   TEST_ASSERT_EQUAL_UINT8(
+      |   ^~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:71:3: note: each undeclared identifier is reported only once for each function it appears in
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:70:18: warning: unused variable 'Data' [-Wunused-variable]
+   70 |   static uint8_t Data[4] = {0};
+      |                  ^~~~
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c: In function 'test_func_74':
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:76:62: error: macro 'TEST_ASSERT_EQUAL_UINT8' requires 2 arguments, but only 1 given
+   76 |       &STM32_Handle, NULL, sizeof(NULL), ESP_ERR_INVALID_ARG));
+      |                                                              ^
+/home/tathuan/esp-idf/components/unity/unity/src/unity.h:151:9: note: macro 'TEST_ASSERT_EQUAL_UINT8' defined here
+  151 | #define TEST_ASSERT_EQUAL_UINT8(expected, actual)                                                  UNITY_TEST_ASSERT_EQUAL_UINT8( (expected), (actual), __LINE__, NULL)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:75:3: error: 'TEST_ASSERT_EQUAL_UINT8' undeclared (first use in this function)
+   75 |   TEST_ASSERT_EQUAL_UINT8(Send_STM32_Slave_Register(
+      |   ^~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c: In function 'test_func_78':
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:81:79: error: macro 'TEST_ASSERT_EQUAL_UINT8' requires 2 arguments, but only 1 given
+   81 |       Send_STM32_Slave_Register(NULL, Data, sizeof(Data), ESP_ERR_INVALID_ARG));
+      |                                                                               ^
+/home/tathuan/esp-idf/components/unity/unity/src/unity.h:151:9: note: macro 'TEST_ASSERT_EQUAL_UINT8' defined here
+  151 | #define TEST_ASSERT_EQUAL_UINT8(expected, actual)                                                  UNITY_TEST_ASSERT_EQUAL_UINT8( (expected), (actual), __LINE__, NULL)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:80:3: error: 'TEST_ASSERT_EQUAL_UINT8' undeclared (first use in this function)
+   80 |   TEST_ASSERT_EQUAL_UINT8(
+      |   ^~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:79:18: warning: unused variable 'Data' [-Wunused-variable]
+   79 |   static uint8_t Data[4] = {0};
+      |                  ^~~~
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c: In function 'test_func_83':
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:85:79: error: macro 'TEST_ASSERT_EQUAL_UINT8' requires 2 arguments, but only 1 given
+   85 |       Send_STM32_Slave_Register(NULL, NULL, sizeof(NULL), ESP_ERR_INVALID_ARG));
+      |                                                                               ^
+/home/tathuan/esp-idf/components/unity/unity/src/unity.h:151:9: note: macro 'TEST_ASSERT_EQUAL_UINT8' defined here
+  151 | #define TEST_ASSERT_EQUAL_UINT8(expected, actual)                                                  UNITY_TEST_ASSERT_EQUAL_UINT8( (expected), (actual), __LINE__, NULL)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c:84:3: error: 'TEST_ASSERT_EQUAL_UINT8' undeclared (first use in this function)
+   84 |   TEST_ASSERT_EQUAL_UINT8(
+      |   ^~~~~~~~~~~~~~~~~~~~~~~
+make[2]: *** [esp-idf/testable_test/CMakeFiles/__testable_test.dir/build.make:79: esp-idf/testable_test/CMakeFiles/__testable_test.dir/Test_SPI.c.obj] Error 1
+make[1]: *** [CMakeFiles/Makefile2:9036: esp-idf/testable_test/CMakeFiles/__testable_test.dir/all] Error 2
+make: *** [Makefile:136: all] Error 2

@@ -1,0 +1,76 @@
+Command: /home/tathuan/.espressif/python_env/idf6.1_py3.12_env/bin/python /home/tathuan/esp-idf/tools/idf_monitor.py -p /dev/ttyUSB0 -b 115200 --toolchain-prefix xtensa-esp32-elf- --target esp32 --revision 0 /home/tathuan/Project_B/SPI_Unit_Test/test/build/test.elf /home/tathuan/Project_B/SPI_Unit_Test/test/build/bootloader/bootloader.elf -m '/home/tathuan/.espressif/python_env/idf6.1_py3.12_env/bin/python' '/home/tathuan/esp-idf/tools/idf.py'
+[0;33m--- esp-idf-monitor 1.9.0 on /dev/ttyUSB0 115200[0m
+[0;33m--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/tathuan/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2259[0m
+[0m--- 0x40080644: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/tathuan/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m27[0m
+[0m--- 0x400882d6: [0;33mspinlock_acquire[0m[0m at [0;32m/home/tathuan/esp-idf/components/esp_hw_support/include/spinlock.h[0m[0m:[1;31m105[0m
+[0m--- (inlined by) [0;33mxPortEnterCriticalTimeout[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m489[0m
+[0m--- 0x4000c46c: [0;33mmemset[0m[0m in [0;32mROM[0m
+[0m--- 0x4000c477: [0;33mmemset[0m[0m in [0;32mROM[0m
+[0m--- 0x400882d3: [0;33mxt_utils_get_raw_core_id[0m[0m at [0;32m/home/tathuan/esp-idf/components/xtensa/include/xt_utils.h[0m[0m:[1;31m52[0m
+[0m--- (inlined by) [0;33mspinlock_acquire[0m[0m at [0;32m/home/tathuan/esp-idf/components/esp_hw_support/include/spinlock.h[0m[0m:[1;31m89[0m
+[0m--- (inlined by) [0;33mxPortEnterCriticalTimeout[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m489[0m
+[0m--- 0x400df625: [0;33mvPortEnterCritical[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos/portmacro.h[0m[0m:[1;31m554[0m
+[0m--- (inlined by) [0;33muxQueueMessagesWaiting[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/queue.c[0m[0m:[1;31m2312[0m
+[0m--- 0x400d880d: [0;33mspi_bus_remove_device[0m[0m at [0;32m/home/tathuan/esp-idf/components/esp_driver_spi/src/gpspi/spi_master.c[0m[0m:[1;31m600[0m
+[0m--- 0x400d7e18: [0;33mSTM32_Slave_Deinit[0m[0m at [0;32m/home/tathuan/Project_B/SPI_Unit_Test/components/testable/STM32_Slave.c[0m[0m:[1;31m54[0m
+[0m--- 0x400d13b2: [0;33mtearDown[0m[0m at [0;32m/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c[0m[0m:[1;31m29[0m
+[0m--- 0x400d79b9: [0;33munity_default_test_run[0m[0m at [0;32m/home/tathuan/esp-idf/components/unity/unity_runner.c[0m[0m:[1;31m75[0m
+[0m--- 0x400d7b05: [0;33munity_run_single_test[0m[0m at [0;32m/home/tathuan/esp-idf/components/unity/unity_runner.c[0m[0m:[1;31m125[0m
+[0m--- 0x400d7b72: [0;33munity_run_all_tests[0m[0m at [0;32m/home/tathuan/esp-idf/components/unity/unity_runner.c[0m[0m:[1;31m184[0m
+[0m--- 0x400d7cc3: [0;33mapp_main[0m[0m at [0;32m/home/tathuan/Project_B/SPI_Unit_Test/test/main/test.c[0m[0m:[1;31m10[0m
+[0m--- 0x400d43aa: [0;33mmain_task[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/app_startup.c[0m[0m:[1;31m199[0m
+[0m--- 0x400dedd5: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m143[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/tathuan/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2259[0m
+[0m--- 0x40080644: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/tathuan/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m27[0m
+[0m--- 0x400882d6: [0;33mspinlock_acquire[0m[0m at [0;32m/home/tathuan/esp-idf/components/esp_hw_support/include/spinlock.h[0m[0m:[1;31m105[0m
+[0m--- (inlined by) [0;33mxPortEnterCriticalTimeout[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m489[0m
+[0m--- 0x4000c46c: [0;33mmemset[0m[0m in [0;32mROM[0m
+[0m--- 0x4000c477: [0;33mmemset[0m[0m in [0;32mROM[0m
+[0m--- 0x400882d3: [0;33mxt_utils_get_raw_core_id[0m[0m at [0;32m/home/tathuan/esp-idf/components/xtensa/include/xt_utils.h[0m[0m:[1;31m52[0m
+[0m--- (inlined by) [0;33mspinlock_acquire[0m[0m at [0;32m/home/tathuan/esp-idf/components/esp_hw_support/include/spinlock.h[0m[0m:[1;31m89[0m
+[0m--- (inlined by) [0;33mxPortEnterCriticalTimeout[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m489[0m
+[0m--- 0x400df625: [0;33mvPortEnterCritical[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos/portmacro.h[0m[0m:[1;31m554[0m
+[0m--- (inlined by) [0;33muxQueueMessagesWaiting[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/queue.c[0m[0m:[1;31m2312[0m
+[0m--- 0x400d880d: [0;33mspi_bus_remove_device[0m[0m at [0;32m/home/tathuan/esp-idf/components/esp_driver_spi/src/gpspi/spi_master.c[0m[0m:[1;31m600[0m
+[0m--- 0x400d7e18: [0;33mSTM32_Slave_Deinit[0m[0m at [0;32m/home/tathuan/Project_B/SPI_Unit_Test/components/testable/STM32_Slave.c[0m[0m:[1;31m54[0m
+[0m--- 0x400d13b2: [0;33mtearDown[0m[0m at [0;32m/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c[0m[0m:[1;31m29[0m
+[0m--- 0x400d79b9: [0;33munity_default_test_run[0m[0m at [0;32m/home/tathuan/esp-idf/components/unity/unity_runner.c[0m[0m:[1;31m75[0m
+[0m--- 0x400d7b05: [0;33munity_run_single_test[0m[0m at [0;32m/home/tathuan/esp-idf/components/unity/unity_runner.c[0m[0m:[1;31m125[0m
+[0m--- 0x400d7b72: [0;33munity_run_all_tests[0m[0m at [0;32m/home/tathuan/esp-idf/components/unity/unity_runner.c[0m[0m:[1;31m184[0m
+[0m--- 0x400d7cc3: [0;33mapp_main[0m[0m at [0;32m/home/tathuan/Project_B/SPI_Unit_Test/test/main/test.c[0m[0m:[1;31m10[0m
+[0m--- 0x400d43aa: [0;33mmain_task[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/app_startup.c[0m[0m:[1;31m199[0m
+[0m--- 0x400dedd5: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m143[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/tathuan/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2259[0m
+[0m--- 0x40080644: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/tathuan/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m27[0m
+[0m--- 0x400dedd5: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m143[0m
+[0m--- 0x400dedd5: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m143[0m
+[0m--- 0x400dedd5: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m143[0m
+[0m--- 0x400dedd5: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m143[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/tathuan/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2259[0m
+[0m--- 0x40080644: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/tathuan/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m27[0m
+[0m--- 0x400882d6: [0;33mspinlock_acquire[0m[0m at [0;32m/home/tathuan/esp-idf/components/esp_hw_support/include/spinlock.h[0m[0m:[1;31m105[0m
+[0m--- (inlined by) [0;33mxPortEnterCriticalTimeout[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m489[0m
+[0m--- 0x400d7b72: [0;33munity_run_all_tests[0m[0m at [0;32m/home/tathuan/esp-idf/components/unity/unity_runner.c[0m[0m:[1;31m184[0m
+[0m--- 0x400d7b72: [0;33munity_run_all_tests[0m[0m at [0;32m/home/tathuan/esp-idf/components/unity/unity_runner.c[0m[0m:[1;31m184[0m
+[0m--- 0x400882d6: [0;33mspinlock_acquire[0m[0m at [0;32m/home/tathuan/esp-idf/components/esp_hw_support/include/spinlock.h[0m[0m:[1;31m105[0m
+[0m--- (inlined by) [0;33mxPortEnterCriticalTimeout[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m489[0m
+[0m--- 0x4000c46c: [0;33mmemset[0m[0m in [0;32mROM[0m
+[0m--- 0x4000c477: [0;33mmemset[0m[0m in [0;32mROM[0m
+[0m--- 0x400882d3: [0;33mxt_utils_get_raw_core_id[0m[0m at [0;32m/home/tathuan/esp-idf/components/xtensa/include/xt_utils.h[0m[0m:[1;31m52[0m
+[0m--- (inlined by) [0;33mspinlock_acquire[0m[0m at [0;32m/home/tathuan/esp-idf/components/esp_hw_support/include/spinlock.h[0m[0m:[1;31m89[0m
+[0m--- (inlined by) [0;33mxPortEnterCriticalTimeout[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m489[0m
+[0m--- 0x400df625: [0;33mvPortEnterCritical[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos/portmacro.h[0m[0m:[1;31m554[0m
+[0m--- (inlined by) [0;33muxQueueMessagesWaiting[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/queue.c[0m[0m:[1;31m2312[0m
+[0m--- 0x400d880d: [0;33mspi_bus_remove_device[0m[0m at [0;32m/home/tathuan/esp-idf/components/esp_driver_spi/src/gpspi/spi_master.c[0m[0m:[1;31m600[0m
+[0m--- 0x400d7e18: [0;33mSTM32_Slave_Deinit[0m[0m at [0;32m/home/tathuan/Project_B/SPI_Unit_Test/components/testable/STM32_Slave.c[0m[0m:[1;31m54[0m
+[0m--- 0x400d13b2: [0;33mtearDown[0m[0m at [0;32m/home/tathuan/Project_B/SPI_Unit_Test/components/testable/test/Test_SPI.c[0m[0m:[1;31m29[0m
+[0m--- 0x400d79b9: [0;33munity_default_test_run[0m[0m at [0;32m/home/tathuan/esp-idf/components/unity/unity_runner.c[0m[0m:[1;31m75[0m
+[0m--- 0x400d7b05: [0;33munity_run_single_test[0m[0m at [0;32m/home/tathuan/esp-idf/components/unity/unity_runner.c[0m[0m:[1;31m125[0m
+[0m--- 0x400d7b72: [0;33munity_run_all_tests[0m[0m at [0;32m/home/tathuan/esp-idf/components/unity/unity_runner.c[0m[0m:[1;31m184[0m
+[0m--- 0x400d7cc3: [0;33mapp_main[0m[0m at [0;32m/home/tathuan/Project_B/SPI_Unit_Test/test/main/test.c[0m[0m:[1;31m10[0m
+[0m--- 0x400d43aa: [0;33mmain_task[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/app_startup.c[0m[0m:[1;31m199[0m
+[0m--- 0x400dedd5: [0;33mvPortTaskWrapper[0m[0m at [0;32m/home/tathuan/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m143[0m
+[0m--- 0x40080400: [0;33m_invalid_pc_placeholder[0m[0m at [0;32m/home/tathuan/esp-idf/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m2259[0m
+[0m--- 0x40080644: [0;33mcall_start_cpu0[0m[0m at [0;32m/home/tathuan/esp-idf/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m27[0m
+[0m

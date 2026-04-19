@@ -1,0 +1,9 @@
+Command: make -j 6 all
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/STM32_Slave.c:223:1: error: missing terminating " character [-Werror]
+  223 | "
+      | ^
+/home/tathuan/Project_B/SPI_Unit_Test/components/testable/STM32_Slave.c:223:1: error: missing terminating " character
+cc1: all warnings being treated as errors
+make[2]: *** [esp-idf/testable/CMakeFiles/__idf_testable.dir/build.make:79: esp-idf/testable/CMakeFiles/__idf_testable.dir/STM32_Slave.c.obj] Error 1
+make[1]: *** [CMakeFiles/Makefile2:9001: esp-idf/testable/CMakeFiles/__idf_testable.dir/all] Error 2
+make: *** [Makefile:136: all] Error 2

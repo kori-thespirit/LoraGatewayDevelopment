@@ -1,0 +1,5 @@
+CompileFlags:
+  # Loại bỏ flag -mtune=esp-base (hoặc bất kỳ -mtune nào)
+  Remove: [-mtune=*]
+  # (Tùy chọn) Thêm flag -mtune hợp lệ nếu cần
+  # Add: [-mtune=generic-rv32]
