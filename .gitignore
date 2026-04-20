@@ -9,9 +9,25 @@ Release/
 Drivers/
 Middlewares/
 
+Core/*
+!Core/Src/
+!Core/Inc/
 
-Core/Src/main.c
-Core/Src/system_*.c
-Core/Startup/
+Core/Src/*
+!Core/Src/main.c
+
+Core/Inc/*
+!Core/Inc/**
 
 *.bak
+!Core/Src/
+!Core/Inc/
+
+Core/Src/*
+!Core/Src/main.c
+
+Core/Inc/*
+!Core/Inc/**
+
+*.bak
+
