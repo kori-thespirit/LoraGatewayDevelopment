@@ -1,5 +1,6 @@
 Debug/
 Release/
+build/
 
 .settings/
 *.launch
@@ -16,6 +17,11 @@ Core/Src/*
 !Core/Src/main.c
 
 Core/Inc/*
-!Core/Inc/**
+!Core/Inc/main.h
 
 *.bak
+*.o
+*.elf
+*.map
+*.bin
+
