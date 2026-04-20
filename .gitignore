@@ -1,4 +1,0 @@
-hardware/*
-!hardware/Gateway_Schematic_V3/
-hardware/Gateway_Schematic_V3/*
-!hardware/Gateway_Schematic_V3/*.kicad_*
