@@ -114,10 +114,10 @@ dependencies:
   idf:
     source:
       type: idf
-    version: 5.5.3
+    version: 5.5.4
 direct_dependencies:
 - espressif/ethernet_init
 - idf
 manifest_hash: 7f9f595dc659adc4ff27607d47aae36b69be96fdadcbe96d761be3438c6ee25e
-target: esp32c3
+target: esp32s3
 version: 2.0.0
