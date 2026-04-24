@@ -13,13 +13,13 @@ jobs:
 
       - name: Load ESP-IDF
         run: |
-          source ~/esp-idf/export.sh
+          source "/mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh"
       - name: Clean build
         run: |
           rm -rf build
       - name: Build
         run: |
-          . $HOME/esp-idf/export.sh
+          source "/mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh"
           idf.py build
           
       - name: Flash ESP32
