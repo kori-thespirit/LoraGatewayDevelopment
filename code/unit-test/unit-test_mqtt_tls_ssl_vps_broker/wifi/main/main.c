@@ -7,8 +7,6 @@
 
 void app_main(void) {
   wifi_station_init();
-  /* Wait until obtain IP address before pinging */
-  vTaskDelay(10000 / portTICK_PERIOD_MS);
   // ESP_ERROR_CHECK(mqtt_app_start());
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
