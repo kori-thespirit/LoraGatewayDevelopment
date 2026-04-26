@@ -1,4 +1,15 @@
 #include "mqtts_app.h"
+#include "mqtt_client.h"
+#include "esp_check.h"
+#include "esp_event.h"
+#include "esp_log.h"
+#include "esp_system.h"
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/event_groups.h"
+
+static const char *TAG = "MQTT";
 
 /*
  * @brief Event handler registered to receive MQTT events
@@ -75,11 +86,9 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
   }
 }
 
-esp_err_t mqtt_app_start(void) {
+esp_err_t mqtts_app_start(void) {
   const esp_mqtt_client_config_t mqtt_cfg = {
-      .broker = {.address.uri = "mqtts://test.mosquitto.org",
-                 .verification.certificate =
-                     (const char *)mosquitto_org_crt_start},
+      .broker = {.address.uri = MQTT_URI}
   };
 
   ESP_LOGI(TAG, "[APP] Free memory: %" PRIu32 " bytes",

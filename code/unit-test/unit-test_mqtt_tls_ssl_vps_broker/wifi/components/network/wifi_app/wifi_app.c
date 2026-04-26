@@ -1,7 +1,4 @@
 #include <string.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/event_groups.h"
 #include "esp_system.h"
 #include "esp_wifi.h"
 #include "esp_event.h"
@@ -10,14 +7,10 @@
 #include "nvs_flash.h"
 
 
-static EventGroupHandle_t network_event_group;
-#define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT      BIT1
+static EventGroupHandle_t *eg;
 
-static const char *TAG = "wifi_test";
+static const char *TAG = "WiFi";
 static int s_retry_num = 0;
-
-static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
 
 static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data) {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
@@ -28,17 +21,17 @@ static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_
             s_retry_num++;
             ESP_LOGI(TAG, "Retry ... ");
         } else {
-            xEventGroupSetBits(network_event_group, WIFI_FAIL_BIT);
+            xEventGroupClearBits(*eg, NET_EG_BIT_GET_VALUE(NET_WIFI_IS_CONNECTED));
         }
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
         ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
         ESP_LOGI(TAG, "IP Address:" IPSTR, IP2STR(&event->ip_info.ip));
         s_retry_num = 0;
-        xEventGroupSetBits(network_event_group, WIFI_CONNECTED_BIT);
+        xEventGroupSetBits(*eg, NET_EG_BIT_GET_VALUE(NET_WIFI_IS_CONNECTED));
     }
 }
 
-void wifi_station_init()
+void wifi_station_init(EventGroupHandle_t *net_eg)
 {
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -46,7 +39,7 @@ void wifi_station_init()
         ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK(ret);
-    network_event_group = xEventGroupCreate();
+    eg = net_eg;
 
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
