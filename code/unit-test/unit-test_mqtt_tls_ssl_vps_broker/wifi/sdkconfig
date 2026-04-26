@@ -1788,6 +1788,13 @@ CONFIG_VFS_SEMIHOSTFS_MAX_MOUNT_POINTS=1
 
 CONFIG_VFS_INITIALIZE_DEV_NULL=y
 # end of Virtual file system
+
+#
+# WiFi Configuration
+#
+CONFIG_ESP_WIFI_SSID="KEESOORI"
+CONFIG_ESP_WIFI_PASSWORD="248715121a"
+# end of WiFi Configuration
 # end of Component config
 
 # CONFIG_IDF_EXPERIMENTAL_FEATURES is not set
