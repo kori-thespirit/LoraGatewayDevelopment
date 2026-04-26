@@ -1,0 +1,16 @@
+#include "esp_err.h"
+#include "wifi_app.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
+#include "freertos/task.h"
+#include <stdint.h>
+
+void app_main(void) {
+  wifi_station_init();
+  /* Wait until obtain IP address before pinging */
+  vTaskDelay(10000 / portTICK_PERIOD_MS);
+  // ESP_ERROR_CHECK(mqtt_app_start());
+  while (1) {
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+  }
+}
