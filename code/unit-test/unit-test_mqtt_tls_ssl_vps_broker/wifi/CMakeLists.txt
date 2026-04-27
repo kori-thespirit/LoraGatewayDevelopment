@@ -7,6 +7,11 @@ include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 idf_build_set_property(MINIMAL_BUILD ON)
 project(unit-test_mqtt_tls_ssl_vps_broker)
 
+set(CERTIFICATE_PATH components/network/mqtts/certificates)
+
+target_add_binary_data(${CMAKE_PROJECT_NAME}.elf "${CERTIFICATE_PATH}/client.crt" TEXT)
+target_add_binary_data(${CMAKE_PROJECT_NAME}.elf "${CERTIFICATE_PATH}/client.key" TEXT)
+target_add_binary_data(${CMAKE_PROJECT_NAME}.elf "${CERTIFICATE_PATH}/kolabori.crt" TEXT)
 
 
 

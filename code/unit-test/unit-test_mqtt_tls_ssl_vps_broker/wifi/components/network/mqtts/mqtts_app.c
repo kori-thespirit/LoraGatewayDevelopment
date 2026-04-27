@@ -11,6 +11,12 @@
 
 static const char *TAG = "MQTT";
 static EventGroupHandle_t *eg;
+extern const uint8_t client_cert_pem_start[] asm("_binary_client_crt_start");
+extern const uint8_t client_cert_pem_end[] asm("_binary_client_crt_end");
+extern const uint8_t client_key_pem_start[] asm("_binary_client_key_start");
+extern const uint8_t client_key_pem_end[] asm("_binary_client_key_end");
+extern const uint8_t server_cert_pem_start[] asm("_binary_kolabori_crt_start");
+extern const uint8_t server_cert_pem_end[] asm("_binary_kolabori_crt_end");
 /*
  * @brief Event handler registered to receive MQTT events
  *
@@ -88,8 +94,16 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
 
 esp_err_t mqtts_app_start(EventGroupHandle_t *net_eg) {
   const esp_mqtt_client_config_t mqtt_cfg = {
-      .broker = {.address.uri = MQTT_URI}
+    .broker.address.uri = MQTT_URI,
+    .broker.verification.certificate = (const char *)server_cert_pem_start,
+    .credentials = {
+      .authentication = {
+        .certificate = (const char *)client_cert_pem_start,
+        .key = (const char *)client_key_pem_start,
+      },
+    }
   };
+
 
   ESP_LOGI(TAG, "[APP] Free memory: %" PRIu32 " bytes",
            esp_get_free_heap_size());
