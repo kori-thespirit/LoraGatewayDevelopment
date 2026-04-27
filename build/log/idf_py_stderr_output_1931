@@ -1,9 +1,0 @@
-Command: cmake -G Unix Makefiles -B /home/tathuan/Project_B/usb_serial_jtag_echo/build -DPYTHON_DEPS_CHECKED=1 -DPYTHON=/home/tathuan/.espressif/python_env/idf6.1_py3.12_env/bin/python -DESP_PLATFORM=1 -DIDF_TARGET=esp32c3 -DCCACHE_ENABLE=False /home/tathuan/Project_B/usb_serial_jtag_echo
-Configuration Report               
- ───────────────────────────────── 
-   Parser Version: 1               
-   Verbosity: default              
-   Defaults policy: sdkconfig      
-   Status: Finished successfully   
-                                   
- ───────────────────────────────── 

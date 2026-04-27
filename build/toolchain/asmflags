@@ -1,3 +1,0 @@
--march=rv32imc_zicsr_zifencei
--mtune=esp-base
-"-specs=/home/tathuan/Project_B/usb_serial_jtag_echo/build/specs/picolibc.specs"
