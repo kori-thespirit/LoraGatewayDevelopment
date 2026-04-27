@@ -1836,9 +1836,9 @@ CONFIG_VFS_INITIALIZE_DEV_NULL=y
 #
 # Network Configuration
 #
-CONFIG_ESP_WIFI_SSID="Redmi 15 5G"
+CONFIG_ESP_WIFI_SSID="KEESOORI"
 CONFIG_ESP_WIFI_PASSWORD="248715121a"
-CONFIG_MQTT_URI="mqtts://14.225.202.16"
+CONFIG_MQTT_URI="mqtt://14.225.202.16"
 # end of Network Configuration
 # end of Component config
 

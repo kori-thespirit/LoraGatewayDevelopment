@@ -10,7 +10,7 @@
 #include "freertos/event_groups.h"
 
 static const char *TAG = "MQTT";
-
+static EventGroupHandle_t *eg;
 /*
  * @brief Event handler registered to receive MQTT events
  *
@@ -86,7 +86,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
   }
 }
 
-esp_err_t mqtts_app_start(void) {
+esp_err_t mqtts_app_start(EventGroupHandle_t *net_eg) {
   const esp_mqtt_client_config_t mqtt_cfg = {
       .broker = {.address.uri = MQTT_URI}
   };
