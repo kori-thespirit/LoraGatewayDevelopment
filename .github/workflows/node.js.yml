@@ -21,4 +21,7 @@ jobs:
         run: sleep 3
         
       - name: Run pytest
-        run: pytest -v -s test_v2.py
+        run: |
+          . /mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh
+          pip install -r tools/usb_cdc/python/requirements.txt
+          pytest -v -s tools/usb_cdc/python/test_v2.py
