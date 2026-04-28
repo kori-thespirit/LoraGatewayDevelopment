@@ -8,10 +8,13 @@
 #include "modbus_application_driver.h"
 #include "esp_log.h"
 
-static const char *TAG = "Gateway_GD20";
+static const char *TAG = "MAIN_APP";
 
-void app_main(void) {
-  
+static void invt_task(void *arg) {
+  modbus_init();
+  ESP_LOGI(TAG, "Khởi tạo thành công. Bắt đầu điều khiển biến tần...");
+
+  while (1) {
     printf("LOG START");
     // --- TRƯỜNG HỢP 1: KIỂM TRA TRẠNG THÁI HIỆN TẠI ---
     ESP_LOGW(TAG, ">>> TEST 1: Kiểm tra trạng thái và thông số trước khi chạy");
@@ -49,8 +52,13 @@ void app_main(void) {
     ESP_LOGW(TAG, ">>> TEST 6: Lệnh dừng động cơ (STOP)");
     modbud_write_register(GD20_SLAVE_ID,GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_STOP);
     printf("LOG END");
-
-    while(1){
-      vTaskDelay(pdMS_TO_TICKS(500));
-    }
+  }
+  
+ //vTaskDelete(NULL);
+  
+}
+void app_main(void) {
+  
+  // Tạo Task điều khiển
+    xTaskCreate(invt_task, "invt_task", 4096, NULL, 10, NULL);
 }
