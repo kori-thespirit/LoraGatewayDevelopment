@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  Load-Gateway-GD20-inverter:
+  Load-Gateway-GD20-inverter-firmware:
     runs-on: self-hosted
     steps:
       - name: Checkout
@@ -18,6 +18,10 @@ jobs:
           $IDF_PATH/tools/idf.py -p /dev/ttyACM0 build flash
 
   Log-Capture:
+    needs: Load-Gateway-GD20-inverter-firmware
+    if: |
+      always() &&
+      needs.Load-Gateway-GD20-inverter-firmware.result == 'success'
     runs-on: self-hosted
     steps:
       - name: Run log capturer
