@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  USB CDC HIL:
+  USB-CDC-HIL:
     runs-on: self-hosted
 
     steps:
