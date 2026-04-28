@@ -1,23 +1,25 @@
-name: Lora gateway Hardware-In-Loop test
+name: Lora gateway USB-CDC Hardware-In-Loop Test
 
 on:
   push:
 
 jobs:
-  USB-CDC-HIL:
+  Flash-Gateway-Firmware:
     runs-on: self-hosted
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: build flash monitor
+      - name: build flash
         run: |
           . /mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh
           cd tools/usb_cdc/esp32s3/
           $IDF_PATH/tools/idf.py set-target esp32s3
           $IDF_PATH/tools/idf.py -p /dev/ttyACM0 build flash
 
+  Python-test:
+    runs-on: self-hosted
+    steps:
       - name: Wait for boot
         run: sleep 3
         
