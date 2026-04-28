@@ -1,10 +1,10 @@
-name: ESP32 Hardware-In-Loop Test
+name: Lora gateway Hardware-In-Loop test
 
 on:
   push:
 
 jobs:
-  test-on-hardware:
+  USB CDC HIL:
     runs-on: self-hosted
 
     steps:
@@ -25,4 +25,4 @@ jobs:
         run: |
           . /mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh
           pip install -r tools/usb_cdc/python/requirements.txt
-          pytest -v -s tools/usb_cdc/python/test_v2.py
+          pytest -v -s tools/usb_cdc/python/usb-cdc_pytest.py
