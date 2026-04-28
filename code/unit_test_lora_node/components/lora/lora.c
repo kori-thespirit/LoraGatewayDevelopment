@@ -5,7 +5,7 @@
 #include "esp_log.h"
 #include "driver/spi_master.h"
 #include "driver/gpio.h"
-
+#include "lora.h"
 /*
  * Register definitions
  */

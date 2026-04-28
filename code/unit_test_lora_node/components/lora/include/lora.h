@@ -1,6 +1,8 @@
 #ifndef __LORA_H__
 #define __LORA_H__
 
+#include "define.h"
+
 void lora_reset(void);
 void lora_explicit_header_mode(void);
 void lora_implicit_header_mode(int size);
