@@ -15,7 +15,7 @@ jobs:
         run: |
           . /mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh
           $IDF_PATH/tools/idf.py set-target esp32s3
-          $IDF_PATH/tools/idf.py -p /dev/ttyACM0 build flash monitor
+          $IDF_PATH/tools/idf.py -p /dev/ttyACM0 build flash
 
       - name: Wait for boot
         run: sleep 3
