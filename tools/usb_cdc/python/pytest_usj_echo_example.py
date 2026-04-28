@@ -8,7 +8,7 @@ from pytest_embedded import Dut
 from pytest_embedded_idf.utils import idf_parametrize
 
 
-@pytest.mark.usj_device
+@pytest.mark.usb_device
 @idf_parametrize("target", ["esp32c3"], indirect=["target"])
 def test_usb_device_serial_echo_example(dut: Dut) -> None:
     dut.expect_exact("USB_SERIAL_JTAG init done")
