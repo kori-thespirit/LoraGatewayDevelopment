@@ -3,10 +3,10 @@
 
 #include "gd20_inverter.h"
 
-#define TXD_PIN                (17)
-#define RXD_PIN                (14)
-#define RTS_DE_PIN             (16) // Chân DE
-#define RE_PIN                 (15) // Chân RE riêng
+#define TXD_PIN                (5)
+#define RXD_PIN                (6)
+#define RTS_DE_PIN             (UART_PIN_NO_CHANGE) 
+#define RE_PIN                 (UART_PIN_NO_CHANGE) 
 #define CTS_PIN                (UART_PIN_NO_CHANGE)
 #define RS485_EN_PIN           12
 
