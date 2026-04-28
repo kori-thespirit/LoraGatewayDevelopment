@@ -28,4 +28,4 @@ jobs:
         run: |
           . /mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh
           pip install -r tools/usb_cdc/python/requirements.txt
-          pytest tools/usb_cdc/python/usb-cdc_pytest.py -m usj_device -s -vv
+          pytest tools/usb_cdc/python/usb-cdc_pytest.py -m usj_device -s -v
