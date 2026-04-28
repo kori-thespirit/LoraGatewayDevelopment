@@ -1,22 +1,20 @@
 # Unit Test: ESP32 Wi-Fi Station
 ## 1. Chức năng
-Khởi tạo NVS Flash (bắt buộc cho Wi-Fi stack).
-Kết nối Wi-Fi Station với cấu hình xác định.
-Xác nhận trạng thái qua Event Group (GOT_IP / CONNECT_FAIL).
-## 2. Cấu hình nhanh
-Thay đổi trực tiếp tại main/station_example_main.c:
+Test chức năng kết nối WiFi tới một mạng SSID nào đó
+## 2. Hướng dẫn cấu hình WiFi
+Thay đổi trực tiếp tại main/unit_test_wifi.c:
 ```raw
 #define WIFI_SSID      "IoTVision_2.4GHz"
 #define WIFI_PASS      "iotvision@2022"
 #define MAXIMUM_RETRY  5
 ```
 
-## 3. Thực thi
+## 3. Thao tác nạp chương trình
 ```raw
-idf.py set-target esp32
+idf.py set-target esp32s3
 idf.py -p COM? build flash monitor
 ```
-## 4. Dấu hiệu thành công
+## 4. Kết quả đạt được
 ```raw
 I (5002) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us
 I (5022) wifi:AP's beacon interval = 102400 us, DTIM period = 1
