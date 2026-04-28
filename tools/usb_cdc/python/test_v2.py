@@ -5,7 +5,7 @@ from pytest_embedded_idf.utils import idf_parametrize
 
 
 @pytest.mark.usj_device
-@idf_parametrize("target", ["esp32c3"], indirect=["target"])
+@idf_parametrize("target", ["esp32s3"], indirect=["target"])
 def test_cmd_parser(dut: Dut):
 
     time.sleep(2)
