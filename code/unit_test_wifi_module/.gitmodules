@@ -1,0 +1,6 @@
+[submodule "Lib/esp-idf-sx127x"]
+	path = Lib/esp-idf-sx127x
+	url = git@github.com:nopnop2002/esp-idf-sx127x.git
+[submodule "Lib/Lib/esp-modbus"]
+	path = Lib/Lib/esp-modbus
+	url = git@github.com:espressif/esp-modbus.git
