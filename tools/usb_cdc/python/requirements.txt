@@ -1,2 +1,4 @@
 pyserial
 pytest
+pytest_embedded
+pytest_embedded_idf
