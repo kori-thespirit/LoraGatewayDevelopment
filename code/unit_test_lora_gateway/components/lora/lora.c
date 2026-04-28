@@ -5,7 +5,7 @@
 #include "esp_log.h"
 #include "driver/spi_master.h"
 #include "driver/gpio.h"
-
+#include "lora.h"
 /*
  * Register definitions
  */
@@ -534,6 +534,7 @@ lora_init(void)
    gpio_reset_pin(CONFIG_CS_GPIO);
    gpio_set_direction(CONFIG_CS_GPIO, GPIO_MODE_OUTPUT);
    gpio_set_level(CONFIG_CS_GPIO, 1);
+   
 
    spi_bus_config_t bus = {
       .miso_io_num = CONFIG_MISO_GPIO,
