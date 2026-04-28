@@ -13,7 +13,8 @@ static const char *TAG = "MAIN_APP";
 static void invt_task(void *arg) {
   modbus_init();
   ESP_LOGI(TAG, "Khởi tạo thành công. Bắt đầu điều khiển biến tần...");
-
+  /* Delay long enough for python job to start */
+  vTaskDelay(pdMS_TO_TICKS(5000));
   while (1) {
     printf("LOG START\r\n");
     // --- TRƯỜNG HỢP 1: KIỂM TRA TRẠNG THÁI HIỆN TẠI ---
@@ -35,7 +36,7 @@ static void invt_task(void *arg) {
     // --- TRƯỜNG HỢP 3: LỆNH CHẠY THUẬN ---
     ESP_LOGW(TAG, ">>> TEST 4: Lệnh chạy thuận (FWD)");
     modbud_write_register(GD20_SLAVE_ID,GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_FWD); // Gửi lệnh chạy thuận
-    vTaskDelay(pdMS_TO_TICKS(10000));
+    vTaskDelay(pdMS_TO_TICKS(5000));
     modbud_read_single_register(GD20_SLAVE_ID,GD20_OPERATION_FREQ, 1); // Xem tần số đang lên chưa
     vTaskDelay(pdMS_TO_TICKS(500));
     modbud_read_single_register(GD20_SLAVE_ID,GD20_OUTPUT_CURRENT, 1); // Xem dòng điện
@@ -52,6 +53,8 @@ static void invt_task(void *arg) {
     ESP_LOGW(TAG, ">>> TEST 6: Lệnh dừng động cơ (STOP)");
     modbud_write_register(GD20_SLAVE_ID,GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_STOP);
     printf("LOG END\r\n");
+    /*  */
+    vTaskDelay(pdMS_TO_TICKS(20000));
   }
   
  //vTaskDelete(NULL);
