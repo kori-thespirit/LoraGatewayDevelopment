@@ -26,16 +26,21 @@ on:
           - Lora
           - USB-CDC
 
+
 jobs:
-  call_dispatch_workflow:
+  call_main_workflow:
+    runs-on: self-hosted
     if: ${{ github.event.inputs.workflow_type == 'main' }}
-      run: echo "Dispatch to main workflow"
-    if: ${{ github.event.inputs.workflow_type == 'unit-test' }}
-      run: |
-        echo "Dispatch to unit-test workflow"
-        echo "Testing project ${{ github.event.inputs.unit_test_project }} "
-    if: ${{ github.event.inputs.workflow_type == 'stub' }}
-      run: echo "Dispatch to stub workflow"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Dispatch
+        run: echo "Dispatch to main workflow"
+  call_experiment_debug_workflow:
+    runs-on: self-hosted
     if: ${{ github.event.inputs.workflow_type == 'experiment_debug' }}
-      uses: ./.github/workflows/experiment_debug_workflow.yml
-      run: echo "Dispatch to experiment_debug workflow"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Dispatch
+        uses: ./.github/workflows/experiment_debug_workflow.yml
