@@ -1,0 +1,18 @@
+name: Experiment and Debug workflow
+
+on:
+  workflow_call:
+    inputs:
+      unit_test_project:
+        required: true
+        type: string
+
+jobs:
+  experiment:
+    runs-on: self-hosted
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: experiment
+      run: |
+        echo " {{ github.event.inputs.unit_test_project }}

@@ -1,10 +1,14 @@
 name: Lora gateway Unit Test Hardware-In-Loop
 
 on:
-  push:
+  workflow_call:
+    inputs:
+      unit_test_project:
+        required: true
+        type: string
 
 jobs:
-  Load-Gateway-GD20-inverter-firmware:
+  Load_GD20_inverter_firmware:
     runs-on: self-hosted
     steps:
       - name: Checkout
@@ -17,11 +21,11 @@ jobs:
           $IDF_PATH/tools/idf.py set-target esp32s3
           $IDF_PATH/tools/idf.py -p /dev/ttyACM0 build flash
 
-  Log-Capture:
-    needs: Load-Gateway-GD20-inverter-firmware
+  Log_Capture:
+    needs: Load_GD20_inverter_firmware
+    # always() &&
     if: |
-      always() &&
-      needs.Load-Gateway-GD20-inverter-firmware.result == 'success'
+      needs.Load_GD20_inverter_firmware.result == 'success'
     runs-on: self-hosted
     steps:
       - name: Run log capturer

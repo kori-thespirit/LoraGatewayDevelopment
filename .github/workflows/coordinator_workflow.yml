@@ -1,0 +1,20 @@
+name: Coordinator workflow
+
+on:
+  push:
+    branches: 'SCRUM-87-Design-Github-Workflow'
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Person to greet'
+        default: 'World'
+        required: true
+        
+jobs:
+  greet:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Dispatch
+        run: echo "${{ github.event.inputs.name }}"
