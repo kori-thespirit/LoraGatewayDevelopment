@@ -15,7 +15,7 @@ name: Coordinator workflow
 on:
   workflow_dispatch:
     inputs:
-      environments:
+      environment:
           description: 'Select workflow to run'
           required: true
           type: choice
