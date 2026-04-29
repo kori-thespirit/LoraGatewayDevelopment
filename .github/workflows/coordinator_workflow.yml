@@ -1,47 +1,19 @@
 name: Coordinator workflow
 
-#          description: 'Select unit-test project to run'
-#          default: WiFi
-#          type: choice
-#          options:
-#            - RTC-DS3231
-#            - Inverter_GD20
-#            - WiFi
-#            - Ethernet
-#            - MQTTS
-#            - Lora
-#            - USB-CDC
-
 on:
   workflow_dispatch:
     inputs:
-      environment:
-          description: 'Select workflow to run'
-          required: true
-          type: choice
-          default: main
-          options:
-            - main
-            - unit-test
-            - stub
-            - experiment_debug
-
-
-
+      name:
+        description: 'Person to greet'
+        default: 'World'
+        required: true
+          
+            
 jobs:
-  call_main_workflow:
+  greet:
     runs-on: self-hosted
-    if: ${{ github.event.inputs.workflow_type == 'main' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Dispatch
-        run: echo "Dispatch to main workflow"
-  call_experiment_debug_workflow:
-    runs-on: self-hosted
-    if: ${{ github.event.inputs.workflow_type == 'experiment_debug' }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Dispatch
-        uses: ./.github/workflows/experiment_debug_workflow.yml
+        run: echo "Hello ${{ github.event.inputs.name }}"
