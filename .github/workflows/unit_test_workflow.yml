@@ -1,0 +1,32 @@
+name: Lora gateway Unit Test Hardware-In-Loop
+
+on:
+  push:
+
+jobs:
+  Load-Gateway-GD20-inverter-firmware:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: build and flash
+        run: |
+          . /mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh
+          cd code/unit-test/unit-test_gd20_inverter_lora_gateway/
+          $IDF_PATH/tools/idf.py set-target esp32s3
+          $IDF_PATH/tools/idf.py -p /dev/ttyACM0 build flash
+
+  Log-Capture:
+    needs: Load-Gateway-GD20-inverter-firmware
+    if: |
+      always() &&
+      needs.Load-Gateway-GD20-inverter-firmware.result == 'success'
+    runs-on: self-hosted
+    steps:
+      - name: Run log capturer
+        run: |
+          . /mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh
+          ls tools/cicd/
+          pip install -r tools/cicd/requirements.txt
+          python tools/cicd/log_capturer.py
