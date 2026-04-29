@@ -1,0 +1,14 @@
+name: Experiment and Debug workflow
+
+on:
+  workflow_call:
+    inputs:
+      unit_test_project:
+        required: true
+        type: choice
+
+jobs:
+  experiment:
+    run: |
+      echo " {{ github.event.inputs.unit_test_project }}
+  debug:

@@ -1,0 +1,41 @@
+name: Coordinator workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      workflow_type:
+        description: 'Select workflow to run'
+        required: true
+        type: choice
+        default: main
+        options:
+          - main
+          - unit-test
+          - stub
+          - experiment_debug
+      unit_test_project:
+        description: 'Select unit-test project to run'
+        default: WiFi
+        type: choice
+        options:
+          - RTC-DS3231
+          - Inverter_GD20
+          - WiFi
+          - Ethernet
+          - MQTTS
+          - Lora
+          - USB-CDC
+
+jobs:
+  call_dispatch_workflow:
+    if: ${{ github.event.inputs.workflow_type == 'main' }}
+      run: echo "Dispatch to main workflow"
+    if: ${{ github.event.inputs.workflow_type == 'unit-test' }}
+      run: |
+        echo "Dispatch to unit-test workflow"
+        echo "Testing project ${{ github.event.inputs.unit_test_project }} "
+    if: ${{ github.event.inputs.workflow_type == 'stub' }}
+      run: echo "Dispatch to stub workflow"
+    if: ${{ github.event.inputs.workflow_type == 'experiment_debug' }}
+      uses: ./.github/workflows/experiment_debug_workflow.yml
+      run: echo "Dispatch to experiment_debug workflow"

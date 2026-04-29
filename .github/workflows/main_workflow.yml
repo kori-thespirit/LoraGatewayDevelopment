@@ -1,0 +1,7 @@
+name: Lora gateway Main workflow
+
+on:
+  workflow_call:
+
+jobs:
+  Load_Gateway_firmware:

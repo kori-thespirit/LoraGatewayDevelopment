@@ -1,10 +1,14 @@
-name: Lora gateway USB-CDC Hardware-In-Loop Test
+name: Lora gateway USB-CDC stub Hardware-In-Loop Test
 
 on:
-  push:
+  workflow_call:
+    inputs:
+      unit_test_project:
+        required: true
+        type: choice
 
 jobs:
-  Flash-Gateway-Firmware:
+  Load_MCU_firmware:
     runs-on: self-hosted
     steps:
       - name: Checkout
@@ -18,12 +22,15 @@ jobs:
           $IDF_PATH/tools/idf.py set-target esp32s3
           $IDF_PATH/tools/idf.py -p /dev/ttyACM0 build flash
 
-  Python-test:
+  Python_test:
     runs-on: self-hosted
+    needs: Load_MCU_firmware
+    if: |
+      # always() &&
+      needs.Load_MCU_firmware.result == 'success'
     steps:
       - name: Wait for boot
         run: sleep 3
-        
       - name: Run pytest
         run: |
           . /mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh
