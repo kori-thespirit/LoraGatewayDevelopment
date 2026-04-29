@@ -5,7 +5,7 @@ on:
     inputs:
       unit_test_project:
         required: true
-        type: choice
+        type: string
 
 jobs:
   Load_GD20_inverter_firmware:
