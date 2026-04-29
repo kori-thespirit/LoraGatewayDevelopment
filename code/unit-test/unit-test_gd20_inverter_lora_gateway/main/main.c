@@ -13,8 +13,6 @@ static const char *TAG = "MAIN_APP";
 static void invt_task(void *arg) {
   modbus_init();
   ESP_LOGI(TAG, "Khởi tạo thành công. Bắt đầu điều khiển biến tần...");
-  /* Delay long enough for python job to start */
-  vTaskDelay(pdMS_TO_TICKS(10000));
   printf("LOG START\r\n");
   // --- TRƯỜNG HỢP 1: KIỂM TRA TRẠNG THÁI HIỆN TẠI ---
   ESP_LOGW(TAG, ">>> TEST 1: Kiểm tra trạng thái và thông số trước khi chạy");
@@ -54,7 +52,7 @@ static void invt_task(void *arg) {
   printf("LOG END\r\n");
   /*  */
   while (1) {
-    vTaskDelay(pdMS_TO_TICKS(20000));
+    vTaskDelay(pdMS_TO_TICKS(1000));
   }
   
  //vTaskDelete(NULL);

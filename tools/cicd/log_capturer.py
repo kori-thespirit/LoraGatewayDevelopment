@@ -1,3 +1,4 @@
+import time
 import serial
 import re
 import logging
@@ -6,6 +7,10 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     ser = serial.Serial("/dev/ttyACM0", 115200, timeout=1)
     print_output = 0
+    # Send reset ESP32, toggle RTS cause ESP32 go to download mode
+    ser.dtr = False
+    time.sleep(0.1)
+    ser.dtr = True    
     while True:
         data = ser.readline()
         if print_output == 0:
