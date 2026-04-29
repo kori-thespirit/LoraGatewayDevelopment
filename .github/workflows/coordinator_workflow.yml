@@ -1,6 +1,8 @@
 name: Coordinator workflow
 
 on:
+  push:
+    branches: 'SCRUM-87-Design-Github-Workflow'
   workflow_dispatch:
     inputs:
       name:
