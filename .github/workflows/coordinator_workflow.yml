@@ -1,15 +1,13 @@
 name: Coordinator workflow
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       name:
         description: 'Person to greet'
         default: 'World'
         required: true
-          
-            
+        
 jobs:
   greet:
     runs-on: self-hosted
