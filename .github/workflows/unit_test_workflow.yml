@@ -23,8 +23,8 @@ jobs:
 
   Log_Capture:
     needs: Load_GD20_inverter_firmware
+    # always() &&
     if: |
-      # always() &&
       needs.Load_GD20_inverter_firmware.result == 'success'
     runs-on: self-hosted
     steps:
