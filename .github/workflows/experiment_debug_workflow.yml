@@ -5,10 +5,14 @@ on:
     inputs:
       unit_test_project:
         required: true
-        type: choice
+        type: string
 
 jobs:
   experiment:
-    run: |
-      echo " {{ github.event.inputs.unit_test_project }}
-  debug:
+    runs-on: self-hosted
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: experiment
+      run: |
+        echo " {{ github.event.inputs.unit_test_project }}
