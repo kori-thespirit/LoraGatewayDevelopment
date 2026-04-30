@@ -15,16 +15,16 @@ on:
           - experiment_debug
       unit_test_project:
         description: 'Select unit-test project to run'
-        default: WiFi
+        default: unit-test_gd20_inverter_lora_gateway
         type: choice
         options:
-          - RTC-DS3231
-          - Inverter_GD20
-          - WiFi
-          - Ethernet
-          - MQTTS
-          - Lora
-          - USB-CDC
+          - unit-test_gd20_inverter_lora_gateway
+          - unit-test_gd20_inverter_lora_node
+          - unit-test_mqtts_cloud_vps_broker
+          - unit-test_rtc_ds3231
+          - unit-test_ethernet-w5500
+          - unit-test_usb_cdc
+            
 
         
 jobs:
