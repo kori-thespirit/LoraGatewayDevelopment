@@ -72,45 +72,46 @@ void invt_task(void* arg) {
 
     // --- GIAI ĐOẠN 1: LỆNH ĐIỀU KHIỂN BAN ĐẦU ---
     ESP_LOGI(TAG, "Cài đặt tần số 40Hz và Chạy thuận...");
-    modbud_write_register(GD20_SLAVE_ID, GD20_REG_SET_FREQ, 4000);  // 40.00 Hz
-    vTaskDelay(pdMS_TO_TICKS(100));                                 // Nghỉ ngắn giữa các lệnh Modbus
+    modbud_write_register(GD20_SLAVE_ID, GD20_REG_SET_FREQ, GD20_SET_FREQ_30HZ);  
+    vTaskDelay(pdMS_TO_TICKS(100));                                 
 
     modbud_write_register(GD20_SLAVE_ID, GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_FWD);
     vTaskDelay(pdMS_TO_TICKS(100));
+
     int count = 0;
     // --- GIAI ĐOẠN 2: VÒNG LẶP GIÁM SÁT (Polling Loop) ---
-    // Trong khi biến tần đang quay, ta liên tục hỏi các thông số
+
     while (1) {
         // Hỏi Tần số thực tế
         modbud_read_single_register(GD20_SLAVE_ID, GD20_OPERATION_FREQ, 1);
-        vTaskDelay(pdMS_TO_TICKS(200));  // Đợi biến tần phản hồi và giãn cách gói tin
-        count++;
-        // // Hỏi Dòng điện
-        // modbud_read_single_register(GD20_SLAVE_ID, GD20_OUTPUT_CURRENT, 1);
-        // vTaskDelay(pdMS_TO_TICKS(200));
+        vTaskDelay(pdMS_TO_TICKS(5000));  // Đợi biến tần phản hồi và giãn cách gói tin
+        
+        // Hỏi Dòng điện
+        modbud_read_single_register(GD20_SLAVE_ID, GD20_OUTPUT_CURRENT, 1);
+        vTaskDelay(pdMS_TO_TICKS(5000));
 
-        // // Hỏi Điện áp Bus
-        // modbud_read_single_register(GD20_SLAVE_ID, GD20_OUTPUT_VOLTAGE, 1);
-        // vTaskDelay(pdMS_TO_TICKS(200));
-        if (count == 20) {
+        // Hỏi Điện áp Bus
+        modbud_read_single_register(GD20_SLAVE_ID, GD20_OUTPUT_VOLTAGE, 1);
+        vTaskDelay(pdMS_TO_TICKS(5000));
+        count++;
+        if (count == 1) {
             ESP_LOGW(TAG, "!!! Đã đủ thời gian, ra lệnh STOP động cơ !!!");
             modbud_write_register(GD20_SLAVE_ID, GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_STOP);
+            vTaskDelay(pdMS_TO_TICKS(100));
         }
 
-        if (count > 40) {
+        if (count > 2) {
             ESP_LOGE(TAG, "Kết thúc chương trình test.");
             break;  // Thoát khỏi vòng lặp while
         }
-        // Bạn có thể thêm logic thay đổi tốc độ tại đây nếu cần
-        // Ví dụ: if (button_pressed) modbud_write_register(...);
+        
     }
     vTaskDelete(NULL);
 }
 void app_main(void) {
     modbus_init();
-    vTaskDelay(pdMS_TO_TICKS(100));  // Nghỉ một chút cho ổn định điện áp/UART
+    vTaskDelay(pdMS_TO_TICKS(100));  
     xTaskCreate(uart_event_task, "uart_event_task", 4096, NULL,12, NULL);
     vTaskDelay(pdMS_TO_TICKS(100));
-    // Tạo Task điều khiển
     xTaskCreate(invt_task, "invt_task", 4096, NULL, 10, NULL);
 }

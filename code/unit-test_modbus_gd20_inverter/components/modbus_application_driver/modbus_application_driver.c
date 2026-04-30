@@ -218,6 +218,7 @@ void uart_event_task(void* pvParameters) {
     for (;;) {
         // Đợi tín hiệu từ hàng đợi (không tốn CPU)
         if (xQueueReceive(uart0_queue, (void*)&event, portMAX_DELAY)) {
+            ESP_LOGI("INT", "Ngắt vừa đánh thức tôi!");
             bzero(dtmp, BUF_SIZE);
             switch (event.type) {
                 case UART_DATA:
@@ -242,6 +243,7 @@ void uart_event_task(void* pvParameters) {
                     break;
 
                 case UART_FIFO_OVF:
+                    ESP_LOGW("INT", "Ngắt báo: Tràn bộ đệm FIFO!");
                     uart_flush_input(UART_PORT);
                     xQueueReset(uart0_queue);
                     break;
