@@ -2,7 +2,6 @@
  *
  * This sample code is in the public domain.
  */
-/////////////////////////////abc
 #include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
