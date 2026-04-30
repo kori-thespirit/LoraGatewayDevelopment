@@ -53,7 +53,7 @@ static const uint16_t crc_table[256] = {
     0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040
 };
 
-// Hàm tính nhanh bằng bảng tra cứu
+// Hàm tính nhanh bằng bảng tra cứu CRC16 Modbus RTU
 // --- HÀM TÍNH TOÁN CRC16 MODBUS SỬ DỤNG BẢNG TRA ---
 uint16_t crc16_modbus(const uint8_t *data, uint16_t len) {
     uint16_t crc = 0xFFFF;
@@ -107,8 +107,8 @@ void modbud_write_register(uint8_t slave_id,uint16_t reg_addr, uint16_t value) {
     frame[5] = value & 0xFF;
 
     uint16_t crc = crc16_modbus(frame, 6);
-    frame[6] = crc & 0xFF;          // Byte thấp CRC
-    frame[7] = (crc >> 8) & 0xFF;   // Byte cao CRC
+    frame[6] = crc & 0xFF;          
+    frame[7] = (crc >> 8) & 0xFF;   
 
     uart_write_bytes(UART_PORT, (const char*)frame, 8);
     //ESP_LOGI(TAG, "Gửi lệnh: Reg 0x%04X = 0x%04X (CRC: 0x%04X)", reg_addr, value, crc);
@@ -124,8 +124,8 @@ esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint
     frame[5] = value & 0xFF;
 
     uint16_t crc = crc16_modbus(frame, 6);
-    frame[6] = crc & 0xFF;          // Byte thấp CRC
-    frame[7] = (crc >> 8) & 0xFF;   // Byte cao CRC
+    frame[6] = crc & 0xFF;          
+    frame[7] = (crc >> 8) & 0xFF;   
 
     uart_write_bytes(UART_PORT, (const char*)frame, 8);
     //ESP_LOGI(TAG, "Gửi lệnh: Reg 0x%04X = 0x%04X (CRC: 0x%04X)", reg_addr, value, crc);
@@ -156,7 +156,7 @@ esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint
         return ESP_ERR_TIMEOUT;
     }
 
-    // Kiểm tra CRC của phản hồi
+    // Kiểm tra mã CRC của dữ liệu phản hồi từ biến tần
     uint16_t expected_crc = crc16_modbus(response, len - 2);
     uint16_t received_crc = (response[len - 1] << 8) | response[len - 2];
 
@@ -210,15 +210,14 @@ void modbud_read_single_register(uint8_t slave_id, uint16_t reg_addr, uint8_t co
     //         ESP_LOGE(MASTER, "Không nhận được phản hồi từ biến tần!");
     //     }
 }
-// --- HÀM NGẮT XỬ LÝ SỰ KIỆN (Trái tim của thư viện) ---
+// --- HÀM NGẮT XỬ LÝ SỰ KIỆN ---
 void uart_event_task(void* pvParameters) {
     uart_event_t event;
     uint8_t* dtmp = (uint8_t*)malloc(BUF_SIZE);
 
     for (;;) {
-        // Đợi tín hiệu từ hàng đợi (không tốn CPU)
         if (xQueueReceive(uart0_queue, (void*)&event, portMAX_DELAY)) {
-            ESP_LOGI("INT", "Ngắt vừa đánh thức tôi!");
+            ESP_LOGI("INT", "Đã xảy ra ngắt");
             bzero(dtmp, BUF_SIZE);
             switch (event.type) {
                 case UART_DATA:
@@ -231,7 +230,7 @@ void uart_event_task(void* pvParameters) {
                             // 2. Phân tích gói tin dựa trên Function Code
                             if (dtmp[1] == FUNC_READ_REG) {
                                 uint16_t val = (dtmp[3] << 8) | dtmp[4];
-                                // Gọi hàm xử lý logic bạn đã viết
+                                // Xử lý dữ liệu biến tần
                                 process_inverter_data(current_reading_reg, val);
                             } else if (dtmp[1] == FUNC_WRITE_REG) {
                                 ESP_LOGI(GD20, "Ghi thành công thanh ghi 0x%04X", (dtmp[2] << 8) | dtmp[3]);
@@ -243,7 +242,7 @@ void uart_event_task(void* pvParameters) {
                     break;
 
                 case UART_FIFO_OVF:
-                    ESP_LOGW("INT", "Ngắt báo: Tràn bộ đệm FIFO!");
+                    ESP_LOGW("INT", "Tràn bộ đệm FIFO!");
                     uart_flush_input(UART_PORT);
                     xQueueReset(uart0_queue);
                     break;
@@ -286,9 +285,9 @@ void modbus_init() {
     // 4. Chế độ RS485 Half Duplex (Tự động kéo DE lên 1 khi gửi)
     ESP_ERROR_CHECK(uart_set_mode(UART_PORT, UART_MODE_RS485_HALF_DUPLEX));
 
-    // Set uart pattern detect function.
+    // 5.Cấu hình đọc mẫu dữ liệu từ bién tần khi có dữ liệu mới (Pattern Detection)
     uart_enable_pattern_det_baud_intr(UART_PORT, '+', PATTERN_CHR_NUM, 9, 0, 0);
-    // Reset the pattern queue length to record at most 20 pattern positions.
+    // 6. Reset lại queue để tránh nhận phải dữ liệu rác cũ
     uart_pattern_queue_reset(UART_PORT, 20);
     
     // 5. Bật nguồn module RS485 
