@@ -1,10 +1,11 @@
 name: Experiment and Debug workflow
 
 on:
+  push:
+    branches: 'SCRUM-87-Design-Github-Workflow'
   workflow_call:
     inputs:
       unit_test_project:
-        required: true
         type: string
 
 jobs:
