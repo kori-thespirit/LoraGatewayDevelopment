@@ -11,8 +11,8 @@ jobs:
   experiment:
     runs-on: self-hosted
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: experiment
-      run: |
-        echo " {{ github.event.inputs.unit_test_project }}
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: experiment
+        run: |
+          echo " ${{ github.event.inputs.unit_test_project }} "
