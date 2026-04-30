@@ -7,6 +7,7 @@
 void app_main(void) {
   printf("LOG START\r\n");
   w5500_init();
+  vTaskDelay(2000 / portTICK_PERIOD_MS);
   printf("LOG END\r\n");
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
