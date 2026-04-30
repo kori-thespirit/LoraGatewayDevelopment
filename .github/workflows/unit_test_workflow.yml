@@ -4,7 +4,6 @@ on:
   workflow_call:
     inputs:
       unit_test_project:
-        required: true
         type: string
 
 jobs:
