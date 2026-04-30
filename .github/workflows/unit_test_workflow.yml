@@ -18,6 +18,7 @@ jobs:
       - name: build and flash
         run: |
           if [[ "${{ github.event.inputs.unit_test_project }}" == "unit-test_mqtts_cloud_vps_broker" ]]; then
+            echo "ABC"
           else
             PROJECT_PATH="${{ vars.UNIT_TEST_PATH }}/${{ github.event.inputs.unit_test_project }}"
             . /mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh
