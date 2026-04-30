@@ -6,9 +6,6 @@ on:
       unit_test_project:
         type: string
 
-env:
-  unit_test_path: "code/unit-test"
-
 jobs:
   experiment:
     runs-on: self-hosted
@@ -21,7 +18,7 @@ jobs:
         shell: bash
         run: |
           echo "Using project unit-test ${{ github.event.inputs.unit_test_project }}"
-          PROJECT_PATH="${{ env.unit_test_path }}/${{ github.event.inputs.unit_test_project }}"
+          PROJECT_PATH="${{ env.UNIT_TEST_PATH }}/${{ github.event.inputs.unit_test_project }}"
           if [[ "${{ github.event.inputs.unit_test_project }}" == "unit-test_mqtts_cloud_vps_broker" ]]; then
             CERTIFICATE_PATH="${PROJECT_PATH}/components/network/mqtts/certificates"
             echo "Run project ${{ github.event.inputs.unit_test_project }} needs to add certificate first"
