@@ -1,8 +1,6 @@
 name: Coordinator workflow
 
 on:
-  push:
-    branches: 'SCRUM-87-Design-Github-Workflow'
   workflow_dispatch:
    inputs:
       workflow_type:
@@ -12,7 +10,7 @@ on:
         default: main
         options:
           - main
-          - unit-test
+          - unit_test
           - stub
           - experiment_debug
       unit_test_project:
@@ -30,8 +28,7 @@ on:
 
         
 jobs:
-  call_experiment_debug_workflow:
-    if: ${{ github.event.inputs.workflow_type == 'experiment_debug' }}
+  call_experiment_debug:
     uses: kori-thespirit/LoraGatewayDevelopment/.github/workflows/experiment_debug_workflow.yml@SCRUM-87-Design-Github-Workflow
     with:
       unit_test_project: ${{ github.event.inputs.unit_test_project }}
