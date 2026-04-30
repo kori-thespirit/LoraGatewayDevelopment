@@ -32,7 +32,7 @@ on:
 jobs:
   call_unit_test:
     if: ${{ github.event.inputs.workflow_type == 'unit_test' }}
-    uses: kori-thespirit/LoraGatewayDevelopment/.github/workflows/unit_test_workflow.yml@SCRUM-87-Design-Github-Workflow
+    uses: ./.github/workflows/unit_test_workflow.yml
     with:
       unit_test_project: ${{ github.event.inputs.unit_test_project }}
  # call_experiment_debug:
