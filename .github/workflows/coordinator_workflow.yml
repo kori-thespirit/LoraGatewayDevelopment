@@ -31,10 +31,7 @@ on:
         
 jobs:
   call_experiment_debug_workflow:
-    runs-on: self-hosted
     if: ${{ github.event.inputs.workflow_type == 'experiment_debug' }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Dispatch
-        uses: ./.github/workflows/experiment_debug_workflow.yml
+    uses: kori-thespirit/LoraGatewayDevelopment/.github/workflows/experiment_debug_workflow.yml@SCRUM-87-Design-Github-Workflow
+    with:
+      unit_test_project: ${{ github.event.inputs.unit_test_project }}
