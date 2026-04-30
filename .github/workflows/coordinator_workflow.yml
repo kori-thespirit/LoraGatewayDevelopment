@@ -4,17 +4,37 @@ on:
   push:
     branches: 'SCRUM-87-Design-Github-Workflow'
   workflow_dispatch:
-    inputs:
-      name:
-        description: 'Person to greet'
-        default: 'World'
+   inputs:
+      workflow_type:
+        description: 'Select workflow to run'
         required: true
+        type: choice
+        default: main
+        options:
+          - main
+          - unit-test
+          - stub
+          - experiment_debug
+      unit_test_project:
+        description: 'Select unit-test project to run'
+        default: WiFi
+        type: choice
+        options:
+          - RTC-DS3231
+          - Inverter_GD20
+          - WiFi
+          - Ethernet
+          - MQTTS
+          - Lora
+          - USB-CDC
+
         
 jobs:
-  greet:
+  call_experiment_debug_workflow:
     runs-on: self-hosted
+    if: ${{ github.event.inputs.workflow_type == 'experiment_debug' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Dispatch
-        run: echo "${{ github.event.inputs.name }}"
+        uses: ./.github/workflows/experiment_debug_workflow.yml
