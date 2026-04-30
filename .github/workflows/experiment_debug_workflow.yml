@@ -26,8 +26,8 @@ jobs:
             CERTIFICATE_PATH="${PROJECT_PATH}/components/network/mqtts/certificates"
             echo "Run project ${{ github.event.inputs.unit_test_project }} needs to add certificate first"
             echo "At path ${CERTIFICATE_PATH}"
-            tree -L5 ${PROJECT_PATH}
+            tree -L 5 ${PROJECT_PATH}
           else
             echo "Run project ${{ github.event.inputs.unit_test_project }} at the path ${PROJECT_PATH}"
-            tree -L3 ${PROJECT_PATH}
+            tree -L 3 ${PROJECT_PATH}
           fi
