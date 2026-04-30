@@ -24,11 +24,19 @@ on:
           - unit-test_rtc_ds3231
           - unit-test_ethernet-w5500
           - unit-test_usb_cdc
-            
+      experiment_debug_string:
+        description: 'Argument to pass into experiment debug workflow'
+        default: "Hello World"
+        type: string
 
-        
 jobs:
   call_experiment_debug:
+    if: ${{ github.event.inputs.workflow_type == 'experiment_debug' }}
     uses: kori-thespirit/LoraGatewayDevelopment/.github/workflows/experiment_debug_workflow.yml@SCRUM-87-Design-Github-Workflow
     with:
-      unit_test_project: ${{ github.event.inputs.unit_test_project }}
+      experiment_debug_string: ${{ github.event.inputs.experiment_debug_string }}
+  call_unit_test:
+    if: ${{ github.event.inputs.workflow_type == 'unit_test' }}
+    uses: kori-thespirit/LoraGatewayDevelopment/.github/workflows/unit_test_workflow.yml@SCRUM-87-Design-Github-Workflow
+    with:
+      experiment_debug_string: ${{ github.event.inputs.unit_test_project }}
