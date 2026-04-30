@@ -11,9 +11,9 @@
 static const char *TAG = "MAIN_APP";
 
 static void invt_task(void *arg) {
+  printf("LOG START\r\n");
   modbus_init();
   ESP_LOGI(TAG, "Khởi tạo thành công. Bắt đầu điều khiển biến tần...");
-  printf("LOG START\r\n");
   // --- TRƯỜNG HỢP 1: KIỂM TRA TRẠNG THÁI HIỆN TẠI ---
   ESP_LOGW(TAG, ">>> TEST 1: Kiểm tra trạng thái và thông số trước khi chạy");
   modbud_read_single_register(GD20_SLAVE_ID,GD20_REG_STATUS, 1);      // Đọc trạng thái (2100H)

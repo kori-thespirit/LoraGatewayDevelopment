@@ -3,8 +3,7 @@ name: Experiment and Debug workflow
 on:
   workflow_call:
     inputs:
-      unit_test_project:
-        required: true
+      experiment_debug_string:
         type: string
 
 jobs:
@@ -13,6 +12,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          experiment_debug_string: ${{ github.event.inputs.experiment_debug_string }}
       - name: experiment
+        shell: bash
         run: |
-          echo " {{ github.event.inputs.unit_test_project }}
+          echo "Print the passed argument: ${{ github.event.inputs.experiment_debug_string }}"

@@ -4,28 +4,33 @@ on:
   workflow_call:
     inputs:
       unit_test_project:
-        required: true
         type: string
 
 jobs:
-  Load_GD20_inverter_firmware:
+  Load_MCU_firmware:
     runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          unit_test_project: ${{ github.event.inputs.unit_test_project }}
 
       - name: build and flash
         run: |
-          . /mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh
-          cd code/unit-test/unit-test_gd20_inverter_lora_gateway/
-          $IDF_PATH/tools/idf.py set-target esp32s3
-          $IDF_PATH/tools/idf.py -p /dev/ttyACM0 build flash
+          if [[ "${{ github.event.inputs.unit_test_project }}" == "unit-test_mqtts_cloud_vps_broker" ]]; then
+            echo "ABC"
+          else
+            PROJECT_PATH="${{ vars.UNIT_TEST_PATH }}/${{ github.event.inputs.unit_test_project }}"
+            . /mnt/hdd_WD10JPVT_1TB/p256GB/share-resource/.espressif/tools/activate_idf_v5.5.4.sh
+            cd $PROJECT_PATH
+            $IDF_PATH/tools/idf.py -p ${{ vars.UNIX_USB_PORT_0 }} build flash
+          fi
 
   Log_Capture:
-    needs: Load_GD20_inverter_firmware
+    needs: Load_MCU_firmware
     # always() &&
     if: |
-      needs.Load_GD20_inverter_firmware.result == 'success'
+      needs.Load_MCU_firmware.result == 'success'
     runs-on: self-hosted
     steps:
       - name: Run log capturer
