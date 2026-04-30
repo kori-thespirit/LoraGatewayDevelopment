@@ -6,6 +6,9 @@ on:
       unit_test_project:
         type: string
 
+env:
+  unit_test_path: "code/unit-test"
+
 jobs:
   experiment:
     runs-on: self-hosted
@@ -15,6 +18,13 @@ jobs:
         with:
           unit_test_project: ${{ github.event.inputs.unit_test_project }}
       - name: experiment
+        shell: bash
         run: |
-          echo " ${{ github.event.inputs.unit_test_project }} "
           echo "Using project unit-test ${{ github.event.inputs.unit_test_project }}"
+          PROJECT_PATH="${{ env.unit_test_path }}/unit-test_rtc_ds3231"
+          if [[ "${{ github.event.inputs.unit_test_project }}" == "RTC-DS3231" ]]; then
+            echo "Run project ${{ github.event.inputs.unit_test_project }} at the path ${PROJECT_PATH}"
+            ls ${PROJECT_PATH}
+          else
+            echo "Fail to run unit-test project"
+          fi
