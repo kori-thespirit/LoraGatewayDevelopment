@@ -10,13 +10,12 @@
 
 static char TAG[] = "SHT20_RS485";
 
-// Định nghĩa cứng các chân theo sơ đồ của bạn
-#define TXD_PIN (17)
-#define RXD_PIN (14)
-#define RTS_DE_PIN (16)  // Chân DE
-#define RE_PIN (15)      // Chân RE riêng
-#define CTS_PIN (UART_PIN_NO_CHANGE)
-#define RS485_EN_PIN (12)
+#define TXD_PIN         (17)
+#define RXD_PIN         (14)
+#define RTS_DE_PIN      (16)  // Chân DE
+#define RE_PIN          (15)  // Chân RE riêng
+#define CTS_PIN         (UART_PIN_NO_CHANGE)
+#define RS485_EN_PIN    (12)
 
 #define UART_PORT (UART_NUM_2)
 #define BAUD_RATE (9600)
