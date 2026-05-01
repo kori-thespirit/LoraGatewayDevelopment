@@ -26,7 +26,7 @@ bool GD20_Slave_RTU_Init(GD20_Slave_t *ctx) {
 	_flags = &ctx->flags;
 	_flags->DMA_TX_Complete = 1;
 	memset(&ctx->rx_frame, 0, sizeof(RTU_Contex_Write_t));
-	memset(&ctx->tx_frame, 0, sizeof(RTU_Contex_Write_t));
+	memset(&ctx->tx_write_frame, 0, sizeof(RTU_Contex_Write_t));
 
 
 	ctx->GD20_Status.Motor_Control = Motor_FORWARD_JOGGING;
@@ -79,17 +79,17 @@ void GD20_Slave_Process(GD20_Slave_t *ctx){
 }
 void GD20_Slave_SendWriteResponse(GD20_Slave_t *ctx,uint8_t comnand,uint16_t parametter_address,uint16_t command_address){
 		_flags->DMA_TX_Complete = 0;
-		ctx->tx_frame = (RTU_Contex_Write_t) {
+		ctx->tx_write_frame = (RTU_Contex_Write_t) {
 					.inverter_address = ctx->VFD_SLAVE_ID,
 					.function_code = comnand,
 					.parametter_address = parametter_address,
 					.command_address = command_address,
 		};
-		uint16_t crc = modbus_crc16((uint8_t *)&ctx->tx_frame, 6);
-		ctx->tx_frame.CRC_CHECK = (crc << 8) | (crc >> 8);
+		uint16_t crc = modbus_crc16((uint8_t *)&ctx->tx_write_frame, 6);
+		ctx->tx_write_frame.CRC_CHECK = (crc << 8) | (crc >> 8);
 
-		HAL_UART_Transmit_DMA(ctx->huart,(uint8_t *)&ctx->tx_frame, 8);
-//		HAL_UART_Transmit(ctx->huart, (uint8_t *)&ctx->tx_frame, sizeof(ctx->tx_frame), HAL_MAX_DELAY);
+		HAL_UART_Transmit_DMA(ctx->huart,(uint8_t *)&ctx->tx_write_frame, 8);
+//		HAL_UART_Transmit(ctx->huart, (uint8_t *)&ctx->tx_write_frame, sizeof(ctx->tx_write_frame), HAL_MAX_DELAY);
 
 }
 void GD20_Slave_SendReadResponse(GD20_Slave_t *ctx,uint8_t comnand,uint8_t number_of_byte ,uint16_t content){
@@ -104,7 +104,7 @@ void GD20_Slave_SendReadResponse(GD20_Slave_t *ctx,uint8_t comnand,uint8_t numbe
 		ctx->tx_read_frame.CRC_CHECK = (crc << 8) | (crc >> 8);
 
 		HAL_UART_Transmit_DMA(ctx->huart,(uint8_t *)&ctx->tx_read_frame, 7);
-//		HAL_UART_Transmit(ctx->huart, (uint8_t *)&ctx->tx_frame, sizeof(ctx->tx_frame), HAL_MAX_DELAY);
+//		HAL_UART_Transmit(ctx->huart, (uint8_t *)&ctx->tx_write_frame, sizeof(ctx->tx_write_frame), HAL_MAX_DELAY);
 
 }
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {

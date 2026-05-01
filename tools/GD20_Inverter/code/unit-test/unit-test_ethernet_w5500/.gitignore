@@ -1,5 +1,0 @@
-build
-__cmake*
-.cache
-managed_components
-*.old

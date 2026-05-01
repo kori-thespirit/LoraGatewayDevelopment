@@ -1,4 +1,0 @@
-hardware/*
-!hardware/gateway_hardware_schematic/
-hardware/gateway_hardware_schematic/*
-!hardware/gateway_hardware_schematic/*.kicad_*

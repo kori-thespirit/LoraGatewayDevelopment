@@ -70,7 +70,7 @@ typedef struct {
     GD20_Inverter_Status GD20_Status;
     flags flags;
     RTU_Contex_Write_t rx_frame;
-    RTU_Contex_Write_t tx_frame;
+    RTU_Contex_Write_t tx_write_frame;
     RTU_Contex_Read_t  tx_read_frame;
     uint8_t VFD_SLAVE_ID;
 
