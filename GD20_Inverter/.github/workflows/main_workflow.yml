@@ -1,0 +1,15 @@
+name: Lora gateway Main workflow
+
+on:
+  workflow_call:
+
+jobs:
+  Load_Gateway_firmware:
+    runs-on: self-hosted
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run main workflow
+      run: | 
+        echo "Placeholder for main job"
+
