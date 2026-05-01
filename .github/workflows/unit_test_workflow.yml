@@ -19,7 +19,7 @@ jobs:
         run: |
           PROJECT_PATH="${{ vars.UNIT_TEST_PATH }}/${{ github.event.inputs.unit_test_project }}"
           if [[ "${{ github.event.inputs.unit_test_project }}" == "unit-test_mqtts_cloud_vps_broker" ]]; then
-            CLIENT_CERT_PATH="$PROJECT_PATH/components/network/mqtts/certificates
+            CLIENT_CERT_PATH="$PROJECT_PATH/components/network/mqtts/certificates"
             mkdir -p $CLIENT_CERT_PATH 
             . ${{ vars.HOST_RUNNER_PATH }}/copy_cert_to_cicd_runner.sh $CLIENT_CERT_PATH
           fi
