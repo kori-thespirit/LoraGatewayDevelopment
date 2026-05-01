@@ -13,7 +13,6 @@ cd code
 cd unit_test_lora_gateway
 ```
 ## 2. Nạp code 
-
 ```raw
 idf.py set-target esp32s3
 idf.py -p COM? build flash monitor
