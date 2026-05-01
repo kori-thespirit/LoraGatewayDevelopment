@@ -41,6 +41,7 @@ static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_
 
 void wifi_init_sta(void) {
     s_wifi_event_group = xEventGroupCreate();
+    printf("LOG START\r\n");
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     esp_netif_create_default_wifi_sta();
@@ -68,6 +69,7 @@ void wifi_init_sta(void) {
     } else {
         ESP_LOGE(TAG, "KẾT NỐI THẤT BẠI");
     }
+    printf("LOG END\r\n");
 }
 
 void app_main(void) {
