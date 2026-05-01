@@ -1,5 +1,5 @@
-# Hướng dẫn bắt đầu với Unit Test LoRa Gateway
-Folder unit_test_lora_gateway được thiết kế để kiểm tra khả năng gửi dữ liệu từ ESP32 qua module LoRa SX127x.
+# Hướng dẫn bắt đầu với Unit Test LoRa Node
+Folder unit_test_lora_node được thiết kế để kiểm tra khả năng gửi dữ liệu từ ESP32 qua module LoRa SX127x.
 ## 1. Clone Project và Chuyển nhánh
 
 ### Clone toàn bộ dự án
@@ -7,7 +7,7 @@ Folder unit_test_lora_gateway được thiết kế để kiểm tra khả năng
 git clone https://github.com/kori-thespirit/LoraGatewayDevelopment.git
 cd LoraGatewayDevelopment
 ```
-### Truy cập folder unit_test_lora_gateway
+### Truy cập folder unit_test_lora_node
 ```raw
 cd code
 cd unit_test_lora_node
