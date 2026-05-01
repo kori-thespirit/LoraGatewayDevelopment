@@ -34,6 +34,7 @@ void app_main(void) {
   else {
     ESP_LOGE(TAG, "Failed to connect to network");
   }
+  vTaskDelay(15000 / portTICK_PERIOD_MS);
   printf("LOG END\r\n");
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
