@@ -10,7 +10,7 @@
 #define I2C_MASTER_SDA_IO  GPIO_NUM_11
 #define DS3231_ADDR        0x68
 
-static const char *TAG = "RTC_TEST";
+static const char *TAG = "RTC_DS3231";
 
 // Function to convert decimal to BCD
 static uint8_t dec_to_bcd(uint8_t dec)
@@ -53,6 +53,7 @@ static void ds3231_set_datetime(uint8_t second, uint8_t minute, uint8_t hour,
 
 void app_main(void)
 {
+    printf("LOG START\r\n");
     ESP_LOGI(TAG, "=== DS3231 RTC Test Started ===");
     
     // Initialize I2C
@@ -142,6 +143,7 @@ void app_main(void)
             ESP_LOGE(TAG, "Failed to read DS3231!");
         }
         
+        printf("LOG END\r\n");
         vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }

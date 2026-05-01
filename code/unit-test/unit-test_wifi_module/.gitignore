@@ -1,0 +1,6 @@
+"D:\02_Eng_Project\03_Main_Project\03_Project_LAB\01_Project\Unit_test\Unit_test_wifi\Lib\esp-idf-sx127x"
+"D:\02_Eng_Project\03_Main_Project\03_Project_LAB\01_Project\Unit_test\Unit_test_wifi\Lib\esp-modbus"
+sdkconfig.old
+build
+.vscode
+sdkconfig
