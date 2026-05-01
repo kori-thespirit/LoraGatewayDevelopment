@@ -7,7 +7,7 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 
-#define TAG "SHT20_RS485"
+char TAG[] = "SHT20_RS485";
 
 // Định nghĩa cứng các chân theo sơ đồ của bạn
 #define TXD_PIN                (17)
