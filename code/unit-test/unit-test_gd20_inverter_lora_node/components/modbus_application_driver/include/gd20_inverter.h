@@ -3,7 +3,7 @@
 
 // GD20 registers
 #define GD20_SLAVE_ID                       0x01
-#define GD20_RESP_CODE_FAULT                0x86
+#define GD20_RESP_CODE_FAULT                0x80
 #define GD20_REG_CONTROL_CMD                0x2000  // Thanh ghi lệnh chạy/dừng
 #define GD20_REG_SET_FREQ                   0x2001  // Thanh ghi đặt tần số
 #define GD20_REG_SET_TORQUE                 0x2004  // Thanh ghi đặt moment
