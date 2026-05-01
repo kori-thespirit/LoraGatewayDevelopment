@@ -10,57 +10,52 @@
 
 static const char *TAG = "MAIN_APP";
 
-static void invt_task(void *arg) {
-  modbus_init();
-  ESP_LOGI(TAG, "Khởi tạo thành công. Bắt đầu điều khiển biến tần...");
+void invt_task(void* arg) {
+    
+    vTaskDelay(pdMS_TO_TICKS(500));
 
-  while (1) {
-    // --- TRƯỜNG HỢP 1: KIỂM TRA TRẠNG THÁI HIỆN TẠI ---
-        ESP_LOGW(TAG, ">>> TEST 1: Kiểm tra trạng thái và thông số trước khi chạy");
-        modbud_read_single_register(GD20_SLAVE_ID,GD20_REG_STATUS, 1);      // Đọc trạng thái (2100H)
-        vTaskDelay(pdMS_TO_TICKS(500));
-        modbud_read_single_register(GD20_SLAVE_ID,GD20_OPERATION_FREQ, 1); // Đọc tần số thực (3000H)
-        vTaskDelay(pdMS_TO_TICKS(500));
+    // --- GIAI ĐOẠN 1: KHỞI TẠO THÔNG SỐ BIẾN TẦN ---
+    ESP_LOGI(TAG, "Cài đặt tần số 40Hz và Chạy thuận...");
+    modbud_write_register(GD20_SLAVE_ID, GD20_REG_SET_FREQ, GD20_SET_FREQ_30HZ);  
+    vTaskDelay(pdMS_TO_TICKS(100));                                 
 
-        // --- TRƯỜNG HỢP 2: CÀI ĐẶT TẦN SỐ 50HZ ---
-        ESP_LOGW(TAG, ">>> TEST 2: Cài đặt tần số mục tiêu 50Hz");
-        modbud_write_register_with_fb(GD20_SLAVE_ID,GD20_REG_SET_FREQ, 50000);
-        vTaskDelay(pdMS_TO_TICKS(500));
+    modbud_write_register(GD20_SLAVE_ID, GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_FWD);
+    vTaskDelay(pdMS_TO_TICKS(100));
 
-        ESP_LOGW(TAG, ">>> TEST 3: Cài đặt tần số mục tiêu 50Hz");
-        modbud_write_register_with_fb(GD20_SLAVE_ID,GD20_REG_SET_FREQ, 5000);
-        vTaskDelay(pdMS_TO_TICKS(500));
+    int count = 0;
+    // --- GIAI ĐOẠN 2: CHẠY TASK BIẾN TẦN ---
 
-        // --- TRƯỜNG HỢP 3: LỆNH CHẠY THUẬN ---
-        ESP_LOGW(TAG, ">>> TEST 4: Lệnh chạy thuận (FWD)");
-        modbud_write_register(GD20_SLAVE_ID,GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_FWD); // Gửi lệnh chạy thuận
-        vTaskDelay(pdMS_TO_TICKS(10000));
-        modbud_read_single_register(GD20_SLAVE_ID,GD20_OPERATION_FREQ, 1); // Xem tần số đang lên chưa
-        vTaskDelay(pdMS_TO_TICKS(500));
-        modbud_read_single_register(GD20_SLAVE_ID,GD20_OUTPUT_CURRENT, 1); // Xem dòng điện
-        vTaskDelay(pdMS_TO_TICKS(500));
+    while (1) {
+        // Lấy thông tin tần số hoạt động của biến tần
+        modbud_read_single_register(GD20_SLAVE_ID, GD20_OPERATION_FREQ, 1);
+        vTaskDelay(pdMS_TO_TICKS(5000));  // Đợi biến tần phản hồi và giãn cách gói tin
 
-        // --- TRƯỜNG HỢP 4: THAY ĐỔI TẦN SỐ KHI ĐANG CHẠY (25HZ) ---
-        ESP_LOGW(TAG, ">>> TEST 5: Giảm tốc xuống 25Hz");
-        modbud_write_register(GD20_SLAVE_ID,GD20_REG_SET_FREQ, GD20_SET_FREQ_25HZ); // Gửi lệnh thay đổi tần số
-        vTaskDelay(pdMS_TO_TICKS(500));
-        modbud_read_single_register(GD20_SLAVE_ID,GD20_OPERATION_FREQ, 1); // Xem tần số đã giảm chưa
-        vTaskDelay(pdMS_TO_TICKS(500));
+        // Lấy thông tin dòng điện hoạt động của biến tần
+        modbud_read_single_register(GD20_SLAVE_ID, GD20_OUTPUT_CURRENT, 1);
+        vTaskDelay(pdMS_TO_TICKS(5000));
 
-        // --- TRƯỜNG HỢP 5: DỪNG ĐỘNG CƠ ---
-        ESP_LOGW(TAG, ">>> TEST 6: Lệnh dừng động cơ (STOP)");
-        modbud_write_register(GD20_SLAVE_ID,GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_STOP);
-        vTaskDelay(pdMS_TO_TICKS(10000));
-      
-        ESP_LOGW(TAG, "--- KẾT THÚC 1 CHU KỲ TEST - NGHỈ 10 GIÂY ---");
-        vTaskDelay(pdMS_TO_TICKS(2000));
+        // Lấy thông tin điện áp đầu ra của biến tần
+        modbud_read_single_register(GD20_SLAVE_ID, GD20_OUTPUT_VOLTAGE, 1);
+        vTaskDelay(pdMS_TO_TICKS(5000));
+        count++;
+        if (count == 1) {
+            ESP_LOGW(TAG, "!!! Đã đủ thời gian, ra lệnh STOP động cơ !!!");
+            modbud_write_register(GD20_SLAVE_ID, GD20_REG_CONTROL_CMD, GD20_CONTROL_CMD_STOP);
+            vTaskDelay(pdMS_TO_TICKS(100));
+        }
+
+        if (count > 2) {
+            ESP_LOGE(TAG, "Kết thúc chương trình test.");
+            break;  // Thoát khỏi vòng lặp while
+        }
+        
     }
-  
- //vTaskDelete(NULL);
-  
+    vTaskDelete(NULL);
 }
 void app_main(void) {
-  
-  // Tạo Task điều khiển
+    modbus_init();
+    vTaskDelay(pdMS_TO_TICKS(100));  
+    xTaskCreate(uart_event_task, "uart_event_task", 4096, NULL,12, NULL);
+    vTaskDelay(pdMS_TO_TICKS(100));
     xTaskCreate(invt_task, "invt_task", 4096, NULL, 10, NULL);
 }
