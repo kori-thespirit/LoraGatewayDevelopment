@@ -6,11 +6,9 @@
 #include "freertos/event_groups.h"
 
 #define MAXIMUM_RETRY  5
-// #define WIFI_SSID      CONFIG_ESP_WIFI_SSID
-// #define WIFI_PASS      CONFIG_ESP_WIFI_PASSWORD
+#define WIFI_SSID      CONFIG_ESP_WIFI_SSID
+#define WIFI_PASS      CONFIG_ESP_WIFI_PASSWORD
 
-#define WIFI_SSID      "KEESOORI"
-#define WIFI_PASS      "248715121a"
 
 void wifi_station_init(EventGroupHandle_t *net_eg);
 
