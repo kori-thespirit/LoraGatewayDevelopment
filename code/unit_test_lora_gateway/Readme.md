@@ -5,7 +5,6 @@ Folder unit_test_lora_gateway được thiết kế để kiểm tra khả năng
 ### Clone toàn bộ dự án
 ```raw
 git clone https://github.com/kori-thespirit/LoraGatewayDevelopment.git
-cd LoraGatewayDevelopment
 ```
 ### Truy cập folder unit_test_lora_gateway
 ```raw
