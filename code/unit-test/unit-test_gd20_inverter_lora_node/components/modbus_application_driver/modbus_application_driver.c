@@ -181,34 +181,6 @@ void modbud_read_single_register(uint8_t slave_id, uint16_t reg_addr, uint8_t co
     frame[7] = (crc >> 8) & 0xFF;  // Byte cao CRC
 
     int len = uart_write_bytes(UART_PORT, (const char*)frame, 8);
-    //   ESP_LOGI(MASTER,"Gửi lệnh đọc: %02X %02X %04X %04X %02X%02X", slave_id, FUNC_READ_REG, reg_addr, count,
-    //   frame[6], frame[7]); ESP_LOGI(MASTER,"total write byte: %d", len);
-
-    //   // THÊM DÒNG NÀY: Xóa rác còn sót lại trong bộ đệm UART
-    //   uart_flush_input(UART_PORT);
-
-    //   uint8_t response[10];
-    //   memset(response, 0, sizeof(response));
-    //   len = uart_read_bytes(UART_PORT, (void*)response, sizeof(response), pdMS_TO_TICKS(500));
-
-    //     if (len > 0) {
-    //         // 2. Phân tích giá trị
-    //         if (response[1] == FUNC_READ_REG) { // Nếu là hàm đọc thành công
-
-    //             uint8_t bytes = response[2];
-    //             ESP_LOGI(MASTER, "Số byte dữ liệu nhận được: %d", bytes);
-    //             ESP_LOG_BUFFER_HEX("Phản hồi nhận được:", response, len);
-
-    //             uint16_t val = (response[3 + 0] << 8) | response[4 + 0];
-    //             process_inverter_data(reg_addr, val);
-    //         }
-    //         if (response[1] == GD20_RESP_CODE_FAULT) { // Nếu là lỗi (hàm trả về mã lỗi)
-    //             uint8_t error_code = response[2];
-    //             ESP_LOGE(MASTER, "Biến tần trả về lỗi: Mã lỗi 0x%02X", error_code);
-    //         }
-    //     } else {
-    //         ESP_LOGE(MASTER, "Không nhận được phản hồi từ biến tần!");
-    //     }
 }
 // --- HÀM NGẮT XỬ LÝ SỰ KIỆN ---
 void uart_event_task(void* pvParameters) {
