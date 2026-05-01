@@ -15,7 +15,7 @@ on:
           - experiment_debug
       unit_test_project:
         description: 'Select unit-test project to run'
-        default: unit-test_gd20_inverter_lora_gateway
+        default: unit-test_mqtts_cloud_vps_broker
         type: choice
         options:
           - unit-test_gd20_inverter_lora_gateway

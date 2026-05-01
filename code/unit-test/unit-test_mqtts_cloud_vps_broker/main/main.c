@@ -14,6 +14,7 @@ static const char *TAG = "main";
 
 void app_main(void) {
   network_event_group = xEventGroupCreate();
+  printf("LOG START\r\n");
   uint32_t bit_to_wait = NET_EG_BIT_GET_VALUE(NET_WIFI_IS_CONNECTED) | NET_EG_BIT_GET_VALUE(NET_ETH_IS_CONNECTED);
 #if CONFIG_NETWORK_WIFI
   wifi_station_init(&network_event_group);
@@ -33,6 +34,8 @@ void app_main(void) {
   else {
     ESP_LOGE(TAG, "Failed to connect to network");
   }
+  vTaskDelay(15000 / portTICK_PERIOD_MS);
+  printf("LOG END\r\n");
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
