@@ -1,28 +1,28 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include "driver/gpio.h"
+#include "driver/uart.h"
+#include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "driver/uart.h"
-#include "driver/gpio.h"
-#include "esp_log.h"
 
 static char TAG[] = "SHT20_RS485";
 
 // Định nghĩa cứng các chân theo sơ đồ của bạn
-#define TXD_PIN                (17)
-#define RXD_PIN                (14)
-#define RTS_DE_PIN             (16) // Chân DE
-#define RE_PIN                 (15) // Chân RE riêng
-#define CTS_PIN                (UART_PIN_NO_CHANGE)
-#define RS485_EN_PIN            (12)
+#define TXD_PIN (17)
+#define RXD_PIN (14)
+#define RTS_DE_PIN (16)  // Chân DE
+#define RE_PIN (15)      // Chân RE riêng
+#define CTS_PIN (UART_PIN_NO_CHANGE)
+#define RS485_EN_PIN (12)
 
-#define UART_PORT              (UART_NUM_2)
-#define BAUD_RATE              (9600) 
-#define BUF_SIZE               (127)
+#define UART_PORT (UART_NUM_2)
+#define BAUD_RATE (9600)
+#define BUF_SIZE (127)
 
-static void sht20_task(void *arg)
-{
+static void sht20_task(void* arg) {
     // In log thông tin cấu hình chân ra màn hình monitor
     ESP_LOGI(TAG, "--- ĐANG KHỞI TẠO CẤU HÌNH RS485 ---");
     ESP_LOGI(TAG, "UART Port: %d", UART_PORT);
@@ -52,12 +52,12 @@ static void sht20_task(void *arg)
     // 3. Cấu hình chân RE (IO15)
     gpio_reset_pin(RE_PIN);
     gpio_set_direction(RE_PIN, GPIO_MODE_OUTPUT);
-    gpio_set_level(RE_PIN, 0); // RE=0 để luôn cho phép module nhận dữ liệu từ SHT20
+    gpio_set_level(RE_PIN, 0);  // RE=0 để luôn cho phép module nhận dữ liệu từ SHT20
 
     // 4. Chế độ RS485 Half Duplex (Tự động kéo DE lên 1 khi gửi)
     ESP_ERROR_CHECK(uart_set_mode(UART_PORT, UART_MODE_RS485_HALF_DUPLEX));
 
-    uint8_t* data = (uint8_t*) malloc(BUF_SIZE);
+    uint8_t* data = (uint8_t*)malloc(BUF_SIZE);
     // Khung lệnh đọc liên tục 0x01 04 00 01 00 02 (CRC 20 0B)
     const uint8_t read_cmd[] = {0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B};
 
@@ -86,8 +86,7 @@ static void sht20_task(void *arg)
     free(data);
 }
 
-void app_main(void)
-{
+void app_main(void) {
     gpio_reset_pin(RS485_EN_PIN);
     gpio_set_direction(RS485_EN_PIN, GPIO_MODE_OUTPUT);
     gpio_set_level(RS485_EN_PIN, 1);
