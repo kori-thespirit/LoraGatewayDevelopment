@@ -20,9 +20,10 @@ on:
         options:
           - unit-test_gd20_inverter_lora_gateway
           - unit-test_gd20_inverter_lora_node
-          - unit-test_mqtts_cloud_vps_broker
           - unit-test_rtc_ds3231
           - unit-test_ethernet_w5500
+          - unit-test_wifi_module
+          - unit-test_mqtts_cloud_vps_broker
           - unit-test_usb_cdc
       # experiment_debug_string:
       #   description: 'Argument to pass into experiment debug workflow'

@@ -9,8 +9,8 @@
 #include "nvs_flash.h"
 
 // Cấu hình Wi-Fi trực tiếp tại đây để test nhanh
-#define WIFI_SSID      "IoTVision_2.4GHz"
-#define WIFI_PASS      "iotvision@2022"
+#define WIFI_SSID      "GL-AXT1800-e75"
+#define WIFI_PASS      "M9D87Q22BE"
 #define MAXIMUM_RETRY  5
 
 static EventGroupHandle_t s_wifi_event_group;
