@@ -1,0 +1,43 @@
+name: Coordinator workflow
+
+on:
+  workflow_dispatch:
+   inputs:
+      workflow_type:
+        description: 'Select workflow to run'
+        required: true
+        type: choice
+        default: unit_test
+        options:
+          - main
+          - unit_test
+          - stub
+          - experiment_debug
+      unit_test_project:
+        description: 'Select unit-test project to run'
+        default: unit-test_mqtts_cloud_vps_broker
+        type: choice
+        options:
+          - unit-test_gd20_inverter_lora_gateway
+          - unit-test_gd20_inverter_lora_node
+          - unit-test_rtc_ds3231
+          - unit-test_ethernet_w5500
+          - unit-test_wifi_module
+          - unit-test_mqtts_cloud_vps_broker
+          - unit-test_usb_cdc
+      # experiment_debug_string:
+      #   description: 'Argument to pass into experiment debug workflow'
+      #   default: Hello World
+      #   type: string
+
+jobs:
+  call_unit_test:
+    if: ${{ github.event.inputs.workflow_type == 'unit_test' }}
+    uses: ./.github/workflows/unit_test_workflow.yml
+    with:
+      unit_test_project: ${{ github.event.inputs.unit_test_project }}
+ # call_experiment_debug:
+ #   if: ${{ github.event.inputs.workflow_type == 'experiment_debug' }}
+ #   uses: kori-thespirit/LoraGatewayDevelopment/.github/workflows/experiment_debug_workflow.yml@SCRUM-87-Design-Github-Workflow
+ #   with:
+ #     experiment_debug_string: ${{ github.event.inputs.experiment_debug_string }}
