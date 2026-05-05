@@ -21,7 +21,7 @@ void app_main(void) {
     // SDMMC host configuration
     sdmmc_host_t host = SDMMC_HOST_DEFAULT();
 
-    // Slot configuration với các chân của bạn
+    
     sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
     slot_config.clk = 14;
     slot_config.cmd = 15;
@@ -43,7 +43,7 @@ void app_main(void) {
 
     ESP_LOGI(TAG, "Mounting SD card...");
 
-    // CHỈ CẦN GỌI HÀM NÀY ĐỂ KHỞI TẠO TẤT CẢ
+    //  HÀM ĐỂ KHỞI TẠO TẤT CẢ
     ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
 
     if (ret != ESP_OK) {
@@ -81,7 +81,7 @@ void app_main(void) {
         fclose(f);
     }
 
-    // Unmount khi hoàn tất (Tùy chọn)
+    // Unmount khi hoàn tất
      esp_vfs_fat_sdcard_unmount(mount_point, card);
     ESP_LOGI(TAG, "Card unmounted");
 
