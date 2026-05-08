@@ -1,0 +1,30 @@
+menu "Network Configuration"
+    config ESP_WIFI_SSID
+        string "WiFi SSID"
+        default "myssid"
+        help
+            SSID (network name) 
+
+    config ESP_WIFI_PASSWORD
+        string "WiFi Password"
+        default "mypassword"
+        help
+            WiFi password (WPA or WPA2) 
+
+    config MQTT_URI
+        string "MQTT URI path"
+        default ""
+        help
+            The URI path for the MQTT to connect to
+
+    choice NETWORK_CONNECT_METHOD
+        prompt "Select WiFi or Ethernet to connect"
+        default NETWORK_WIFI
+        help
+            Select WiFi or Ethernet W5500 of Gateway to connect to the network
+        config NETWORK_WIFI
+            bool "WiFi"
+        config NETWORK_ETH
+            bool "Ethernet W5500"
+    endchoice
+endmenu
