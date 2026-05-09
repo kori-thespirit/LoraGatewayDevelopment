@@ -11,19 +11,34 @@ static const char *TAG = "main";
 StaticTask_t xLoraTaskBuffer;
 StackType_t xLoraStack[LORA_STACK_SIZE];
 
+StaticTask_t xCommonTaskBuffer;
+StackType_t xCommonStack[COMMON_STACK_SIZE];
+
 void app_main(void) {
 
     TaskHandle_t lora_task_handle = xTaskCreateStatic(
-    lora_task,      
-    "lora_task",    
+    lora_task,
+    "lora_task",
     LORA_STACK_SIZE,
-    NULL,           
+    NULL,
     2,
-    xLoraStack,    
-    &xLoraTaskBuffer      
+    xLoraStack,
+    &xLoraTaskBuffer
     );
     if (lora_task_handle == NULL) 
       ESP_LOGE(TAG,"Fail to create lora task");
+
+    TaskHandle_t common_task_handle = xTaskCreateStatic(
+    common_task,
+    "common_task",
+    COMMON_STACK_SIZE,
+    NULL,
+    2,
+    xCommonStack,
+    &xCommonTaskBuffer
+    );
+    if (common_task_handle == NULL) 
+      ESP_LOGE(TAG,"Fail to create common task");
 
     /* Highspeed CPU core to handle network task */
     BaseType_t ret = xTaskCreatePinnedToCore(

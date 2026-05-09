@@ -5,9 +5,11 @@
    NOTE: This is the number of words the stack will hold, not the number of
    bytes. For example, if each stack item is 32-bits, and this is set to 200,
    then 800 bytes (200 * 32-bits) will be allocated. */
-#define LORA_STACK_SIZE 2048
+#define LORA_STACK_SIZE 3072
+#define COMMON_STACK_SIZE 3072 
 
 void lora_task(void* pvParameters);
 void network_task(void* pvParameters);
 void daemon_task(void* pvParameters);
+void common_task(void* pvParameters);
 #endif // _MAIN_H_
