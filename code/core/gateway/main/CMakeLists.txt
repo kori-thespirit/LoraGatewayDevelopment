@@ -1,4 +1,4 @@
-idf_component_register(SRCS "main.c"
+idf_component_register(SRCS "main.c" "lora_task.c"
                        INCLUDE_DIRS "."
-                       PRIV_REQUIRES modbus_application_driver network lora
+                       PRIV_REQUIRES network lora
 )
