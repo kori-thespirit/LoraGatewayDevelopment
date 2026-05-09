@@ -1,7 +1,4 @@
-/* The example of ESP-IDF
- *
- * This sample code is in the public domain.
- */
+/* -------------------------- LICENSE placeholder -------------------------- */
 #include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
@@ -17,8 +14,8 @@
 #define LORA_SF 7                 // Spreading Factor: 7
 #define LORA_CR 1                 // Coding Rate: 1 là 4/5
 #define LORA_CRC 1                // 1: Bật CRC, 0: Tắt CRC
-                                  //
-static const char *TAG = "Lora";
+                          
+static const char *TAG = "lora";
 
 void lora_task(void* pvParameters) {
 
@@ -43,8 +40,8 @@ void lora_task(void* pvParameters) {
     while (1) {
         lora_receive();  // put into receive mode
         if (lora_received()) {
-            int rxLen = lora_receive_packet(buf, sizeof(buf));
-            ESP_LOGI(TAG, "%d byte packet received:[%.*s]", rxLen, rxLen, buf);
+            int rx_len = lora_receive_packet(buf, sizeof(buf));
+            ESP_LOGI(TAG, "%d byte packet received:[%.*s]", rx_len, rx_len, buf);
         }
         vTaskDelay(10);  // Avoid WatchDog alerts
     }  // end while
