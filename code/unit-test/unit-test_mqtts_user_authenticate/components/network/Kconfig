@@ -1,4 +1,4 @@
-menu "Network Configuration"
+menu "LoraGateway Network Configuration"
     config ESP_WIFI_SSID
         string "WiFi SSID"
         default "myssid"
@@ -16,6 +16,18 @@ menu "Network Configuration"
         default ""
         help
             The URI path for the MQTT to connect to
+
+    config MQTT_USERNAME
+        string "MQTT Username"
+        default ""
+        help
+            Username to connect to MQTT
+
+    config MQTT_PASSWORD
+        string "MQTT password"
+        default ""
+        help
+            Password of MQTT username
 
     choice NETWORK_CONNECT_METHOD
         prompt "Select WiFi or Ethernet to connect"

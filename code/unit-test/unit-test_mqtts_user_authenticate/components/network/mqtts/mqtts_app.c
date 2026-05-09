@@ -89,9 +89,12 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
 }
 
 esp_err_t mqtts_app_start(EventGroupHandle_t *net_eg) {
+  
   const esp_mqtt_client_config_t mqtt_cfg = {
     .broker.address.uri = MQTT_URI,
     .broker.verification.certificate = (const char *)server_cert_pem_start,
+    .credentials.username = MQTT_USERNAME,
+    .credentials.authentication.password = MQTT_PASSWORD,
   };
 
 
