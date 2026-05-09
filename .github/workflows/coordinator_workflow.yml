@@ -24,8 +24,10 @@ on:
           - unit-test_ethernet_w5500
           - unit-test_wifi_module
           - unit-test_mqtts_cloud_vps_broker
+          - unit-test_mqtts_user_authenticate
           - unit-test_usb_cdc
           - unit-test_SIM7600
+          - unit-test_sdcard
       # experiment_debug_string:
       #   description: 'Argument to pass into experiment debug workflow'
       #   default: Hello World
