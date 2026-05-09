@@ -18,7 +18,7 @@ void app_main(void) {
     "lora_task",    
     LORA_STACK_SIZE,
     NULL,           
-    tskIDLE_PRIORITY + 1,
+    2,
     xLoraStack,    
     &xLoraTaskBuffer      
     );
