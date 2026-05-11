@@ -1,3 +1,4 @@
+/* -------------------------- LICENSE placeholder -------------------------- */
 #ifndef ETH_W5500_APP_H
 #define ETH_W5500_APP_H
 #include "network_event_group_define.h"

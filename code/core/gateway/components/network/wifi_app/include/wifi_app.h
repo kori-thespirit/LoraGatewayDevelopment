@@ -1,3 +1,4 @@
+/* -------------------------- LICENSE placeholder -------------------------- */
 #ifndef WIFI_APP_H
 #define WIFI_APP_H
 #include "network_event_group_define.h"

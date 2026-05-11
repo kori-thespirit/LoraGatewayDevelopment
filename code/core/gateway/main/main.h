@@ -1,3 +1,4 @@
+/* -------------------------- LICENSE placeholder -------------------------- */
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
@@ -12,4 +13,5 @@ void lora_task(void* pvParameters);
 void network_task(void* pvParameters);
 void daemon_task(void* pvParameters);
 void common_task(void* pvParameters);
+void other_task(void* pvParameters);
 #endif // _MAIN_H_

@@ -10,6 +10,8 @@
 #include "modbus_application_driver.h"
 #include "gd20_inverter.h"
 
+static const char *TAG = "modbus";
+
 void modbus_task(void* pvParameters)
 {
   for(;;){

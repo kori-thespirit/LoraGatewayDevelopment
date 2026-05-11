@@ -1,3 +1,4 @@
+/* -------------------------- LICENSE placeholder -------------------------- */
 #ifndef MODBUS_APP_DRIVER_H
 #define MODBUS_APP_DRIVER_H
 

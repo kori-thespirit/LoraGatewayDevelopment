@@ -1,3 +1,4 @@
+/* -------------------------- LICENSE placeholder -------------------------- */
 #include "eth_w5500_app.h"
 #include "esp_eth_netif_glue.h"
 #include "esp_event.h"

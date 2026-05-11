@@ -1,3 +1,4 @@
+/* -------------------------- LICENSE placeholder -------------------------- */
 #ifndef GD20_INVERTER_H
 #define GD20_INVERTER_H
 

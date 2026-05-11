@@ -1,3 +1,4 @@
+/* -------------------------- LICENSE placeholder -------------------------- */
 #include "mqtts_app.h"
 #include "mqtt_client.h"
 #include "esp_check.h"
