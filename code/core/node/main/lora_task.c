@@ -8,6 +8,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "lora.h"
+#include "lora_protocol.h"
 #include "main.h"
 
 #define RF_FREQUENCY 433000000LL  // Tần số: 433MHz (hoặc 866000000LL, 915000000LL)
@@ -28,6 +29,7 @@ void lora_task(void* pvParameters) {
     gpio_reset_pin(Lora_EN);
     gpio_set_direction(Lora_EN, GPIO_MODE_OUTPUT);
     gpio_set_level(Lora_EN, 1);
+    lora_pack();
     // Initialize LoRa
     if (lora_init() == 0) {
         ESP_LOGE(TAG, "Does not recognize the module");
