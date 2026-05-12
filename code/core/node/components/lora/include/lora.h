@@ -2,6 +2,7 @@
 #define __LORA_H__
 
 #include "define.h"
+#include "stdint.h"
 
 void lora_reset(void);
 void lora_explicit_header_mode(void);

@@ -29,7 +29,6 @@ void lora_task(void* pvParameters) {
     gpio_reset_pin(Lora_EN);
     gpio_set_direction(Lora_EN, GPIO_MODE_OUTPUT);
     gpio_set_level(Lora_EN, 1);
-    lora_pack();
     // Initialize LoRa
     if (lora_init() == 0) {
         ESP_LOGE(TAG, "Does not recognize the module");
