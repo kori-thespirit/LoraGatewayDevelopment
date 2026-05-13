@@ -1,8 +1,8 @@
 #ifndef _LORA_PROTOCOL_H_
 #define _LORA_PROTOCOL_H_
 
-#include "lora.h"
 #include "node_device_typedef.h"
+#include <stdint.h>
 
 #define M_LORA_ASSERT_DEFINE(_cond, _ret)                                       \
   do {                                                                         \
@@ -16,8 +16,6 @@
 #define MAX_LORA_PACKET 255
 #define MIN(_x_, _y_) (_x_ < _y_ ? _x_ : _y_)
 
-typedef void (*p_lora_protocol_pack_complete_cb)(void *data);
-typedef void (*p_lora_protocol_parse_complete_cb)(void *data);
 
 typedef enum lora_protocol_err {
   LORA_PROTOCOL_ERR_OK,
@@ -29,6 +27,9 @@ typedef enum lora_protocol_err {
   LORA_PROTOCOL_ERR_CRC_INVALID,
   LORA_PROTOCOL_ERR_ARGS_LEN_NOT_MATCH,
 } e_lora_protocol_err_t ;
+
+typedef e_lora_protocol_err_t (* p_lora_protocol_pack_complete_cb)(void *pvParameters);
+typedef e_lora_protocol_err_t (* p_lora_protocol_parse_complete_cb)(void *pvParameters);
 
 typedef enum lora_function {
   LORA_FUNCTION_REQUEST_ADDRESS,
@@ -67,8 +68,9 @@ e_lora_protocol_err_t m_lora_protocol_frame_pack(uint8_t *out_buf,
                                                 uint8_t node_id,
                                                 uint8_t request_data);
 
-e_lora_protocol_err_t m_lora_protocol_register_callback(void (*frame_pack_complete_callback)(void *),
-                                 void (*frame_parse_complete_callback)(void *));
+e_lora_protocol_err_t m_lora_protocol_register_callback(
+                    e_lora_protocol_err_t (*p_lora_protocol_pack_complete_cb)(void *),
+                    e_lora_protocol_err_t (*p_lora_protocol_parse_complete_cb)(void *)) ;
 
 
 #endif // _LORA_PROTOCOL_H_

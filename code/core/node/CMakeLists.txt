@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.16)
 
 # Set path(s) to extra components
 set(EXTRA_COMPONENT_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}/middleware/lora_protocol/
+    ${CMAKE_CURRENT_SOURCE_DIR}/../middleware/common/lora_protocol/
 )
 
 
