@@ -35,7 +35,7 @@ e_lora_protocol_err_t m_lora_protocol_frame_pack(uint8_t *out_buf,
                                                 uint8_t node_id,
                                                 uint8_t request_data) {
 
-  M_LORA_ASSERT(out_buf_size >
+  M_LORA_ASSERT(MIN(out_buf_size, MAX_LORA_PACKET) >
                    sizeof(st_lora_protocol_header_t) 
                    + payload_size 
                    + FRAME_CRC_SIZE,

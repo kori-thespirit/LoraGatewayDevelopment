@@ -13,6 +13,9 @@
 
 #define M_LORA_ASSERT(_cond, _ret) M_LORA_ASSERT_DEFINE(_cond, _ret)
 #define FRAME_CRC_SIZE 2
+#define MAX_LORA_PACKET 255
+#define MIN(_x_, _y_) (_x_ < _y_ ? _x_ : _y_)
+
 typedef void (*p_lora_protocol_pack_complete_cb)(void *data);
 typedef void (*p_lora_protocol_parse_complete_cb)(void *data);
 
