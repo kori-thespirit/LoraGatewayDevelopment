@@ -16,7 +16,7 @@
 #define LORA_CR 1                 // Coding Rate: 1 là 4/5
 #define LORA_CRC 1                // 1: Bật CRC, 0: Tắt CRC
                           
-static const char *TAG = "lora";
+static const char *TAG = "lora_task";
 void pack_complete(void *pvParameters);
 void parse_complete(void *pvParameters);
 static void test_receive();
@@ -53,7 +53,7 @@ void lora_task(void* pvParameters) {
 
 static void test_receive()
 {
-    uint8_t buffer[100] = {0};
+    uint8_t buffer[20] = {0};
     lora_receive();  // put into receive mode
     if (lora_received()) {
         uint8_t rx_len = lora_receive_packet(buffer, sizeof(buffer));
@@ -69,5 +69,6 @@ void pack_complete(void *pvParameters)
 
 void parse_complete(void *pvParameters)
 {
-    ESP_LOGI(TAG, "Parse Callback");
+    st_sensor_sht20_t *sht20 = (st_sensor_sht20_t*)pvParameters;
+    ESP_LOGI(TAG, "Receive SHT20 complete: temperature:%.2f, humidity:%.2f", sht20->temperature, sht20->humidity);
 }
