@@ -59,8 +59,8 @@ e_lora_protocol_err_t m_lora_protocol_frame_pack(uint8_t *out_buf,
   return LORA_PROTOCOL_ERR_OK;
 }
 
-e_lora_protocol_err_t m_lora_protocol_register_callback(e_lora_protocol_err_t (*p_lora_protocol_pack_complete_cb)(void *),
-                   e_lora_protocol_err_t (*p_lora_protocol_parse_complete_cb)(void *)) {
+e_lora_protocol_err_t m_lora_protocol_register_callback(void (*p_lora_protocol_pack_complete_cb)(void *),
+                   void (*p_lora_protocol_parse_complete_cb)(void *)) {
   _g_p_pack_cb = p_lora_protocol_pack_complete_cb;
   _g_p_parse_cb = p_lora_protocol_parse_complete_cb;
   return LORA_PROTOCOL_ERR_OK;

@@ -28,8 +28,8 @@ typedef enum lora_protocol_err {
   LORA_PROTOCOL_ERR_ARGS_LEN_NOT_MATCH,
 } e_lora_protocol_err_t ;
 
-typedef e_lora_protocol_err_t (* p_lora_protocol_pack_complete_cb)(void *pvParameters);
-typedef e_lora_protocol_err_t (* p_lora_protocol_parse_complete_cb)(void *pvParameters);
+typedef void (* p_lora_protocol_pack_complete_cb)(void *pvParameters);
+typedef void (* p_lora_protocol_parse_complete_cb)(void *pvParameters);
 
 typedef enum lora_function {
   LORA_FUNCTION_REQUEST_ADDRESS,
@@ -69,8 +69,8 @@ e_lora_protocol_err_t m_lora_protocol_frame_pack(uint8_t *out_buf,
                                                 uint8_t request_data);
 
 e_lora_protocol_err_t m_lora_protocol_register_callback(
-                    e_lora_protocol_err_t (*p_lora_protocol_pack_complete_cb)(void *),
-                    e_lora_protocol_err_t (*p_lora_protocol_parse_complete_cb)(void *)) ;
+                    void (*p_lora_protocol_pack_complete_cb)(void *),
+                    void (*p_lora_protocol_parse_complete_cb)(void *)) ;
 
 
 #endif // _LORA_PROTOCOL_H_
