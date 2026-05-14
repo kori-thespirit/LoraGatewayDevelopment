@@ -13,18 +13,18 @@ e_lora_protocol_err_t m_lora_protocol_frame_parse(uint8_t *in_buf,
                                                   uint16_t in_buf_size
                                                   ) {
   M_LORA_ASSERT(_g_p_parse_cb, LORA_PROTOCOL_ERR_CALLBACK_NULL);
-  st_lora_frame_data_t frame_data = {0};
   st_lora_protocol_header_t *header = (st_lora_protocol_header_t *)(in_buf + 0);
   uint8_t request_data = header->request_data;
   uint8_t function = header->function;
   uint8_t payload_length = header->payload_length;
+  uint8_t node_id = header->node_id;
+  uint8_t *payload = (uint8_t *)calloc(payload_length, sizeof(uint8_t)); 
   if (!request_data) {
-    memcpy(frame_data.payload, in_buf + sizeof(st_lora_protocol_header_t),
-           payload_length);
+    memcpy(payload, in_buf + sizeof(st_lora_protocol_header_t), payload_length);
   }
   memset(in_buf, 0, in_buf_size);
-  frame_data.header = *header;
-  _g_p_pack_cb((void *)&frame_data);
+  _g_p_parse_cb((void *)payload);
+  free(payload);
   return LORA_PROTOCOL_ERR_OK;
 }
 
