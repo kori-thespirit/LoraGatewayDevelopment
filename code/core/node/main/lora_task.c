@@ -21,13 +21,12 @@
 #define LED_ACT 13
 
 static const char *TAG = "lora_task";
-static void test();
+static void test_send();
 void pack_complete(void *pvParameters);
 void parse_complete(void *pvParameters);
 
 void lora_task(void* pvParameters) {
-  e_lora_protocol_err_t protocol_err;
-  protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete);
+  e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete);
   if(LORA_PROTOCOL_ERR_OK != protocol_err)
     ESP_LOGE(TAG, "register callback failed");
   gpio_reset_pin(LED_ACT);
@@ -56,12 +55,12 @@ void lora_task(void* pvParameters) {
   lora_set_spreading_factor(LORA_SF);
   ESP_LOGI(TAG, "spreading_factor=%d", LORA_SF);
   while (1) {
-      test();
+      test_send();
       int lost = lora_packet_lost();
       if (lost != 0) {
           ESP_LOGW(TAG, "%d packets lost", lost);
       }
-      vTaskDelay(pdMS_TO_TICKS(1000));
+      vTaskDelay(pdMS_TO_TICKS(3000));
   }  // end while
 
   // never reach here
@@ -75,7 +74,7 @@ static void test_send()
       .temperature = 20.1,
       .humidity = 96.22,
     };
-    e _lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&sht20, sizeof(sht20), 1, 0);
+    e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&sht20, sizeof(sht20), 1, 0);
     if(LORA_PROTOCOL_ERR_OK != protocol_err)
       ESP_LOGE(TAG, "Pack frame data failed");
     lora_send_packet(buffer, sizeof(buffer));
@@ -83,7 +82,8 @@ static void test_send()
 
 void pack_complete(void *pvParameters)
 {
-    ESP_LOGI(TAG, "Pack Callback");
+    uint8_t *frame_length = (uint8_t*)pvParameters;
+    ESP_LOGI(TAG, "Sending SHT20 message via lora complete with %u bytes", *frame_length);
 }
 
 void parse_complete(void *pvParameters)
