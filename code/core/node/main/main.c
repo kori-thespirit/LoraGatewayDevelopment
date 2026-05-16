@@ -7,53 +7,56 @@
 #include "esp_log.h"
 #include "main.h"
 
+// StaticTask_t xLoraTaskBuffer;
+// StackType_t xLoraStack[LORA_STACK_SIZE];
 
-StaticTask_t xLoraTaskBuffer;
-StackType_t xLoraStack[LORA_STACK_SIZE];
-
-StaticTask_t xModbusTaskBuffer;
-StackType_t xModbusStack[MODBUS_STACK_SIZE];
-TaskHandle_t modbus_task_handle;
-TaskHandle_t lora_task_handle;
-TaskHandle_t network_task_handle;
-
-// static QueueHandle_t q_common[5];
-static QueueHandle_t q_common;
+// StaticTask_t xModbusTaskBuffer;
+// StackType_t xModbusStack[MODBUS_STACK_SIZE];
 
 static const char *TAG = "main";
 
 void app_main() {
-    // for(uint8_t i = 0; i < sizeof(q_common)/sizeof(QueueHandle_t); i++) {
-    //     q_common[i] = xQueueCreate(QUEUE_COMMON_SIZE, sizeof(st_modbus_intertask_t));
-    //     if(NULL == q_common[i]) {
-    //         ESP_LOGE(TAG,"Fail to create queue: %u", i);
-    //     }
-    // }
-    q_common = xQueueCreate(QUEUE_COMMON_ITEMS, sizeof(st_intertask_data_t));
 
-    lora_task_handle = xTaskCreateStatic(
-    lora_task,
-    "lora_task",
-    LORA_STACK_SIZE,
-    NULL,
-    2,
-    xLoraStack,
-    &xLoraTaskBuffer
-    );
-    if (lora_task_handle == NULL) 
-      ESP_LOGE(TAG,"Fail to create lora task");
+    // TaskHandle_t lora_task_handle = xTaskCreateStatic(
+    // lora_task,
+    // "lora_task",
+    // LORA_STACK_SIZE,
+    // NULL,
+    // 2,
+    // xLoraStack,
+    // &xLoraTaskBuffer
+    // );
+    // if (lora_task_handle == NULL) 
+    //   ESP_LOGE(TAG,"Fail to create lora task");
+    
+    // TaskHandle_t modbus_task_handle = xTaskCreateStatic(
+    // modbus_task,
+    // "modbus_task",
+    // MODBUS_STACK_SIZE,
+    // NULL,
+    // 1,
+    // xModbusStack,
+    // &xModbusTaskBuffer
+    // );
+    // if (modbus_task_handle == NULL) 
+    //   ESP_LOGE(TAG,"Fail to create modbus task");
 
-    modbus_task_handle = xTaskCreateStatic(
-    modbus_task,
-    "modbus_task",
-    MODBUS_STACK_SIZE,
-    NULL,
-    1,
-    xModbusStack,
-    &xModbusTaskBuffer
+    /* Highspeed CPU core to handle network task */
+    BaseType_t ret = xTaskCreatePinnedToCore(
+            network_task,          // Task function
+            "network_task",        // Name for debugging
+            4096,               // Stack size in words
+            NULL,               // Task input parameter
+            3,                  // Priority (higher number = higher priority)
+            NULL,               // Task handle
+            1                   // Core ID (0 or 1)
     );
-    if (modbus_task_handle == NULL) 
-      ESP_LOGE(TAG,"Fail to create modbus task");
+    if (ret != pdPASS) 
+      ESP_LOGE(TAG,"Fail to create network task");
+
+    for(;;){
+        daemon_task(NULL);
+    }
 
     for(;;){
         vTaskDelay(pdMS_TO_TICKS(1000));

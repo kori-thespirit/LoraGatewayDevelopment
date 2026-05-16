@@ -12,3 +12,6 @@ set(EXTRA_COMPONENT_DIRS
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 idf_build_set_property(MINIMAL_BUILD ON)
 project(core_node_modbus)
+
+set(CERTIFICATE_PATH components/network/mqtts/certificates)
+target_add_binary_data(${CMAKE_PROJECT_NAME}.elf "${CERTIFICATE_PATH}/kolabori.pem" TEXT)
