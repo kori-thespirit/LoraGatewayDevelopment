@@ -77,7 +77,8 @@ static void test_send()
     e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&sht20, sizeof(sht20), 1, 0);
     if(LORA_PROTOCOL_ERR_OK != protocol_err)
       ESP_LOGE(TAG, "Pack frame data failed");
-    lora_send_packet(buffer, sizeof(buffer));
+    else
+      lora_send_packet(buffer, sizeof(buffer));
 }
 
 void pack_complete(void *pvParameters)

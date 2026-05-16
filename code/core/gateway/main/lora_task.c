@@ -15,7 +15,7 @@
 #define LORA_SF 7                 // Spreading Factor: 7
 #define LORA_CR 1                 // Coding Rate: 1 là 4/5
 #define LORA_CRC 1                // 1: Bật CRC, 0: Tắt CRC
-                          
+ 
 static const char *TAG = "lora_task";
 void pack_complete(void *pvParameters);
 void parse_complete(void *pvParameters);
@@ -57,7 +57,16 @@ static void test_receive()
     lora_receive();  // put into receive mode
     if (lora_received()) {
         uint8_t rx_len = lora_receive_packet(buffer, sizeof(buffer));
-        m_lora_protocol_frame_parse(buffer, rx_len);
+        if (rx_len > 0) {
+            e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_parse(buffer, rx_len);
+            if(LORA_PROTOCOL_ERR_OK != protocol_err)
+            {
+                ESP_LOGE(TAG, "Parse receive failed");
+                memset(buffer,0,sizeof(buffer));
+            }
+        }
+        
+
     }
 }
 

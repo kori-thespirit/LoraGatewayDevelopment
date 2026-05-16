@@ -1,6 +1,5 @@
 #include "lora_protocol.h"
 
-#include "esp_log.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -20,6 +19,8 @@ e_lora_protocol_err_t m_lora_protocol_frame_parse(uint8_t *in_buf,
   uint8_t payload_length = header->payload_length;
   uint8_t node_id = header->node_id;
   uint8_t *payload = (uint8_t *)calloc(payload_length, sizeof(uint8_t)); 
+  if(payload == NULL)
+    return LORA_PROTOCOL_ERR_ALLOCATE_FAIL;
   if (!request_data) {
     memcpy(payload, in_buf + sizeof(st_lora_protocol_header_t), payload_length);
   }
@@ -56,10 +57,6 @@ e_lora_protocol_err_t m_lora_protocol_frame_pack(uint8_t *out_buf,
   frame_length += sizeof(header);
   memcpy(out_buf + sizeof(header), (const void *)payload, header.payload_length);
   frame_length += header.payload_length;
-  for(uint8_t i = 0; i < frame_length; i++) {
-    ESP_LOGI(TAG, "0x%x",*(out_buf + i));
-  }
-  // frame_length += FRAME_CRC_SIZE;
   _g_p_pack_cb((void *)&frame_length);
   return LORA_PROTOCOL_ERR_OK;
 }
