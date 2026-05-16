@@ -2,7 +2,7 @@
 #ifndef _LORA_NODE_DEVICE_TYPEDEF_H
 #define _LORA_NODE_DEVICE_TYPEDEF_H
 
-typedef struct sensor_sht20{
+typedef struct sensor_sht20{ //nên có sensor_sht20 để ide hiểu
   float temperature;
   float humidity;
 } st_sensor_sht20_t;

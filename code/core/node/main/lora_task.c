@@ -26,7 +26,8 @@ void pack_complete(void *pvParameters);
 void parse_complete(void *pvParameters);
 
 void lora_task(void* pvParameters) {
-  e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete);
+    /*đăng ký callback để nhận thông báo khi đóng gói hoặc phân tích khung hoàn tất*/
+  e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete); 
   if(LORA_PROTOCOL_ERR_OK != protocol_err)
     ESP_LOGE(TAG, "register callback failed");
   gpio_reset_pin(LED_ACT);
@@ -74,7 +75,14 @@ static void test_send()
       .temperature = 20.1,
       .humidity = 96.22,
     };
+    /* st_inverter_gd20_t gd20 = {
+      .frequency = 50.0,
+      .speed = 1000.0,
+      .out_i = 10.0,
+      .out_v = 220.0,
+    }; */
     e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&sht20, sizeof(sht20), 1, 0);
+    //e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&gd20, sizeof(gd20), 1, 0);
     if(LORA_PROTOCOL_ERR_OK != protocol_err)
       ESP_LOGE(TAG, "Pack frame data failed");
     lora_send_packet(buffer, sizeof(buffer));

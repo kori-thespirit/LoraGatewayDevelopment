@@ -61,13 +61,14 @@ typedef struct lora_frame_data {
 e_lora_protocol_err_t m_lora_protocol_frame_parse(uint8_t *in_buf,
                                                     uint16_t in_buf_size);
 
-e_lora_protocol_err_t m_lora_protocol_frame_pack(uint8_t *out_buf, 
-                                                uint16_t out_buf_size, 
-                                                void* payload, 
+e_lora_protocol_err_t m_lora_protocol_frame_pack(uint8_t *out_buf, //trả về giá trị cho e_lora_protocol_err_t
+                                                uint16_t out_buf_size, //nhận thgêm node_id(=1), length pay;load
+                                                void* payload, //cái gateway nhận được từ node từ accs ngoại vi như biến tần, sht20
                                                 uint16_t payload_size, 
                                                 uint8_t node_id,
                                                 uint8_t request_data);
-
+void test();
+uint8_t test1();
 e_lora_protocol_err_t m_lora_protocol_register_callback(
                     void (*p_lora_protocol_pack_complete_cb)(void *),
                     void (*p_lora_protocol_parse_complete_cb)(void *)) ;
