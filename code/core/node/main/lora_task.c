@@ -87,6 +87,20 @@ static void test_send()
       ESP_LOGE(TAG, "Pack frame data failed");
     lora_send_packet(buffer, sizeof(buffer));
 }
+static void sent_modbus()
+{
+    uint8_t buffer[100] = {0};
+    st_inverter_gd20_t gd20 = {
+      .frequency = 50.0,
+      .speed = 1000.0,
+      .out_i = 10.0,
+      .out_v = 220.0,
+    }; 
+    e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&gd20, sizeof(gd20), 1, 0);
+    if(LORA_PROTOCOL_ERR_OK != protocol_err)
+      ESP_LOGE(TAG, "Pack frame data failed");
+    lora_send_packet(buffer, sizeof(buffer));
+}
 
 void pack_complete(void *pvParameters)
 {
