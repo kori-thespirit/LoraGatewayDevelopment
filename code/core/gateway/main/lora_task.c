@@ -69,6 +69,8 @@ void pack_complete(void *pvParameters)
 
 void parse_complete(void *pvParameters)
 {
-    st_sensor_sht20_t *sht20 = (st_sensor_sht20_t*)pvParameters;
-    ESP_LOGI(TAG, "Receive SHT20 complete: temperature:%.2f, humidity:%.2f", sht20->temperature, sht20->humidity);
+    // st_sensor_sht20_t *sht20 = (st_sensor_sht20_t*)pvParameters;
+    // ESP_LOGI(TAG, "Receive SHT20 complete: temperature:%.2f, humidity:%.2f", sht20->temperature, sht20->humidity);
+    st_inverter_gd20_t *gd20 = (st_inverter_gd20_t*)pvParameters;
+    ESP_LOGI(TAG, "Receive GD20 complete: frequency:%.2f, speed:%.2f, out_i:%.2f, out_v:%.2f", gd20->frequency, gd20->speed, gd20->out_i, gd20->out_v);
 }
