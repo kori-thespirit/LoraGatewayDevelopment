@@ -1,7 +1,6 @@
 #ifndef _LORA_PROTOCOL_H_
 #define _LORA_PROTOCOL_H_
 
-#include "node_device_typedef.h"
 #include <stdint.h>
 
 #define M_LORA_ASSERT_DEFINE(_cond, _ret)                                       \
@@ -32,7 +31,7 @@ typedef void (* p_lora_protocol_pack_complete_cb)(void *pvParameters);
 typedef void (* p_lora_protocol_parse_complete_cb)(void *pvParameters);
 
 typedef enum lora_function {
-  LORA_FUNCTION_REQUEST_ADDRESS,
+  LORA_FUNCTION_REQUEST_ADDRESS, // NOTE:change to LORA_FUNC
   LORA_FUNCTION_REQUEST_DATA,
   LORA_FUNCTION_RESPONSE_DATA,
 } e_lora_function_t;

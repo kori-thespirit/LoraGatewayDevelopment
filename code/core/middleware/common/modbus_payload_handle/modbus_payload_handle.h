@@ -14,7 +14,6 @@ typedef struct modbus_device_info {
     uint8_t id;
     e_modbus_device_t device_type;
     void *reg;
-
 }st_modbus_device_info_t;
 
 void m_modbusph_payload_handle(void *payload, size_t payload_size);
