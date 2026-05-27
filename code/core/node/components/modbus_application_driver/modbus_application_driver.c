@@ -6,13 +6,19 @@
 #include <stdlib.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/queue.h"
 #include "driver/uart.h"
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "modbus_application_driver.h"
 
 static char GD20[] = "GD20";
-static char MASTER[] = "MASTER";
+static char TAG[] = "modbus_driver";
+static QueueHandle_t q_uart_event;
+#define UART_EVEN_SIZE 10
+static p_modbus_tx_complete_cb  _g_p_rx_cb;
+static p_modbus_rx_complete_cb  _g_p_tx_cb;
+static p_modbus_error_cb        _g_p_err_cb;
 
 // --- BẢNG TRA CRC16 MODBUS (256 phần tử) ---
 static const uint16_t crc_table[256] = {
@@ -62,59 +68,11 @@ uint16_t crc16_modbus(const uint8_t *data, uint16_t len) {
     
     return crc;
 }
-void process_inverter_data(uint16_t reg_addr, uint16_t value) {
-    switch (reg_addr) {
-        case GD20_REG_STATUS:
-            switch (value) {
-                    case GD20_STATUS_RUN:   ESP_LOGW("STATUS", "Biến tần: ĐANG CHẠY THUẬN");break;
-                    case GD20_STATUS_REV:   ESP_LOGW("STATUS", "Biến tần: ĐANG CHẠY NGHỊCH");break;
-                    case GD20_STATUS_STOP:  ESP_LOGW("STATUS", "Biến tần: ĐANG DỪNG");break;
-                    default:                ESP_LOGE("STATUS", "Biến tần: LỖI/KHÔNG XÁC ĐỊNH (%d)", value);break;
 
-            }
-            break;
-
-        case GD20_OPERATION_FREQ:
-            // Tần số thường có tỉ lệ 1/100
-            ESP_LOGW("DATA", "Tần số thực tế: %.2f Hz", (float)value / 100.0);
-            break;
-
-        case GD20_OUTPUT_CURRENT:
-            // Dòng điện thường có tỉ lệ 1/10
-            ESP_LOGW("DATA", "Dòng điện: %.1f A", (float)value / 10.0);
-            break;
-
-        case GD20_OUTPUT_VOLTAGE:
-            ESP_LOGW("DATA", "Điện áp Bus: %d V", value);
-            break;
-
-        default:
-            ESP_LOGI("DATA", "Thanh ghi 0x%04X: Giá trị = %d", reg_addr, value);
-            break;
-    }
-}
-// --- HÀM GỬI LỆNH GHI THANH GHI (FUNCTION 06) ---
-void modbud_write_register(uint8_t slave_id,uint16_t reg_addr, uint16_t value) {
-    uint8_t frame[8];
-    frame[0] = slave_id;
-    frame[1] = FUNC_WRITE_REG;
-    frame[2] = (reg_addr >> 8) & 0xFF;
-    frame[3] = reg_addr & 0xFF;
-    frame[4] = (value >> 8) & 0xFF;
-    frame[5] = value & 0xFF;
-
-    uint16_t crc = crc16_modbus(frame, 6);
-    frame[6] = crc & 0xFF;          // Byte thấp CRC
-    frame[7] = (crc >> 8) & 0xFF;   // Byte cao CRC
-
-    uart_write_bytes(UART_PORT, (const char*)frame, 8);
-    //ESP_LOGI(TAG, "Gửi lệnh: Reg 0x%04X = 0x%04X (CRC: 0x%04X)", reg_addr, value, crc);
-    ESP_LOGI(MASTER, "Gửi lệnh: %02X %02X %04X %04X %02X%02X", GD20_SLAVE_ID, FUNC_WRITE_REG, reg_addr, value, frame[6], frame[7]);
-}
 esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint16_t value) {
     uint8_t frame[8];
     frame[0] = slave_id;
-    frame[1] = FUNC_WRITE_REG;
+    frame[1] = MODBUS_FUNC_W;
     frame[2] = (reg_addr >> 8) & 0xFF;
     frame[3] = reg_addr & 0xFF;
     frame[4] = (value >> 8) & 0xFF;
@@ -126,27 +84,27 @@ esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint
 
     uart_write_bytes(UART_PORT, (const char*)frame, 8);
     //ESP_LOGI(TAG, "Gửi lệnh: Reg 0x%04X = 0x%04X (CRC: 0x%04X)", reg_addr, value, crc);
-    ESP_LOGI(MASTER, "Gửi lệnh: %02X %02X %04X %04X %02X%02X", slave_id, FUNC_WRITE_REG, reg_addr, value, frame[6], frame[7]);
+    ESP_LOGI(TAG, "Gửi lệnh: %02X %02X %04X %04X %02X%02X", slave_id, MODBUS_FUNC_W, reg_addr, value, frame[6], frame[7]);
     uint8_t response[10];
     // Đợi phản hồi (Timeout thường khoảng 100-500ms)
     int len = uart_read_bytes(UART_PORT, response, 8, pdMS_TO_TICKS(500));
-     if (len > 0) {
+    if (len > 0) {
         ESP_LOG_BUFFER_HEX("Giá trị phản hồi:", response, len);
         if (response[1] & 0x80) {
-        uint8_t exception_code = response[2];
-        switch (exception_code) {
-            case GD20_EXC_ILLEGAL_CMD:          ESP_LOGE(GD20, "Lỗi: Lệnh không hợp lệ!"); break;
-            case GD20_EXC_ILLEGAL_DATA_ADDR:    ESP_LOGE(GD20, "Lỗi: Địa chỉ data không hợp lệ!"); break;
-            case GD20_EXC_ILLEGAL_VALUE:        ESP_LOGE(GD20, "Lỗi: Giá trị dữ liệu gửi đi không hợp lệ!"); break;
-            case GD20_EXC_OPERATION_FAILED:     ESP_LOGE(GD20, "Lỗi: Thông số không hợp lệ!"); break;
-            case GD20_EXC_PASSWORD_ERROR:       ESP_LOGE(GD20, "Lỗi: Password không đúng!"); break;
-            case GD20_EXC_DATA_FRAME_ERROR:     ESP_LOGW(GD20, "Lỗi: Lỗi khung dữ liệu!"); break;
-            default:                            ESP_LOGE(GD20, "Lỗi Modbus chưa xác định: 0x%02X", exception_code); break;
+            uint8_t exception_code = response[2];
+            switch (exception_code) {
+                case GD20_EXC_ILLEGAL_CMD:          ESP_LOGE(GD20, "Lỗi: Lệnh không hợp lệ!"); break;
+                case GD20_EXC_ILLEGAL_DATA_ADDR:    ESP_LOGE(GD20, "Lỗi: Địa chỉ data không hợp lệ!"); break;
+                case GD20_EXC_ILLEGAL_VALUE:        ESP_LOGE(GD20, "Lỗi: Giá trị dữ liệu gửi đi không hợp lệ!"); break;
+                case GD20_EXC_OPERATION_FAILED:     ESP_LOGE(GD20, "Lỗi: Thông số không hợp lệ!"); break;
+                case GD20_EXC_PASSWORD_ERROR:       ESP_LOGE(GD20, "Lỗi: Password không đúng!"); break;
+                case GD20_EXC_DATA_FRAME_ERROR:     ESP_LOGW(GD20, "Lỗi: Lỗi khung dữ liệu!"); break;
+                default:                            ESP_LOGE(GD20, "Lỗi Modbus chưa xác định: 0x%02X", exception_code); break;
             }
-        return ESP_FAIL;
+            return ESP_FAIL;
         }
         ESP_LOGI(GD20, "Ghi thành công: Reg 0x%04X = 0x%04X", reg_addr, value);
-    return ESP_OK;
+        return ESP_OK;
     }
     if (len <= 0) {
         ESP_LOGE(GD20, "Lỗi: Không có phản hồi từ Slave %d (Timeout)", GD20_SLAVE_ID);
@@ -163,48 +121,85 @@ esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint
     }
     return ESP_OK;
 }
-void modbud_read_single_register(uint8_t slave_id, uint16_t reg_addr, uint8_t count) {
-  uint8_t frame[10];
-  frame[0] = slave_id;
-  frame[1] = FUNC_READ_REG;
-  frame[2] = (reg_addr >> 8) & 0xFF;
-  frame[3] = reg_addr & 0xFF;
-  frame[4] = (count >> 8) & 0xFF;
-  frame[5] = count & 0xFF;
+esp_err_t modbus_send(e_modbus_function_t modbus_func, uint8_t slave_id, uint16_t reg_addr, uint8_t count) {
+    if(MODBUS_FUNC_W != modbus_func || MODBUS_FUNC_R != modbus_func) 
+        return ESP_ERR_INVALID_ARG;
+    uint8_t frame[8];
+    frame[0] = slave_id;
+    frame[1] = modbus_func;
+    frame[2] = (reg_addr >> 8) & 0xFF;
+    frame[3] = reg_addr & 0xFF;
+    frame[4] = (count >> 8) & 0xFF;
+    frame[5] = count & 0xFF;
 
-  uint16_t crc = crc16_modbus(frame, 6);
-  frame[6] = crc & 0xFF;          // Byte thấp CRC
-  frame[7] = (crc >> 8) & 0xFF;   // Byte cao CRC
+    uint16_t crc = crc16_modbus(frame, 6);
+    frame[6] = crc & 0xFF;          // Byte thấp CRC
+    frame[7] = (crc >> 8) & 0xFF;   // Byte cao CRC
 
-  int len = uart_write_bytes(UART_PORT, (const char*)frame, 8);
-  ESP_LOGI(MASTER,"Gửi lệnh đọc: %02X %02X %04X %04X %02X%02X", slave_id, FUNC_READ_REG, reg_addr, count, frame[6], frame[7]);
-  ESP_LOGI(MASTER,"total write byte: %d", len);
+    uart_write_bytes(UART_PORT, (const char*)frame, 8);
+    return ESP_OK;
+}
 
-  // THÊM DÒNG NÀY: Xóa rác còn sót lại trong bộ đệm UART
-  uart_flush_input(UART_PORT);
-  
-  uint8_t response[10];
-  memset(response, 0, sizeof(response));
-  len = uart_read_bytes(UART_PORT, (void*)response, sizeof(response), pdMS_TO_TICKS(500));
+esp_err_t uart_event_handle() 
+{
+    uart_event_t event;
+    if (xQueueReceive(q_uart_event, (void*)&event, pdMS_TO_TICKS(100))) {
+        uint8_t* dtmp = (uint8_t*)malloc(BUF_SIZE);
+        bzero(dtmp, BUF_SIZE);
+        switch (event.type) {
+            case UART_DATA:
+                // Đọc dữ liệu từ Ring Buffer
+                int len = uart_read_bytes(UART_PORT, dtmp, event.size, pdMS_TO_TICKS(10));
+                if (len >= 5) {
+                    /* If return value is not 0, CRC mismatch happen */
+                    if (crc16_modbus(dtmp, len)){
+                        ESP_LOGE(TAG, "Sai mã CRC!");
+                        return ESP_ERR_INVALID_CRC;
+                    }
+                    switch(*(dtmp + 1)){
+                        case MODBUS_FUNC_R:
+                        ESP_LOGI(TAG, "Request data successfully, about to parse");
+                        _g_p_rx_cb((void*)dtmp);
+                        break;
+                        case MODBUS_FUNC_W:
+                        _g_p_tx_cb(NULL);
+                        ESP_LOGI(TAG, "Write data successfully");
+                        break;
+                    }
+                }
+                break;
 
-    if (len > 0) {
-        // 2. Phân tích giá trị
-        if (response[1] == FUNC_READ_REG) { // Nếu là hàm đọc thành công
+            case UART_FIFO_OVF:
+                ESP_LOGW("INT", "Tràn bộ đệm FIFO!");
+                uart_flush_input(UART_PORT);
+                xQueueReset(q_uart_event);
+                _g_p_err_cb((void*)event.type);
+                break;
 
-            uint8_t bytes = response[2];
-            ESP_LOGI(MASTER, "Số byte dữ liệu nhận được: %d", bytes);
-            ESP_LOG_BUFFER_HEX("Phản hồi nhận được:", response, len);
-            
-            uint16_t val = (response[3 + 0] << 8) | response[4 + 0];
-            process_inverter_data(reg_addr, val);
+            case UART_PARITY_ERR:
+                ESP_LOGE(TAG, "Lỗi Parity - Kiểm tra nhiễu!");
+                _g_p_err_cb((void*)event.type);
+                break;
+
+            default:
+                _g_p_err_cb((void*)event.type);
+                break;
         }
-        if (response[1] == GD20_RESP_CODE_FAULT) { // Nếu là lỗi (hàm trả về mã lỗi)
-            uint8_t error_code = response[2];
-            ESP_LOGE(MASTER, "Biến tần trả về lỗi: Mã lỗi 0x%02X", error_code);
-        }
-    } else {
-        ESP_LOGE(MASTER, "Không nhận được phản hồi từ biến tần!");
     }
+    return ESP_OK;
+}
+
+esp_err_t modbus_register_callback(
+            void (* p_modbus_tx_complete_cb)(void *),
+            void (* p_modbus_rx_complete_cb)(void *),
+            void (* p_modbus_error_cb)      (void *))
+{
+    if(NULL == p_modbus_tx_complete_cb || NULL == p_modbus_rx_complete_cb) 
+        return ESP_ERR_INVALID_ARG; 
+    _g_p_rx_cb  = p_modbus_tx_complete_cb;
+    _g_p_tx_cb  = p_modbus_rx_complete_cb;
+    _g_p_err_cb = p_modbus_error_cb;
+    return ESP_OK;
 }
 
 void modbus_init() {
@@ -218,7 +213,7 @@ void modbus_init() {
         .source_clk = UART_SCLK_DEFAULT,
     };
 
-    ESP_ERROR_CHECK(uart_driver_install(UART_PORT, BUF_SIZE * 2, 0, 0, NULL, 0));
+    ESP_ERROR_CHECK(uart_driver_install(UART_PORT, 255, 255, UART_EVEN_SIZE, &q_uart_event, 0));
     ESP_ERROR_CHECK(uart_param_config(UART_PORT, &uart_config));
     
     // 2. Gán chân và chế độ RS485
