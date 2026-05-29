@@ -185,6 +185,9 @@ esp_err_t uart_event_handle()
                 _g_p_err_cb((void*)event.type);
                 break;
         }
+        free(dtmp);
+        dtmp = NULL;
+
     }
     return ESP_OK;
 }
