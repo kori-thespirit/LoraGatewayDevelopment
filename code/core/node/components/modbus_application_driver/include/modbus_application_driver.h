@@ -22,8 +22,8 @@ typedef void (* p_modbus_rx_complete_cb)(void *pvParameters);
 typedef void (* p_modbus_error_cb      )(void *pvParameters);
 
 typedef enum {
-    MODBUS_FUNC_W = 0x06,
-    MODBUS_FUNC_R = 0x03,
+    MB_FUNC_W = 0x06,
+    MB_FUNC_R = 0x03,
 } e_modbus_function_t;
 
 void modbus_init();

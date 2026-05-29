@@ -72,7 +72,7 @@ uint16_t crc16_modbus(const uint8_t *data, uint16_t len) {
 esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint16_t value) {
     uint8_t frame[8];
     frame[0] = slave_id;
-    frame[1] = MODBUS_FUNC_W;
+    frame[1] = MB_FUNC_W;
     frame[2] = (reg_addr >> 8) & 0xFF;
     frame[3] = reg_addr & 0xFF;
     frame[4] = (value >> 8) & 0xFF;
@@ -84,7 +84,7 @@ esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint
 
     uart_write_bytes(UART_PORT, (const char*)frame, 8);
     //ESP_LOGI(TAG, "Gửi lệnh: Reg 0x%04X = 0x%04X (CRC: 0x%04X)", reg_addr, value, crc);
-    ESP_LOGI(TAG, "Gửi lệnh: %02X %02X %04X %04X %02X%02X", slave_id, MODBUS_FUNC_W, reg_addr, value, frame[6], frame[7]);
+    ESP_LOGI(TAG, "Gửi lệnh: %02X %02X %04X %04X %02X%02X", slave_id, MB_FUNC_W, reg_addr, value, frame[6], frame[7]);
     uint8_t response[10];
     // Đợi phản hồi (Timeout thường khoảng 100-500ms)
     int len = uart_read_bytes(UART_PORT, response, 8, pdMS_TO_TICKS(500));
@@ -122,7 +122,7 @@ esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint
     return ESP_OK;
 }
 esp_err_t modbus_send(e_modbus_function_t modbus_func, uint8_t slave_id, uint16_t reg_addr, uint8_t count) {
-    if(MODBUS_FUNC_W != modbus_func || MODBUS_FUNC_R != modbus_func) 
+    if(MB_FUNC_W != modbus_func || MODBUS_FUNC_R != modbus_func) 
         return ESP_ERR_INVALID_ARG;
     uint8_t frame[8];
     frame[0] = slave_id;
@@ -157,11 +157,11 @@ esp_err_t uart_event_handle()
                         return ESP_ERR_INVALID_CRC;
                     }
                     switch(*(dtmp + 1)){
-                        case MODBUS_FUNC_R:
+                        case MB_FUNC_R:
                         ESP_LOGI(TAG, "Request data successfully, about to parse");
                         _g_p_rx_cb((void*)dtmp);
                         break;
-                        case MODBUS_FUNC_W:
+                        case MB_FUNC_W:
                         _g_p_tx_cb(NULL);
                         ESP_LOGI(TAG, "Write data successfully");
                         break;
