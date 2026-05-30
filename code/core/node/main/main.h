@@ -11,9 +11,9 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-
-TaskHandle_t *get_modbus_task_handle();
-TaskHandle_t *get_lora_task_handle();
+QueueHandle_t * get_queue_common();
+TaskHandle_t  * get_modbus_task_handle();
+TaskHandle_t  * get_lora_task_handle();
 void lora_task(void* pvParameters);
 void modbus_task(void* pvParameters);
 #endif // _MAIN_H_

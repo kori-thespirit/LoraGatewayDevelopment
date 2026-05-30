@@ -5,8 +5,6 @@
 
 #include "esp_log.h"
 #include "driver/gpio.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "lora.h"
 #include "lora_protocol.h"
 #include "main.h"
@@ -29,7 +27,7 @@ void lora_task(void* pvParameters) {
     /*đăng ký callback để nhận thông báo khi đóng gói hoặc phân tích khung hoàn tất*/
   e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete); 
   if(LORA_PROTOCOL_ERR_OK != protocol_err)
-    ESP_LOGE(TAG, "register callback failed");
+    ESP_LOGE(TAG, "register callback failed"); // TODO: Add error code value
   gpio_reset_pin(LED_ACT);
   gpio_set_direction(LED_ACT, GPIO_MODE_OUTPUT);
 
@@ -77,7 +75,7 @@ static void test_send()
     }
     e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&payload, sizeof(payload), 1, 0);
     if(LORA_PROTOCOL_ERR_OK != protocol_err) {
-        ESP_LOGE(TAG, "Pack frame data failed, refuse to send");
+        ESP_LOGE(TAG, "Pack frame data failed, refuse to send");// TODO: Add error code value
         return;
     }
     lora_send_packet(buffer, sizeof(buffer));

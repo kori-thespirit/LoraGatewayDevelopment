@@ -15,8 +15,7 @@ StackType_t xLoraStack[LORA_STACK_SIZE];
 StaticTask_t xModbusTaskBuffer;
 StackType_t xModbusStack[MODBUS_STACK_SIZE];
 TaskHandle_t modbus_task_handle;
-TaskHandle_t lora_task_handle
-
+TaskHandle_t lora_task_handle;
 
 static QueueHandle_t q_common[5];
 
@@ -55,10 +54,12 @@ void app_main() {
       ESP_LOGE(TAG,"Fail to create modbus task");
 
     for(;;){
-
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 
 }
 
-TaskHandle_t *get_modbus_task_handle() { return &modbus_task_handle; }
-TaskHandle_t *get_lora_task_handle() { return &lora_task_handle; }
+QueueHandle_t * get_queue_common() {return q_common;}
+TaskHandle_t  * get_modbus_task_handle() { return &modbus_task_handle; }
+TaskHandle_t  * get_lora_task_handle() { return &lora_task_handle; }
+
