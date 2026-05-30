@@ -15,8 +15,7 @@ StackType_t xLoraStack[LORA_STACK_SIZE];
 StaticTask_t xModbusTaskBuffer;
 StackType_t xModbusStack[MODBUS_STACK_SIZE];
 TaskHandle_t modbus_task_handle;
-TaskHandle_t lora_task_handle
-
+TaskHandle_t lora_task_handle;
 
 static QueueHandle_t q_common[5];
 
