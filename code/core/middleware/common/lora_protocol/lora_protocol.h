@@ -4,11 +4,11 @@
 #include <stdint.h>
 
 #define M_LORA_ASSERT_DEFINE(_cond, _ret)                                       \
-  do {                                                                         \
-    if (!(_cond)) {                                                            \
-      return _ret;                                                             \
-    }                                                                          \
-  } while (0)
+    do {                                                                        \
+        if (!(_cond)) {                                                         \
+            return _ret;                                                        \
+        }                                                                       \
+    } while (0)
 
 #define M_LORA_ASSERT(_cond, _ret) M_LORA_ASSERT_DEFINE(_cond, _ret)
 #define FRAME_CRC_SIZE 2
@@ -38,10 +38,10 @@ typedef enum lora_function {
 
 typedef struct lora_node_info {
   uint8_t node_id;
-  uint8_t length;
+  uint8_t length; // NOTE: remove this field
   uint8_t readwrite;
-  char node_name[10];
-  void *payload;
+  char node_name[10]; // NOTE: rename to "name", change to pointer of char
+  void *payload; // NOTE: remove this fiel
   void *pnext;
 } st_lora_node_info_t;
 
