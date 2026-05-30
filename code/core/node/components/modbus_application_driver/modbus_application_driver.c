@@ -11,9 +11,10 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "modbus_application_driver.h"
+#include "modbus_payload_handle.h"
 
-static char GD20[] = "GD20";
-static char TAG[] = "modbus_driver";
+static const char GD20[] = "GD20";
+static const char TAG[] = "modbus_driver";
 static QueueHandle_t q_uart_event;
 #define UART_EVEN_SIZE 10
 static p_modbus_tx_complete_cb  _g_p_rx_cb;
@@ -21,7 +22,7 @@ static p_modbus_rx_complete_cb  _g_p_tx_cb;
 static p_modbus_error_cb        _g_p_err_cb;
 
 // --- BẢNG TRA CRC16 MODBUS (256 phần tử) ---
-static const uint16_t crc_table[256] = {
+static const uint16_t crc_table[] = {
     0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
     0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,
     0xCC01, 0x0CC0, 0x0D80, 0xCD41, 0x0F00, 0xCFC1, 0xCE81, 0x0E40,
@@ -122,7 +123,7 @@ esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint
     return ESP_OK;
 }
 esp_err_t modbus_send(e_modbus_function_t modbus_func, uint8_t slave_id, uint16_t reg_addr, uint8_t count) {
-    if(MB_FUNC_W != modbus_func || MODBUS_FUNC_R != modbus_func) 
+    if(MB_FUNC_W != modbus_func && MB_FUNC_R != modbus_func) 
         return ESP_ERR_INVALID_ARG;
     uint8_t frame[8];
     frame[0] = slave_id;
@@ -136,15 +137,19 @@ esp_err_t modbus_send(e_modbus_function_t modbus_func, uint8_t slave_id, uint16_
     frame[6] = crc & 0xFF;          // Byte thấp CRC
     frame[7] = (crc >> 8) & 0xFF;   // Byte cao CRC
 
-    uart_write_bytes(UART_PORT, (const char*)frame, 8);
+    uart_write_bytes(UART_PORT, (const char*) frame, 8);
     return ESP_OK;
 }
 
-esp_err_t uart_event_handle() 
+esp_err_t modbus_uart_event_handle() 
 {
     uart_event_t event;
-    if (xQueueReceive(q_uart_event, (void*)&event, pdMS_TO_TICKS(100))) {
+    if (xQueueReceive(q_uart_event, (void*)&event, pdMS_TO_TICKS(1000))) {
         uint8_t* dtmp = (uint8_t*)malloc(BUF_SIZE);
+        if(!dtmp) {
+            ESP_LOGE(TAG, "Fail to allocate buffer");
+            return ESP_ERR_NO_MEM;
+        }
         bzero(dtmp, BUF_SIZE);
         switch (event.type) {
             case UART_DATA:
@@ -159,7 +164,7 @@ esp_err_t uart_event_handle()
                     switch(*(dtmp + 1)){
                         case MB_FUNC_R:
                         ESP_LOGI(TAG, "Request data successfully, about to parse");
-                        _g_p_rx_cb((void*)dtmp);
+                        m_modbus_payload_handle(dtmp);
                         break;
                         case MB_FUNC_W:
                         _g_p_tx_cb(NULL);
@@ -173,16 +178,22 @@ esp_err_t uart_event_handle()
                 ESP_LOGW("INT", "Tràn bộ đệm FIFO!");
                 uart_flush_input(UART_PORT);
                 xQueueReset(q_uart_event);
-                _g_p_err_cb((void*)event.type);
+                if(_g_p_err_cb)
+                    _g_p_err_cb((void*)event.type);
                 break;
 
             case UART_PARITY_ERR:
                 ESP_LOGE(TAG, "Lỗi Parity - Kiểm tra nhiễu!");
-                _g_p_err_cb((void*)event.type);
+                if(_g_p_err_cb)
+                    _g_p_err_cb((void*)event.type);
+                break;
+            case UART_BREAK:
                 break;
 
             default:
-                _g_p_err_cb((void*)event.type);
+                ESP_LOGE(TAG, "Unspecified event");
+                if(_g_p_err_cb)
+                    _g_p_err_cb((void*)event.type);
                 break;
         }
         free(dtmp);
