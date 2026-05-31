@@ -54,7 +54,7 @@ void lora_task(void* pvParameters) {
   lora_set_spreading_factor(LORA_SF);
   ESP_LOGI(TAG, "spreading_factor=%d", LORA_SF);
   while (1) {
-      test_send();
+      // test_send();
       int lost = lora_packet_lost();
       if (lost != 0) {
           ESP_LOGW(TAG, "%d packets lost", lost);
@@ -68,7 +68,7 @@ void lora_task(void* pvParameters) {
 
 static void test_send()
 {
-    uint8_t buffer[100] = {0};
+    uint8_t buffer[256] = {0};
     uint8_t payload[128] = {0};
     for (uint8_t i = 0; i < sizeof(payload); i++) {
         payload[i] = i;
