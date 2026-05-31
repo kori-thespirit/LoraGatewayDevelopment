@@ -120,18 +120,17 @@ esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint
     }
     return ESP_OK;
 }
-esp_err_t modbus_send(e_modbus_function_t modbus_func, uint8_t slave_id, uint16_t reg_addr, uint16_t readCount_writeValue) {
+esp_err_t modbus_send(e_modbus_function_t modbus_func, uint8_t slave_id, uint16_t reg_addr, uint16_t payload) {
     if(MB_FUNC_W != modbus_func && MB_FUNC_R != modbus_func) 
         return ESP_ERR_INVALID_ARG;
     uint8_t frame[8];
+    uint16_t crc = crc16_modbus(frame, 6);
     frame[0] = slave_id;
     frame[1] = modbus_func;
     frame[2] = (reg_addr >> 8) & 0xFF;
     frame[3] = reg_addr & 0xFF;
-    frame[4] = (readCount_writeValue >> 8) & 0xFF;
-    frame[5] = readCount_writeValue & 0xFF;
-
-    uint16_t crc = crc16_modbus(frame, 6);
+    frame[4] = (payload >> 8) & 0xFF;
+    frame[5] = payload & 0xFF;
     frame[6] = crc & 0xFF;          // Byte thấp CRC
     frame[7] = (crc >> 8) & 0xFF;   // Byte cao CRC
     /* Request or write modbus message */
