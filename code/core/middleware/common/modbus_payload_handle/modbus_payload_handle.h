@@ -24,14 +24,15 @@ typedef enum modbus_param_type {
 } e_modbus_param_type_t;
 
 typedef enum modbus_payload_err {
-  MB_PAYLOAD_OK,
-  MB_PAYLOAD_ERR_CALLBACK_IS_NULL,
-  MB_PAYLOAD_ERR_RANGE_INVALID,
-  MB_PAYLOAD_ERR_DEVICE_NOT_FOUND,
-  MB_PAYLOAD_ERR_DESCRIPTOR_MISMACTH,
-  MB_PAYLOAD_ERR_DATA_SIZE_MISMACTH,
-  MB_PAYLOAD_ERR_DATA_INVALID,
-  MB_PAYLOAD_ERR_PERMISSON,
+    MB_PAYLOAD_OK,
+    MB_PAYLOAD_ERR_CALLBACK_IS_NULL,
+    MB_PAYLOAD_ERR_RANGE_INVALID,
+    MB_PAYLOAD_ERR_DEVICE_NOT_FOUND,
+    MB_PAYLOAD_ERR_DESCRIPTOR_NOT_FOUND,
+    MB_PAYLOAD_ERR_DATA_SIZE_MISMACTH,
+    MB_PAYLOAD_ERR_ADDRESS_MISMACTH,
+    MB_PAYLOAD_ERR_DATA_INVALID,
+    MB_PAYLOAD_ERR_PERMISSON,
 } e_modbus_payload_err_t ;
 
 typedef struct modbus_params_range{
@@ -51,6 +52,7 @@ typedef struct modbus_params_descriptor {
 typedef struct modbus_device_info {
     uint8_t address;
     char *name;
+    uint8_t total_idx;
     const st_modbus_params_descriptor_t *desc; // NOTE: why use pointer? 
 }st_modbus_device_info_t;
 void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send);
