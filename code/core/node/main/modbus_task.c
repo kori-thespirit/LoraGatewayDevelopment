@@ -27,7 +27,7 @@ void modbus_task(void* pvParameters)
     if(MB_PAYLOAD_OK != err)
         ESP_LOGE(TAG, "register callback failed: %d", err);
 
-    ESP_ERROR_CHECK(modbus_send(MB_FUNC_W, 1, GD20_REG_ID, 1));
+    ESP_ERROR_CHECK(modbus_send(MB_FUNC_R, 1, GD20_REG_ID, 1));
     // ESP_ERROR_CHECK(modbus_send(MB_FUNC_W, 1, GD20_REG_CONTROL_CMD, 5));
     for(;;){
         ESP_ERROR_CHECK(modbus_uart_event_handle());
