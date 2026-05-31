@@ -27,7 +27,6 @@ typedef enum {
 } e_modbus_function_t;
 
 void modbus_init();
-esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint16_t value);
 esp_err_t modbus_send(e_modbus_function_t modbus_func, uint8_t slave_id, uint16_t reg_addr, uint16_t payload);
 esp_err_t modbus_uart_event_handle();
 #endif // !MODBUS_APP_DRIVER_H
