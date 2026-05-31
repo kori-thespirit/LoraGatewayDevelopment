@@ -5,6 +5,7 @@
 #include "../payload_typedef.h"
 #include "gd20_inverter.h"
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef enum modbus_permission {
     PERM_READ,
@@ -24,6 +25,7 @@ typedef enum modbus_param_type {
 
 typedef enum modbus_payload_err {
   MB_PAYLOAD_OK,
+  MB_PAYLOAD_ERR_CALLBACK_IS_NULL,
   MB_PAYLOAD_ERR_RANGE_INVALID,
   MB_PAYLOAD_ERR_DEVICE_NOT_FOUND,
   MB_PAYLOAD_ERR_DESCRIPTOR_MISMACTH,
@@ -51,5 +53,9 @@ typedef struct modbus_device_info {
     char *name;
     const st_modbus_params_descriptor_t *desc; // NOTE: why use pointer? 
 }st_modbus_device_info_t;
-e_modbus_payload_err_t m_modbus_payload_handle(uint8_t *modbus_payload);
+void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send);
+e_modbus_payload_err_t m_modbus_register_callback(
+            void (* p_modbus_tx_complete_cb)(void *),
+            void (* p_modbus_rx_complete_cb)(void *),
+            void (* p_modbus_error_cb)      (void *));
 #endif // MODBUS_PAYLOAD_HANDLE_H

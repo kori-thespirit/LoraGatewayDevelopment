@@ -32,6 +32,6 @@ esp_err_t modbus_register_callback(
             void (* p_modbus_rx_complete_cb)(void *),
             void (* p_modbus_error_cb)      (void *));
 esp_err_t modbud_write_register_with_fb(uint8_t slave_id,uint16_t reg_addr, uint16_t value);
-esp_err_t modbus_send(e_modbus_function_t modbus_func, uint8_t slave_id, uint16_t reg_addr, uint8_t count);
+esp_err_t modbus_send(e_modbus_function_t modbus_func, uint8_t slave_id, uint16_t reg_addr, uint16_t readCount_writeValue);
 esp_err_t modbus_uart_event_handle();
 #endif // !MODBUS_APP_DRIVER_H
