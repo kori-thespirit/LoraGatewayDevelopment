@@ -21,8 +21,8 @@ const st_modbus_params_descriptor_t desc_inverter_gd20[] = {
     {.addr = GD20_REG_SET_FREQ   , .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_WRITE, .range.min = 1   , .range.max = 8     },
 };
 static const st_modbus_params_descriptor_t desc_sensor_sht20[] = {
-    {.addr = 0x0001, .unit = "°C" , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ}, // Temperature
-    {.addr = 0x0002, .unit = "%"  , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ}, // Humidity
+    {.addr = 0x0001, .unit = "°C"   , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ}, // Temperature
+    {.addr = 0x0002, .unit = "%rH"  , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ}, // Humidity
 };
 static const st_modbus_device_info_t dev[2] = {
     {.address = 1, .name = "GD20 Inverter"  , .desc = desc_inverter_gd20 , .total_idx = TOTAL_DESCRIPTOR(desc_inverter_gd20) },
@@ -38,10 +38,9 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
     static uint8_t desc_idx = 0;
     /* To know which register is currently sent */
     static uint16_t register_to_send = 0; 
+    uint8_t dev_addr = *(modbus_payload + 0);
     /* Get the modbus function from modbus frame */
     uint8_t modbus_func = *(modbus_payload + 1);
-    uint8_t dev_addr = *(modbus_payload + 0);
-    uint16_t value = (*(modbus_payload + 3) << 8) | *(modbus_payload + 4);
     static const st_modbus_params_descriptor_t *descriptor;
     ESP_LOGI(TAG, "Total modbus devices: %d", TOTAL_MODBUS_DEVICE);
         
@@ -79,7 +78,9 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
         e_modbus_permission_t permission = (descriptor + desc_idx)->perm;
         int range_min = (descriptor + desc_idx)->range.min;
         int range_max = (descriptor + desc_idx)->range.max;
+        uint16_t value = (*(modbus_payload + 4) << 8) | *(modbus_payload + 5);
         ESP_LOGI(TAG,"register_to_send: 0x%x", register_to_send);
+        ESP_LOGI(TAG,"value: %u", value);
         switch(modbus_func) {
             case MB_FUNC_R:
                 if(permission != PERM_READ && permission != PERM_READWRITE) {
@@ -97,29 +98,39 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
                     err = MB_PAYLOAD_ERR_RANGE_INVALID;
                     goto error_callback;
                 }
-                _g_p_tx_cb(NULL);
                 break;
             default:
                 break;
         }
     }
     else { /* In get response message phase */
-        ESP_LOGI(TAG,"total payload: %u, value:%u", *(modbus_payload + 2), value);
-        uint8_t receive_payload_size = *(modbus_payload + 2);
-        /* Check device address between send and receive phase */
-        if(send_addr != dev_addr) {
-            err = MB_PAYLOAD_ERR_ADDRESS_MISMACTH;
-            goto error_callback;
+        switch(modbus_func){
+            case MB_FUNC_R:
+                uint8_t response_payload = *(modbus_payload + 2);
+                ESP_LOGI(TAG,"total payload: %u", response_payload);
+                uint16_t value = (*(modbus_payload + 3) << 8) | *(modbus_payload + 4);
+                uint8_t receive_payload_size = *(modbus_payload + 2);
+                /* Check device address between send and receive phase */
+                if(send_addr != dev_addr) {
+                    err = MB_PAYLOAD_ERR_ADDRESS_MISMACTH;
+                    goto error_callback;
+                }
+                /* word to byte must multiply by 2 */
+                uint8_t descriptor_payload_size = (descriptor + desc_idx)->size * 2;
+                if(descriptor_payload_size != receive_payload_size) {
+                    err = MB_PAYLOAD_ERR_DATA_SIZE_MISMACTH;
+                    goto error_callback;
+                }
+                _g_p_rx_cb((descriptor + desc_idx), (void*)&value);
+                break;
+            case MB_FUNC_W:
+                _g_p_tx_cb(NULL);
+                break;
+
         }
-        /* word to byte must multiply by 2 */
-        uint8_t descriptor_payload_size = (descriptor + desc_idx)->size * 2;
-        if(descriptor_payload_size != receive_payload_size) {
-            err = MB_PAYLOAD_ERR_DATA_SIZE_MISMACTH;
-            goto error_callback;
-        }
-        _g_p_rx_cb((void*)&value);
 
     }
+    // NOTE: reset static variable to default
     return;
 
 error_callback:
@@ -129,7 +140,7 @@ error_callback:
 
 e_modbus_payload_err_t m_modbus_register_callback(
             void (* p_modbus_tx_complete_cb)(void *),
-            void (* p_modbus_rx_complete_cb)(void *),
+            void (* p_modbus_rx_complete_cb)(const st_modbus_params_descriptor_t *desc, void *),
             void (* p_modbus_error_cb)      (void *))
 {
     if( NULL == p_modbus_tx_complete_cb || 

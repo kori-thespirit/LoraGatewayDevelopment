@@ -58,6 +58,6 @@ typedef struct modbus_device_info {
 void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send);
 e_modbus_payload_err_t m_modbus_register_callback(
             void (* p_modbus_tx_complete_cb)(void *),
-            void (* p_modbus_rx_complete_cb)(void *),
+            void (* p_modbus_rx_complete_cb)(const st_modbus_params_descriptor_t *desc, void *),
             void (* p_modbus_error_cb)      (void *));
 #endif // MODBUS_PAYLOAD_HANDLE_H
