@@ -13,7 +13,6 @@
 #include "modbus_application_driver.h"
 #include "modbus_payload_handle.h"
 
-static const char GD20[] = "GD20";
 static const char TAG[] = "modbus_driver";
 static QueueHandle_t q_uart_event;
 #define UART_EVEN_SIZE 10
