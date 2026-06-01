@@ -42,8 +42,6 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
     /* Get the modbus function from modbus frame */
     uint8_t modbus_func = *(modbus_payload + 1);
     static const st_modbus_params_descriptor_t *descriptor;
-    ESP_LOGI(TAG, "Total modbus devices: %d", TOTAL_MODBUS_DEVICE);
-        
     if(is_send) { /* In sending modbus message phase */
         /* Get known modbus device */
         for(uint8_t i = 0; i < TOTAL_MODBUS_DEVICE; i++) {
@@ -124,13 +122,18 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
                 _g_p_rx_cb((descriptor + desc_idx), (void*)&value);
                 break;
             case MB_FUNC_W:
+                 /* NOTE: Need to handle tx callback */
                 _g_p_tx_cb(NULL);
                 break;
 
         }
 
     }
-    // NOTE: reset static variable to default
+    /* Reset static variable to default */
+    send_addr = 0;
+    desc_idx = 0;
+    register_to_send = 0; 
+    descriptor = NULL;
     return;
 
 error_callback:
