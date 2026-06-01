@@ -17,9 +17,6 @@
 #define BAUD_RATE              (9600) 
 #define BUF_SIZE               (127)
 
-typedef void (* p_modbus_tx_complete_cb)(void *pvParameters);
-typedef void (* p_modbus_rx_complete_cb)(void *pvParameters);
-typedef void (* p_modbus_error_cb      )(void *pvParameters);
 
 typedef enum {
     MB_FUNC_W = 0x06,

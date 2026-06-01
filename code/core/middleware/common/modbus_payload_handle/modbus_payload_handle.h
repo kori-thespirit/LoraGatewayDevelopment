@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+
 typedef enum modbus_permission {
     PERM_READ,
     PERM_WRITE,
@@ -42,7 +43,7 @@ typedef struct modbus_params_range{
 
 typedef struct modbus_params_descriptor {
     uint8_t size; // In word
-    uint16_t addr;
+    uint16_t addr; // register address
     const char *unit;
     st_modbus_params_range_t range;
     e_modbus_param_type_t type;
@@ -53,11 +54,16 @@ typedef struct modbus_device_info {
     uint8_t address;
     char *name;
     uint8_t total_idx;
-    const st_modbus_params_descriptor_t *desc; // NOTE: why use pointer? 
+    const st_modbus_params_descriptor_t *desc; 
 }st_modbus_device_info_t;
+
+typedef void (* p_modbus_tx_complete_cb)(void *pvParameters);
+typedef void (* p_modbus_rx_complete_cb)(const st_modbus_params_descriptor_t *desc, void *pvParameters);
+typedef void (* p_modbus_error_cb      )(void *pvParameters);
+
 void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send);
 e_modbus_payload_err_t m_modbus_register_callback(
             void (* p_modbus_tx_complete_cb)(void *),
-            void (* p_modbus_rx_complete_cb)(const st_modbus_params_descriptor_t *desc, void *),
+            void (* p_modbus_rx_complete_cb)(void *, const st_modbus_params_descriptor_t *desc),
             void (* p_modbus_error_cb)      (void *));
 #endif // MODBUS_PAYLOAD_HANDLE_H

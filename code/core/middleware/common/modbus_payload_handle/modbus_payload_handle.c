@@ -5,8 +5,8 @@
 #define TOTAL_DESCRIPTOR(_X_) TOTAL_INDEX(_X_, st_modbus_params_descriptor_t)
 static const char TAG[] = "modbus_payload_handle";
 
-static p_modbus_tx_complete_cb  _g_p_rx_cb;
-static p_modbus_rx_complete_cb  _g_p_tx_cb;
+static p_modbus_rx_complete_cb  _g_p_rx_cb;
+static p_modbus_tx_complete_cb  _g_p_tx_cb;
 static p_modbus_error_cb        _g_p_err_cb;
 const st_modbus_params_descriptor_t desc_inverter_gd20[] = {
     {.addr = GD20_REG_ID         , .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ}, 
@@ -119,7 +119,7 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
                     err = MB_PAYLOAD_ERR_DATA_SIZE_MISMACTH;
                     goto error_callback;
                 }
-                _g_p_rx_cb((descriptor + desc_idx), (void*)&value);
+                _g_p_rx_cb((void*)&value, (descriptor + desc_idx));
                 break;
             case MB_FUNC_W:
                  /* NOTE: Need to handle tx callback */
@@ -143,7 +143,7 @@ error_callback:
 
 e_modbus_payload_err_t m_modbus_register_callback(
             void (* p_modbus_tx_complete_cb)(void *),
-            void (* p_modbus_rx_complete_cb)(const st_modbus_params_descriptor_t *desc, void *),
+            void (* p_modbus_rx_complete_cb)(void *, const st_modbus_params_descriptor_t *desc),
             void (* p_modbus_error_cb)      (void *))
 {
     if( NULL == p_modbus_tx_complete_cb || 
