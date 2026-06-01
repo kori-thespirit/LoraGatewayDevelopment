@@ -1,3 +1,0 @@
-Command: make -j 6 all
-info: Default value for ESP_BROWNOUT_DET in sdkconfig is n but it is y according to Kconfig.
-Using default value from sdkconfig (n).
