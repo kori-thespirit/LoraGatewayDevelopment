@@ -122,7 +122,7 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
                 _g_p_rx_cb((void*)&value, (descriptor + desc_idx));
                 break;
             case MB_FUNC_W:
-                 /* NOTE: Need to handle tx callback */
+                 /* TODO: Need to handle tx callback */
                 _g_p_tx_cb(NULL);
                 break;
 
