@@ -11,8 +11,10 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "gd20_inverter.h"
+#include "../intertask_typedef.h"
 
-#define QUEUE_COMMON_SIZE 50
+#define QUEUE_COMMON_SIZE 3
 
 typedef enum task_handle_id{
     TASK_ID_MODBUS = 1,
@@ -21,7 +23,8 @@ typedef enum task_handle_id{
     TASK_ID_HMI,
 } e_task_handle_id_t;
 
-QueueHandle_t * get_available_queue_common();
+uint8_t get_available_queue_common();
+QueueHandle_t * get_queue_common_addr();
 TaskHandle_t  * get_modbus_task_handle();
 TaskHandle_t  * get_lora_task_handle();
 TaskHandle_t  * get_network_handle();

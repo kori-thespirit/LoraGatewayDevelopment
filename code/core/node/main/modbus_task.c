@@ -7,18 +7,18 @@
 #include "main.h"
 #include "modbus_application_driver.h"
 #include "modbus_payload_handle.h"
-#include "gd20_inverter.h"
 
 static void tx_complete(void *pvParameter);
 static void rx_complete(void *pvParameter, const st_modbus_params_descriptor_t *desc);
 static void modbus_payload_err(void *pvParameter);
 static const char *TAG = "modbus_task";
 
-static esp_err_t send_to_inter_task(e_task_handle_id_t taskid, void *pvParameter, size_t param_size)
+static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter, size_t param_size)
 {
     uint8_t temp[QUEUE_COMMON_SIZE] = {0};
     TaskHandle_t *task_handle = NULL;
-    QueueHandle_t *p_queue = get_available_queue_common();
+    uint8_t qidx = get_available_queue_common();
+    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
     if(param_size > QUEUE_COMMON_SIZE){
         ESP_LOGE(TAG, "Oversize queue common items");
         return ESP_ERR_INVALID_SIZE;
@@ -43,13 +43,21 @@ static esp_err_t send_to_inter_task(e_task_handle_id_t taskid, void *pvParameter
         ESP_LOGE(TAG, "Not found required TaskHandle");
         return ESP_ERR_NOT_FOUND;
     }
-    for(uint8_t i = 0; i < param_size; i++){
-        if(xQueueSend(*p_queue, (void*)(temp + i), pdMS_TO_TICKS(200)) == pdPASS){}
-        else {
-            ESP_LOGE(TAG, "Fail to send queue");
-        }
+    // for(uint8_t i = 0; i < param_size; i++){
+    //     if(xQueueSend(*p_queue, (void*)(temp + i), pdMS_TO_TICKS(200)) == pdPASS){}
+    //     else {
+    //         ESP_LOGE(TAG, "Fail to send queue");
+    //     }
+    // }
+    //
+    
+    if(xQueueSend(*p_queue, (void*)(temp + i), pdMS_TO_TICKS(200)) == pdPASS){}
+    else {
+        ESP_LOGE(TAG, "Fail to send queue");
     }
-    if(xTaskNotify(*task_handle, (uint32_t)p_queue, eSetValueWithoutOverwrite) == pdPASS) {}
+   
+
+    if(xTaskNotify(*task_handle, (uint32_t)qidx, eSetValueWithoutOverwrite) == pdPASS) {}
     else {
         ESP_LOGE(TAG, "Fail to notify task");
     }
@@ -57,11 +65,14 @@ static esp_err_t send_to_inter_task(e_task_handle_id_t taskid, void *pvParameter
     return ESP_OK;
 }
 
-static esp_err_t wait_data_inter_task()
+static esp_err_t handle_intertask_request()
 {
-    QueueHandle_t *p_queue;
-    if(xTaskNotifyWait(0x00, 0x00, (uint32_t)p_queue, pdMS_TO_TICKS(100)) == pdFALSE) 
+    uint8_t qidx;
+    if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&qidx, pdMS_TO_TICKS(100)) == pdFALSE)
         return ESP_OK;
+    ESP_LOGI(TAG, "Get qidx:%u",qidx);
+    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+    return ESP_OK;
 
 }
 
@@ -77,7 +88,7 @@ void modbus_task(void* pvParameters)
     // ESP_ERROR_CHECK(modbus_send(MB_FUNC_W, 1, GD20_REG_CONTROL_CMD, 1));
     ESP_ERROR_CHECK(modbus_send(MB_FUNC_W, 1, GD20_REG_CONTROL_CMD, 5));
     for(;;){
-        ESP_ERROR_CHECK(wait_data_inter_task());
+        ESP_ERROR_CHECK(handle_intertask_request());
         ESP_ERROR_CHECK(modbus_uart_event_handle());
     }
 }

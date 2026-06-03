@@ -31,17 +31,17 @@ typedef void (* p_lora_protocol_pack_complete_cb)(void *pvParameters);
 typedef void (* p_lora_protocol_parse_complete_cb)(void *pvParameters);
 
 typedef enum lora_function {
-  LORA_FUNCTION_REQUEST_ADDRESS, // NOTE:change to LORA_FUNC
+  LORA_FUNCTION_REQUEST_ADDRESS, // TODO:change to LORA_FUNC
   LORA_FUNCTION_REQUEST_DATA,
   LORA_FUNCTION_RESPONSE_DATA,
 } e_lora_function_t;
 
 typedef struct lora_node_info {
   uint8_t node_id;
-  uint8_t length; // NOTE: remove this field
+  uint8_t length; // TODO: remove this field
   uint8_t readwrite;
-  char node_name[10]; // NOTE: rename to "name", change to pointer of char
-  void *payload; // NOTE: remove this fiel
+  char node_name[10]; // TODO: rename to "name", change to pointer of char
+  void *payload; // TODO: remove this fiel
   void *pnext;
 } st_lora_node_info_t;
 

@@ -6,6 +6,7 @@
 
 #include "esp_log.h"
 #include "main.h"
+#include "../intertask_typedef.h"
 
 
 StaticTask_t xLoraTaskBuffer;
@@ -17,17 +18,19 @@ TaskHandle_t modbus_task_handle;
 TaskHandle_t lora_task_handle;
 TaskHandle_t network_task_handle;
 
-static QueueHandle_t q_common[5];
+// static QueueHandle_t q_common[5];
+static QueueHandle_t q_common;
 
 static const char *TAG = "main";
 
 void app_main() {
-    for(uint8_t i = 0; i < sizeof(q_common)/sizeof(QueueHandle_t); i++) {
-        q_common[i] = xQueueCreate(QUEUE_COMMON_SIZE, sizeof(uint8_t));
-        if(NULL == q_common[i]) {
-            ESP_LOGE(TAG,"Fail to create queue: %u", i);
-        }
-    }
+    // for(uint8_t i = 0; i < sizeof(q_common)/sizeof(QueueHandle_t); i++) {
+    //     q_common[i] = xQueueCreate(QUEUE_COMMON_SIZE, sizeof(st_modbus_intertask_t));
+    //     if(NULL == q_common[i]) {
+    //         ESP_LOGE(TAG,"Fail to create queue: %u", i);
+    //     }
+    // }
+    q_common = xQueueCreate(QUEUE_COMMON_SIZE, sizeof(st_modbus_intertask_t));
 
     lora_task_handle = xTaskCreateStatic(
     lora_task,
@@ -59,7 +62,14 @@ void app_main() {
 
 }
 
-QueueHandle_t * get_queue_common() {return q_common;}
+uint8_t get_available_queue_common()
+{
+    /* TODO: Change queue index base on free mutex */
+    uint8_t idx = 0;
+    return idx;
+}
+// QueueHandle_t * get_queue_common_addr() {return q_common;}
+QueueHandle_t * get_queue_common_addr() {return &q_common;}
 TaskHandle_t  * get_modbus_task_handle() { return &modbus_task_handle; }
 TaskHandle_t  * get_lora_task_handle() { return &lora_task_handle; }
 TaskHandle_t  * get_network_handle() { return &network_task_handle; }
