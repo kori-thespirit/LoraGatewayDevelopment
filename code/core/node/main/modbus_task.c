@@ -15,15 +15,15 @@ static const char *TAG = "modbus_task";
 
 static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter, size_t param_size)
 {
-    uint8_t temp[QUEUE_COMMON_SIZE] = {0};
+    st_modbus_intertask_t temp;
     TaskHandle_t *task_handle = NULL;
     uint8_t qidx = get_available_queue_common();
     QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
     if(param_size > QUEUE_COMMON_SIZE){
         ESP_LOGE(TAG, "Oversize queue common items");
         return ESP_ERR_INVALID_SIZE;
-    } 
-    memcpy(temp, (uint8_t*)pvParameter, param_size);
+    }
+    // memcpy(temp, (uint8_t*)pvParameter, param_size);
     switch(taskid) {
         case TASK_ID_NETWORK:
             task_handle = get_network_handle();
@@ -51,7 +51,7 @@ static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter,
     // }
     //
     
-    if(xQueueSend(*p_queue, (void*)(temp + i), pdMS_TO_TICKS(200)) == pdPASS){}
+    if(xQueueSend(*p_queue, (void*)pvParameter, pdMS_TO_TICKS(200)) == pdPASS){}
     else {
         ESP_LOGE(TAG, "Fail to send queue");
     }

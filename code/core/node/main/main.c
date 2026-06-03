@@ -6,7 +6,6 @@
 
 #include "esp_log.h"
 #include "main.h"
-#include "../intertask_typedef.h"
 
 
 StaticTask_t xLoraTaskBuffer;
