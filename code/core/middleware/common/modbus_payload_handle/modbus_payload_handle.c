@@ -127,13 +127,12 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
                 break;
 
         }
-
+        /* Reset static variable to default */
+        send_addr = 0;
+        desc_idx = 0;
+        register_to_send = 0; 
+        descriptor = NULL;
     }
-    /* Reset static variable to default */
-    send_addr = 0;
-    desc_idx = 0;
-    register_to_send = 0; 
-    descriptor = NULL;
     return;
 
 error_callback:

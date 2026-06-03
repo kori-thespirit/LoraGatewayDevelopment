@@ -19,66 +19,63 @@
 #define LED_ACT 13
 
 static const char *TAG = "lora_task";
-static void test_send();
 void pack_complete(void *pvParameters);
 void parse_complete(void *pvParameters);
 
+static void lora_send();
+static esp_err_t intertask_handle();
+static e_task_handle_id_t target_task_id;
+static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter, size_t param_size);
+
 void lora_task(void* pvParameters) {
     /*đăng ký callback để nhận thông báo khi đóng gói hoặc phân tích khung hoàn tất*/
-  e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete); 
-  if(LORA_PROTOCOL_ERR_OK != protocol_err)
-    ESP_LOGE(TAG, "register callback failed"); // TODO: Add error code value
-  gpio_reset_pin(LED_ACT);
-  gpio_set_direction(LED_ACT, GPIO_MODE_OUTPUT);
-
-  gpio_reset_pin(Lora_EN);
-  gpio_set_direction(Lora_EN, GPIO_MODE_OUTPUT);
-  gpio_set_level(Lora_EN, 1);
-  // Initialize LoRa
-  if (lora_init() == 0) {
-      ESP_LOGE(TAG, "Does not recognize the module");
-      while (1) {
-          vTaskDelay(1);
-      }
-  }
-  lora_set_frequency(RF_FREQUENCY);
-
-  lora_enable_crc();
-
-  lora_set_coding_rate(LORA_CR);
-  ESP_LOGI( TAG, "coding_rate=%d", LORA_CR);
-
-  lora_set_bandwidth(LORA_BW);
-  ESP_LOGI(TAG, "bandwidth=%d", LORA_BW);
-
-  lora_set_spreading_factor(LORA_SF);
-  ESP_LOGI(TAG, "spreading_factor=%d", LORA_SF);
-  while (1) {
-      // test_send();
-      int lost = lora_packet_lost();
-      if (lost != 0) {
-          ESP_LOGW(TAG, "%d packets lost", lost);
-      }
-      vTaskDelay(pdMS_TO_TICKS(3000));
-  }  // end while
-
-  // never reach here
-  vTaskDelete(NULL);
-}
-
-static void test_send()
-{
-    uint8_t buffer[256] = {0};
-    uint8_t payload[128] = {0};
-    for (uint8_t i = 0; i < sizeof(payload); i++) {
-        payload[i] = i;
+    e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete); 
+    if(LORA_PROTOCOL_ERR_OK != protocol_err){
+        ESP_LOGE(TAG, "%s:Register callback failed, err:%d",__func__, protocol_err);
     }
-    e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&payload, sizeof(payload), 1, 0);
-    if(LORA_PROTOCOL_ERR_OK != protocol_err) {
-        ESP_LOGE(TAG, "Pack frame data failed, refuse to send");// TODO: Add error code value
-        return;
+    gpio_reset_pin(LED_ACT);
+    gpio_set_direction(LED_ACT, GPIO_MODE_OUTPUT);
+
+    gpio_reset_pin(Lora_EN);
+    gpio_set_direction(Lora_EN, GPIO_MODE_OUTPUT);
+    gpio_set_level(Lora_EN, 1);
+    // Initialize LoRa
+    if (lora_init() == 0) {
+        ESP_LOGE(TAG, "Does not recognize the module");
+        while (1) {
+            vTaskDelay(1);
+        }
     }
-    lora_send_packet(buffer, sizeof(buffer));
+    lora_set_frequency(RF_FREQUENCY);
+
+    lora_enable_crc();
+
+    lora_set_coding_rate(LORA_CR);
+    ESP_LOGI( TAG, "coding_rate=%d", LORA_CR);
+
+    lora_set_bandwidth(LORA_BW);
+    ESP_LOGI(TAG, "bandwidth=%d", LORA_BW);
+
+    lora_set_spreading_factor(LORA_SF);
+    ESP_LOGI(TAG, "spreading_factor=%d", LORA_SF);
+    st_modbus_intertask_t data = {
+        .addr = 1,
+        .is_request = 1,
+        .reg = GD20_REG_ID,
+        .src_task_handle_id = TASK_ID_LORA,
+        .payload = 1,
+    };
+    ESP_ERROR_CHECK(send_to_intertask(TASK_ID_MODBUS, (void*)&data, sizeof(data)));
+    while (1) {
+        // test_send();
+        ESP_ERROR_CHECK(intertask_handle());
+        int lost = lora_packet_lost();
+        if (lost != 0) {
+            ESP_LOGW(TAG, "%d packets lost", lost);
+        }
+        vTaskDelay(pdMS_TO_TICKS(3000));
+    }
+    vTaskDelete(NULL);
 }
 
 void pack_complete(void *pvParameters)
@@ -90,4 +87,74 @@ void pack_complete(void *pvParameters)
 void parse_complete(void *pvParameters)
 {
     ESP_LOGI(TAG, "Parse Callback");
+}
+
+static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter, size_t param_size)
+{
+    TaskHandle_t *task_handle = NULL;
+    uint8_t qidx = get_available_queue_common();
+    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+    switch(taskid) {
+        case TASK_ID_NETWORK:
+            task_handle = get_network_handle();
+            break;
+        case TASK_ID_MODBUS:
+            task_handle = get_modbus_task_handle();
+            break;
+        case TASK_ID_LORA:
+        case TASK_ID_HMI:
+        default:
+            ESP_LOGE(TAG, "This TaskHandle doesn't supported");
+            return ESP_ERR_NOT_SUPPORTED;
+            break;
+
+    }
+    if(!task_handle){
+        ESP_LOGE(TAG, "Not found required TaskHandle");
+        return ESP_ERR_NOT_FOUND;
+    }
+    
+    if(xQueueSend(*p_queue, (void*)pvParameter, pdMS_TO_TICKS(200)) == pdPASS){}
+    else {
+        ESP_LOGE(TAG, "Fail to send queue");
+    }
+   
+
+    if(xTaskNotify(*task_handle, (uint32_t)qidx, eSetValueWithoutOverwrite) == pdPASS) {}
+    else {
+        ESP_LOGE(TAG, "Fail to notify task");
+    }
+
+    return ESP_OK;
+}
+
+static esp_err_t handle_intertask_request()
+{
+    uint8_t qidx;
+    if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&qidx, pdMS_TO_TICKS(100)) == pdFALSE)
+        return ESP_OK;
+    ESP_LOGI(TAG, "Received notify, Get qidx:%u",qidx);
+    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+    st_modbus_intertask_t data;
+
+    if(xQueueReceive(*p_queue, (void*)&data, pdMS_TO_TICKS(100)) == pdPASS){
+        uint8_t buffer[256] = {0};
+        e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&data, sizeof(data), 1, 0);
+        if(LORA_PROTOCOL_ERR_OK != protocol_err) {
+            ESP_LOGE(TAG, "%s:Pack frame data failed, err:%d",__func__, protocol_err);
+        }
+        lora_send_packet(buffer, sizeof(buffer));
+    }
+    else {
+        ESP_LOGE(TAG, "%s:Fail to handle QueueReceive", __func__);
+    }
+    return ESP_OK;
+
+}
+
+static esp_err_t intertask_handle()
+{
+    ESP_ERROR_CHECK(handle_intertask_request());
+    return ESP_OK;
+
 }

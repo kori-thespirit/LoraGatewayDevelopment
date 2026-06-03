@@ -14,7 +14,7 @@
 #include "gd20_inverter.h"
 #include "../intertask_typedef.h"
 
-#define QUEUE_COMMON_SIZE 3
+#define QUEUE_COMMON_ITEMS 3
 
 typedef enum task_handle_id{
     TASK_ID_MODBUS = 1,

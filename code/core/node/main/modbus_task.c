@@ -12,69 +12,9 @@ static void tx_complete(void *pvParameter);
 static void rx_complete(void *pvParameter, const st_modbus_params_descriptor_t *desc);
 static void modbus_payload_err(void *pvParameter);
 static const char *TAG = "modbus_task";
-
-static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter, size_t param_size)
-{
-    st_modbus_intertask_t temp;
-    TaskHandle_t *task_handle = NULL;
-    uint8_t qidx = get_available_queue_common();
-    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
-    if(param_size > QUEUE_COMMON_SIZE){
-        ESP_LOGE(TAG, "Oversize queue common items");
-        return ESP_ERR_INVALID_SIZE;
-    }
-    // memcpy(temp, (uint8_t*)pvParameter, param_size);
-    switch(taskid) {
-        case TASK_ID_NETWORK:
-            task_handle = get_network_handle();
-            break;
-        case TASK_ID_LORA:
-            task_handle = get_lora_task_handle();
-            break;
-        case TASK_ID_MODBUS: 
-        case TASK_ID_HMI:
-        default:
-            ESP_LOGE(TAG, "This TaskHandle doesn't supported");
-            return ESP_ERR_NOT_SUPPORTED;
-            break;
-
-    }
-    if(!task_handle){
-        ESP_LOGE(TAG, "Not found required TaskHandle");
-        return ESP_ERR_NOT_FOUND;
-    }
-    // for(uint8_t i = 0; i < param_size; i++){
-    //     if(xQueueSend(*p_queue, (void*)(temp + i), pdMS_TO_TICKS(200)) == pdPASS){}
-    //     else {
-    //         ESP_LOGE(TAG, "Fail to send queue");
-    //     }
-    // }
-    //
-    
-    if(xQueueSend(*p_queue, (void*)pvParameter, pdMS_TO_TICKS(200)) == pdPASS){}
-    else {
-        ESP_LOGE(TAG, "Fail to send queue");
-    }
-   
-
-    if(xTaskNotify(*task_handle, (uint32_t)qidx, eSetValueWithoutOverwrite) == pdPASS) {}
-    else {
-        ESP_LOGE(TAG, "Fail to notify task");
-    }
-
-    return ESP_OK;
-}
-
-static esp_err_t handle_intertask_request()
-{
-    uint8_t qidx;
-    if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&qidx, pdMS_TO_TICKS(100)) == pdFALSE)
-        return ESP_OK;
-    ESP_LOGI(TAG, "Get qidx:%u",qidx);
-    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
-    return ESP_OK;
-
-}
+static esp_err_t intertask_handle();
+static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter, size_t param_size);
+static e_task_handle_id_t reply_task_id = 0;
 
 void modbus_task(void* pvParameters)
 {
@@ -86,9 +26,9 @@ void modbus_task(void* pvParameters)
 
     // ESP_ERROR_CHECK(modbus_send(MB_FUNC_R, 1, GD20_REG_ID, 1));
     // ESP_ERROR_CHECK(modbus_send(MB_FUNC_W, 1, GD20_REG_CONTROL_CMD, 1));
-    ESP_ERROR_CHECK(modbus_send(MB_FUNC_W, 1, GD20_REG_CONTROL_CMD, 5));
+    // ESP_ERROR_CHECK(modbus_send(MB_FUNC_W, 1, GD20_REG_CONTROL_CMD, 5));
     for(;;){
-        ESP_ERROR_CHECK(handle_intertask_request());
+        ESP_ERROR_CHECK(intertask_handle());
         ESP_ERROR_CHECK(modbus_uart_event_handle());
     }
 }
@@ -101,7 +41,15 @@ static void tx_complete(void *pvParameter)
 static void rx_complete(void *pvParameter, const st_modbus_params_descriptor_t *desc)
 {
     ESP_LOGI(TAG, "Read data successfully");
-    ESP_ERROR_CHECK(modbus_send(MB_FUNC_R, 1, GD20_REG_ID, 1));
+    if(reply_task_id) {
+        uint16_t *value = (uint16_t*)pvParameter;
+        st_modbus_intertask_t data = {
+            .payload = *value,
+            .src_task_handle_id = TASK_ID_MODBUS,
+        };
+        send_to_intertask(reply_task_id, (void*)&data, sizeof(data));
+        reply_task_id = 0;
+    }
 }
 
 static void modbus_payload_err(void *pvParameter)
@@ -136,4 +84,85 @@ static void modbus_payload_err(void *pvParameter)
 
     }
     ESP_ERROR_CHECK(1);
+}
+
+
+
+static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter, size_t param_size)
+{
+    TaskHandle_t *task_handle = NULL;
+    uint8_t qidx = get_available_queue_common();
+    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+    if(param_size != sizeof(st_modbus_intertask_t)){
+        ESP_LOGE(TAG, "Invalid modbus intertask size");
+        return ESP_ERR_INVALID_SIZE;
+    }
+    // memcpy(temp, (uint8_t*)pvParameter, param_size);
+    switch(taskid) {
+        case TASK_ID_NETWORK:
+            task_handle = get_network_handle();
+            break;
+        case TASK_ID_LORA:
+            task_handle = get_lora_task_handle();
+            break;
+        case TASK_ID_MODBUS: 
+        case TASK_ID_HMI:
+        default:
+            ESP_LOGE(TAG, "This TaskHandle doesn't supported");
+            return ESP_ERR_NOT_SUPPORTED;
+            break;
+
+    }
+    if(!task_handle){
+        ESP_LOGE(TAG, "Not found required TaskHandle");
+        return ESP_ERR_NOT_FOUND;
+    }
+    
+    if(xQueueSend(*p_queue, (void*)pvParameter, pdMS_TO_TICKS(200)) == pdPASS){}
+    else {
+        ESP_LOGE(TAG, "Fail to send queue");
+    }
+   
+
+    if(xTaskNotify(*task_handle, (uint32_t)qidx, eSetValueWithoutOverwrite) == pdPASS) {}
+    else {
+        ESP_LOGE(TAG, "Fail to notify task");
+    }
+
+    return ESP_OK;
+}
+
+static esp_err_t handle_intertask_request()
+{
+    uint8_t qidx;
+    if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&qidx, pdMS_TO_TICKS(100)) == pdFALSE)
+        return ESP_OK;
+    ESP_LOGI(TAG, "Received notify, Get qidx:%u",qidx);
+    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+    st_modbus_intertask_t data;
+
+    if(xQueueReceive(*p_queue, (void*)&data, pdMS_TO_TICKS(100)) == pdPASS){
+        e_modbus_function_t modbus_func;
+        /* Sender want to request data */
+        if(data.is_request){
+            modbus_func = MB_FUNC_R;
+        }
+        else { /* Sender want to write data */
+            modbus_func = MB_FUNC_W;
+        }
+        ESP_LOGI(TAG,"reply_task_id:%d",data.src_task_handle_id);
+        ESP_LOGI(TAG,"func:%d, addr:%u, reg:%u, payload:%u",modbus_func, data.addr, data.reg, data.payload);
+        /* Save the sender task_handle_id for replying back */
+        reply_task_id = data.src_task_handle_id;
+        ESP_ERROR_CHECK(modbus_send(modbus_func, data.addr, data.reg, data.payload));
+    }
+    return ESP_OK;
+
+}
+
+static esp_err_t intertask_handle()
+{
+    ESP_ERROR_CHECK(handle_intertask_request());
+    return ESP_OK;
+
 }
