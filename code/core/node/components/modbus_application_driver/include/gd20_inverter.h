@@ -53,12 +53,14 @@
 #define GD20_SET_FREQ_100HZ                 10000 //100Hz Max tần số GD20 hỗ trợ
 
 /* Value of status register (0x2100) */
-#define GD20_STATUS_RUN                     0x0001  //Chạy thuận
-#define GD20_STATUS_REV                     0x0002  //Chạy nghịch
-#define GD20_STATUS_STOP                    0x0003  //Dừng
-#define GD20_STATUS_FAULT                   0x0004  //Lỗi
-#define GD20_STATUS_COAST                   0x0005  //Trạng thái POFF
-#define GD20_STATUS_RESET                   0x0006  //Trạng thái tiền kích thích
+typedef enum {
+    GD20_STATUS_RUN = 1,  //Chạy thuận
+    GD20_STATUS_REV   ,    //Chạy nghịch
+    GD20_STATUS_STOP  ,    //Dừng
+    GD20_STATUS_FAULT ,    //Lỗi
+    GD20_STATUS_COAST ,    //Trạng thái POFF
+    GD20_STATUS_RESET ,    //Trạng thái tiền kích thích
+} e_gd20_status_t;
 
 /* GD20 Modbus Fault messege respone */
 #define GD20_EXC_ILLEGAL_CMD                0x01  // Lệnh không hợp lệ (Illegal command)

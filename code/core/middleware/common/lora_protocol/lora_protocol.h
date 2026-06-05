@@ -1,15 +1,14 @@
 #ifndef _LORA_PROTOCOL_H_
 #define _LORA_PROTOCOL_H_
 
-#include "node_device_typedef.h"
 #include <stdint.h>
 
 #define M_LORA_ASSERT_DEFINE(_cond, _ret)                                       \
-  do {                                                                         \
-    if (!(_cond)) {                                                            \
-      return _ret;                                                             \
-    }                                                                          \
-  } while (0)
+    do {                                                                        \
+        if (!(_cond)) {                                                         \
+            return _ret;                                                        \
+        }                                                                       \
+    } while (0)
 
 #define M_LORA_ASSERT(_cond, _ret) M_LORA_ASSERT_DEFINE(_cond, _ret)
 #define FRAME_CRC_SIZE 2
@@ -32,17 +31,17 @@ typedef void (* p_lora_protocol_pack_complete_cb)(void *pvParameters);
 typedef void (* p_lora_protocol_parse_complete_cb)(void *pvParameters);
 
 typedef enum lora_function {
-  LORA_FUNCTION_REQUEST_ADDRESS,
+  LORA_FUNCTION_REQUEST_ADDRESS, // NOTE:change to LORA_FUNC
   LORA_FUNCTION_REQUEST_DATA,
   LORA_FUNCTION_RESPONSE_DATA,
 } e_lora_function_t;
 
 typedef struct lora_node_info {
   uint8_t node_id;
-  uint8_t length;
+  uint8_t length; // NOTE: remove this field
   uint8_t readwrite;
-  char node_name[10];
-  void *payload;
+  char node_name[10]; // NOTE: rename to "name", change to pointer of char
+  void *payload; // NOTE: remove this fiel
   void *pnext;
 } st_lora_node_info_t;
 
@@ -61,13 +60,14 @@ typedef struct lora_frame_data {
 e_lora_protocol_err_t m_lora_protocol_frame_parse(uint8_t *in_buf,
                                                     uint16_t in_buf_size);
 
-e_lora_protocol_err_t m_lora_protocol_frame_pack(uint8_t *out_buf, 
-                                                uint16_t out_buf_size, 
-                                                void* payload, 
+e_lora_protocol_err_t m_lora_protocol_frame_pack(uint8_t *out_buf, //trả về giá trị cho e_lora_protocol_err_t
+                                                uint16_t out_buf_size, //nhận thgêm node_id(=1), length pay;load
+                                                void* payload, //cái gateway nhận được từ node từ accs ngoại vi như biến tần, sht20
                                                 uint16_t payload_size, 
                                                 uint8_t node_id,
                                                 uint8_t request_data);
-
+void test();
+uint8_t test1();
 e_lora_protocol_err_t m_lora_protocol_register_callback(
                     void (*p_lora_protocol_pack_complete_cb)(void *),
                     void (*p_lora_protocol_parse_complete_cb)(void *)) ;

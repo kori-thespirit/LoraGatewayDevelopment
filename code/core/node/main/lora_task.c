@@ -5,8 +5,6 @@
 
 #include "esp_log.h"
 #include "driver/gpio.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "lora.h"
 #include "lora_protocol.h"
 #include "main.h"
@@ -26,9 +24,10 @@ void pack_complete(void *pvParameters);
 void parse_complete(void *pvParameters);
 
 void lora_task(void* pvParameters) {
-  e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete);
+    /*đăng ký callback để nhận thông báo khi đóng gói hoặc phân tích khung hoàn tất*/
+  e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete); 
   if(LORA_PROTOCOL_ERR_OK != protocol_err)
-    ESP_LOGE(TAG, "register callback failed");
+    ESP_LOGE(TAG, "register callback failed"); // TODO: Add error code value
   gpio_reset_pin(LED_ACT);
   gpio_set_direction(LED_ACT, GPIO_MODE_OUTPUT);
 
@@ -55,7 +54,7 @@ void lora_task(void* pvParameters) {
   lora_set_spreading_factor(LORA_SF);
   ESP_LOGI(TAG, "spreading_factor=%d", LORA_SF);
   while (1) {
-      test_send();
+      // test_send();
       int lost = lora_packet_lost();
       if (lost != 0) {
           ESP_LOGW(TAG, "%d packets lost", lost);
@@ -69,22 +68,23 @@ void lora_task(void* pvParameters) {
 
 static void test_send()
 {
-    uint8_t buffer[100] = {0};
-    st_sensor_sht20_t sht20 = {
-      .temperature = 20.1,
-      .humidity = 96.22,
-    };
-    e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&sht20, sizeof(sht20), 1, 0);
-    if(LORA_PROTOCOL_ERR_OK != protocol_err)
-      ESP_LOGE(TAG, "Pack frame data failed");
-    else
-      lora_send_packet(buffer, sizeof(buffer));
+    uint8_t buffer[256] = {0};
+    uint8_t payload[128] = {0};
+    for (uint8_t i = 0; i < sizeof(payload); i++) {
+        payload[i] = i;
+    }
+    e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&payload, sizeof(payload), 1, 0);
+    if(LORA_PROTOCOL_ERR_OK != protocol_err) {
+        ESP_LOGE(TAG, "Pack frame data failed, refuse to send");// TODO: Add error code value
+        return;
+    }
+    lora_send_packet(buffer, sizeof(buffer));
 }
 
 void pack_complete(void *pvParameters)
 {
     uint8_t *frame_length = (uint8_t*)pvParameters;
-    ESP_LOGI(TAG, "Sending SHT20 message via lora complete with %u bytes", *frame_length);
+    ESP_LOGI(TAG, "Sending message via lora complete with %u bytes", *frame_length);
 }
 
 void parse_complete(void *pvParameters)
