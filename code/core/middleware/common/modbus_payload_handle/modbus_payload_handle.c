@@ -9,20 +9,20 @@ static p_modbus_rx_complete_cb  _g_p_rx_cb;
 static p_modbus_tx_complete_cb  _g_p_tx_cb;
 static p_modbus_error_cb        _g_p_err_cb;
 const st_modbus_params_descriptor_t desc_inverter_gd20[] = {
-    {.addr = GD20_REG_ID         , .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ}, 
-    {.addr = GD20_OUTPUT_SPEED   , .unit = "rpm"  , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = 0   , .range.max = 65535 },
-    {.addr = GD20_OUTPUT_POWER   , .unit = "%"    , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = -300, .range.max = 300   },
-    {.addr = GD20_OUTPUT_TORQUE  , .unit = "%"    , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = -250, .range.max = 250   },
-    {.addr = GD20_REG_STATUS     , .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = 1   , .range.max = 5     },
-    {.addr = GD20_OPERATION_FREQ , .unit = "Hz"   , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = 0   , .range.max = 100   },
-    {.addr = GD20_OUTPUT_CURRENT , .unit = "A"    , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = 0   , .range.max = 5000  },
-    {.addr = GD20_OUTPUT_VOLTAGE , .unit = "V"    , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = 0   , .range.max = 1200  },
-    {.addr = GD20_REG_CONTROL_CMD, .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_WRITE, .range.min = 1   , .range.max = 8     },
-    {.addr = GD20_REG_SET_FREQ   , .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_WRITE, .range.min = 1   , .range.max = 8     },
+    {.reg = GD20_REG_ID         , .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ}, 
+    {.reg = GD20_OUTPUT_SPEED   , .unit = "rpm"  , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = 0   , .range.max = 65535 },
+    {.reg = GD20_OUTPUT_POWER   , .unit = "%"    , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = -300, .range.max = 300   },
+    {.reg = GD20_OUTPUT_TORQUE  , .unit = "%"    , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = -250, .range.max = 250   },
+    {.reg = GD20_REG_STATUS     , .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = 1   , .range.max = 5     },
+    {.reg = GD20_OPERATION_FREQ , .unit = "Hz"   , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = 0   , .range.max = 100   },
+    {.reg = GD20_OUTPUT_CURRENT , .unit = "A"    , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = 0   , .range.max = 5000  },
+    {.reg = GD20_OUTPUT_VOLTAGE , .unit = "V"    , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = 0   , .range.max = 1200  },
+    {.reg = GD20_REG_CONTROL_CMD, .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_WRITE, .range.min = 1   , .range.max = 8     },
+    {.reg = GD20_REG_SET_FREQ   , .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_WRITE, .range.min = 1   , .range.max = 8     },
 };
 static const st_modbus_params_descriptor_t desc_sensor_sht20[] = {
-    {.addr = 0x0001, .unit = "°C"   , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ}, // Temperature
-    {.addr = 0x0002, .unit = "%rH"  , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ}, // Humidity
+    {.reg = 0x0001, .unit = "°C"   , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ}, // Temperature
+    {.reg = 0x0002, .unit = "%rH"  , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ}, // Humidity
 };
 static const st_modbus_device_info_t dev[2] = {
     {.address = 1, .name = "GD20 Inverter"  , .desc = desc_inverter_gd20 , .total_idx = TOTAL_DESCRIPTOR(desc_inverter_gd20) },
@@ -55,7 +55,7 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
                 desc_idx = dev[i].total_idx;
                 /* Get modbus parameter descriptor matched register to send */
                 for(uint8_t j = 0; j < dev[i].total_idx ; j++) {
-                    if((descriptor + j)->addr == register_to_send) {
+                    if((descriptor + j)->reg == register_to_send) {
                         desc_idx = j;
                         ESP_LOGI(TAG, "Found descriptor:%u", desc_idx);
                         break;

@@ -41,7 +41,7 @@ typedef struct modbus_params_range{
 
 typedef struct modbus_params_descriptor {
     uint8_t size; // In word
-    uint16_t addr; // register address
+    uint16_t reg; // register address
     const char *unit;
     st_modbus_params_range_t range;
     e_modbus_param_type_t type;

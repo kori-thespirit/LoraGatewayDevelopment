@@ -6,15 +6,16 @@
 typedef enum intertask_err{
     INTERTASK_OK,
     INTERTASK_INVALID,
-
+    INTERTASK_TIMEOUT,
 } e_intertask_err_t;
 
-typedef struct modbus_intertask{
-    uint8_t addr;
-    uint8_t is_request;
-    uint16_t reg;
+typedef struct intertask_noti {
+
+} st_intertask_noti_t;
+
+typedef struct intertask_data{
     int src_task_handle_id;
-    uint16_t payload;
-} st_modbus_intertask_t;
+    void *payload;
+} st_intertask_data_t;
 
 #endif // _INTERTASK_TYPEDEF_H_

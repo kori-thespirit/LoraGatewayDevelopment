@@ -24,7 +24,7 @@ void parse_complete(void *pvParameters);
 
 static void lora_send();
 static esp_err_t intertask_handle();
-static e_task_handle_id_t target_task_id;
+static e_task_handle_id_t reply_task_id = 0;
 static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter, size_t param_size);
 
 void lora_task(void* pvParameters) {
@@ -58,14 +58,16 @@ void lora_task(void* pvParameters) {
 
     lora_set_spreading_factor(LORA_SF);
     ESP_LOGI(TAG, "spreading_factor=%d", LORA_SF);
-    st_modbus_intertask_t data = {
+
+    st_modbus_data_t mdata = {
         .addr = 1,
-        .is_request = 1,
         .reg = GD20_REG_ID,
-        .src_task_handle_id = TASK_ID_LORA,
-        .payload = 1,
+        .modbus_function = (uint8_t)MB_FUNC_R,
+        .value = 1,
     };
-    ESP_ERROR_CHECK(send_to_intertask(TASK_ID_MODBUS, (void*)&data, sizeof(data)));
+    st_core_data_t coredata = { .cdataid = COREDATA_ID_MB_DATA, .cdata = (void*)&mdata, };
+    st_intertask_data_t idata = { .src_task_handle_id = TASK_ID_LORA, .payload = (void*)&coredata, };
+    ESP_ERROR_CHECK(send_to_intertask(TASK_ID_MODBUS, (void*)&idata, sizeof(idata)));
     while (1) {
         // test_send();
         ESP_ERROR_CHECK(intertask_handle());
@@ -113,12 +115,11 @@ static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter,
         ESP_LOGE(TAG, "Not found required TaskHandle");
         return ESP_ERR_NOT_FOUND;
     }
-    
+
     if(xQueueSend(*p_queue, (void*)pvParameter, pdMS_TO_TICKS(200)) == pdPASS){}
     else {
         ESP_LOGE(TAG, "Fail to send queue");
     }
-   
 
     if(xTaskNotify(*task_handle, (uint32_t)qidx, eSetValueWithoutOverwrite) == pdPASS) {}
     else {
@@ -135,11 +136,13 @@ static esp_err_t handle_intertask_request()
         return ESP_OK;
     ESP_LOGI(TAG, "Received notify, Get qidx:%u",qidx);
     QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
-    st_modbus_intertask_t data;
+    st_intertask_data_t idata;
 
-    if(xQueueReceive(*p_queue, (void*)&data, pdMS_TO_TICKS(100)) == pdPASS){
-        uint8_t buffer[256] = {0};
-        e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&data, sizeof(data), 1, 0);
+    if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
+        uint8_t buffer[20] = {0};
+        st_modbus_data_t *mdata = (st_modbus_data_t*)idata.payload;
+
+        e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)mdata, sizeof(st_modbus_data_t), 1, 0);
         if(LORA_PROTOCOL_ERR_OK != protocol_err) {
             ESP_LOGE(TAG, "%s:Pack frame data failed, err:%d",__func__, protocol_err);
         }

@@ -29,7 +29,7 @@ void app_main() {
     //         ESP_LOGE(TAG,"Fail to create queue: %u", i);
     //     }
     // }
-    q_common = xQueueCreate(QUEUE_COMMON_ITEMS, sizeof(st_modbus_intertask_t));
+    q_common = xQueueCreate(QUEUE_COMMON_ITEMS, sizeof(st_intertask_data_t));
 
     lora_task_handle = xTaskCreateStatic(
     lora_task,

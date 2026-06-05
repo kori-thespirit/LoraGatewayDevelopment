@@ -9,10 +9,12 @@
 #define LORA_STACK_SIZE 3072
 #define MODBUS_STACK_SIZE 3072 
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "gd20_inverter.h"
 #include "../intertask_typedef.h"
+#include "../data_typedef.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "modbus_application_driver.h"
 
 #define QUEUE_COMMON_ITEMS 3
 
