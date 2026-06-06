@@ -23,6 +23,7 @@ typedef enum task_handle_id{
     TASK_ID_NETWORK,
     TASK_ID_LORA,
     TASK_ID_HMI,
+    TASK_ID_SDCARD,
 } e_task_handle_id_t;
 
 uint8_t get_available_queue_common();

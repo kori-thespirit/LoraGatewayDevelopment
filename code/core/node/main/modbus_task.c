@@ -13,9 +13,10 @@ static void rx_complete(void *pvParameter, const st_modbus_params_descriptor_t *
 static void modbus_payload_err(void *pvParameter);
 static const char *TAG = "modbus_task";
 static esp_err_t intertask_handle();
-static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter, size_t param_size);
-static e_task_handle_id_t reply_task_id = 0;
+static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
+static e_task_handle_id_t reply_task_handle_id = 0;
 static uint8_t reply_dev_addr = 0;
+static uint8_t reply_modbus_function = 0;
 
 void modbus_task(void* pvParameters)
 {
@@ -31,17 +32,11 @@ void modbus_task(void* pvParameters)
 }
  
 
-// ------------------- INTER_TASK [
+// ------------------- INTER_TASK ------------------- [
 
-static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter, size_t param_size)
+static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t notifydata)
 {
     TaskHandle_t *task_handle = NULL;
-    uint8_t qidx = get_available_queue_common();
-    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
-    if(param_size != sizeof(st_intertask_data_t)){
-        ESP_LOGE(TAG, "Invalid intertask size");
-        return ESP_ERR_INVALID_SIZE;
-    }
     switch(taskid) {
         case TASK_ID_NETWORK:
             task_handle = get_network_handle();
@@ -49,8 +44,6 @@ static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter,
         case TASK_ID_LORA:
             task_handle = get_lora_task_handle();
             break;
-        case TASK_ID_MODBUS: 
-        case TASK_ID_HMI:
         default:
             ESP_LOGE(TAG, "This TaskHandle doesn't supported");
             return ESP_ERR_NOT_SUPPORTED;
@@ -62,44 +55,80 @@ static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter,
         return ESP_ERR_NOT_FOUND;
     }
 
-    if(xQueueSend(*p_queue, (void*)pvParameter, pdMS_TO_TICKS(200)) == pdPASS){}
-    else {
-        ESP_LOGE(TAG, "Fail to send queue");
-    }
-
-    if(xTaskNotify(*task_handle, (uint32_t)qidx, eSetValueWithoutOverwrite) == pdPASS) {}
+    if(xTaskNotify(*task_handle, notifydata.value, eSetValueWithoutOverwrite) == pdPASS) {}
     else {
         ESP_LOGE(TAG, "Fail to notify task");
     }
+    return ESP_OK;
+}
 
+static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata)
+{
+    uint8_t qidx = get_available_queue_common();
+    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+    if(xQueueSend(*p_queue, (void*)&idata, pdMS_TO_TICKS(200)) == pdPASS){}
+    else {
+        ESP_LOGE(TAG, "Fail to send queue");
+    }
+    u_intertask_noti_t notifydata ;
+    notifydata.notivalue.intertask_err = INTERTASK_ERR_NOT_USE;
+    notifydata.notivalue.qidx = qidx; // queue index
+    notify_intertask(taskid, notifydata);
     return ESP_OK;
 }
 
 static esp_err_t handle_intertask_request()
 {
-    uint8_t qidx;
-    if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&qidx, pdMS_TO_TICKS(100)) == pdFALSE)
+    u_intertask_noti_t notifydata ;
+    if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&notifydata.value, pdMS_TO_TICKS(100)) == pdFALSE)
         return ESP_OK;
-    ESP_LOGI(TAG, "Received notify, Get qidx:%u",qidx);
+    ESP_LOGI(TAG, "Received notify, qidx:%u, intertask_err:%u", 
+            notifydata.notivalue.qidx,
+            notifydata.notivalue.intertask_err
+            );
+    uint8_t qidx = notifydata.notivalue.qidx;
     QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
     st_intertask_data_t idata;
-
+    e_intertask_err_t ierr = notifydata.notivalue.intertask_err;
+    /* Bypass xQueueReceive if intertask reply with status */
+    if(INTERTASK_ERR_NOT_USE != ierr) {
+        ESP_LOGW(TAG, "Relay intertask has status:%d", ierr);
+        return ESP_OK;
+    }
     if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
-        st_core_data_t *coredata =   (st_core_data_t*)idata.payload;
-        st_modbus_data_t *mdata  =   (st_modbus_data_t*)coredata->cdata;
-        ESP_LOGI(TAG,"src_task_handle_id:%d, func:%d, addr:%u, reg:%u, value:%u",
-                idata.src_task_handle_id, 
-                mdata->modbus_function, 
-                mdata->addr, 
-                mdata->reg, 
-                mdata->value);
+        st_core_data_t coredata =   idata.coredata;
+        st_modbus_data_t mdata;
+        switch(coredata.cdataid) {
+            case COREDATA_ID_MB_DATA:
+                memcpy((void*)&mdata, (void*)coredata.cdata,sizeof(mdata));
+                reply_dev_addr = mdata.addr;
+                reply_modbus_function = mdata.modbus_function;
+                break;
+            case COREDATA_ID_MB_CFG:
+                break;
+            default:
+                ESP_LOGE(TAG, "%s:Core data id not supported",__func__);
+                return ESP_ERR_NOT_SUPPORTED;
+                break;
+
+        }
         /* Save the sender task_handle_id for replying back */
-        reply_task_id = idata.src_task_handle_id;
+        reply_task_handle_id = idata.src_task_handle_id;
+
+        ESP_LOGI(TAG,"src_task_handle_id:%d, func:%d, addr:%u, reg:%x, value:%u",
+                idata.src_task_handle_id, 
+                mdata.modbus_function, 
+                mdata.addr, 
+                mdata.reg, 
+                mdata.value);
         ESP_ERROR_CHECK(modbus_send(
-                    mdata->modbus_function, 
-                    mdata->addr, 
-                    mdata->reg, 
-                    mdata->value));
+                    mdata.modbus_function, 
+                    mdata.addr, 
+                    mdata.reg, 
+                    mdata.value));
+    }
+    else {
+        ESP_LOGE(TAG, "%s:Fail to receive queue",__func__);
     }
     return ESP_OK;
 
@@ -113,35 +142,42 @@ static esp_err_t intertask_handle()
 
 }
 
-// ------------------- INTER TASK ]
+// ------------------- INTER TASK ------------------- ]
 
-// ------------------- MODBUS PAYLOAD HANDLE [
+// ------------------- MODBUS PAYLOAD HANDLE ------------------- [
 static void tx_complete(void *pvParameter)
 {
-    ESP_LOGI(TAG, "Write data successfully");
+    ESP_LOGI(TAG, "Write data successfully, reply_task_handle_id:%d",reply_task_handle_id);
+    u_intertask_noti_t notifydata;
+    notifydata.notivalue.intertask_err = INTERTASK_OK;
+    ESP_ERROR_CHECK(notify_intertask(reply_task_handle_id, notifydata));
+    reply_task_handle_id = 0;
 }
 
 static void rx_complete(void *pvParameter, const st_modbus_params_descriptor_t *desc)
 {
     ESP_LOGI(TAG, "Read data successfully");
-    if(reply_task_id) {
+    if(reply_task_handle_id) {
         uint16_t *value = (uint16_t*)pvParameter;
         st_modbus_data_t mdata = {
             .addr = reply_dev_addr,
             .reg = desc->reg,
-            .modbus_function = 0,
+            .modbus_function = reply_modbus_function,
             .value = *value,
         };
         st_core_data_t coredata = {
             .cdataid = COREDATA_ID_MB_DATA,
-            .cdata = (void*)&mdata,
         };
+        /* Cleanup data before copy */
+        bzero(coredata.cdata,sizeof(coredata.cdata));
+        memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(mdata));
         st_intertask_data_t idata = {
             .src_task_handle_id = TASK_ID_MODBUS,
-            .payload = (void*)&coredata,
+            .coredata = coredata
         };
-        send_to_intertask(reply_task_id, (void*)&idata, sizeof(idata));
-        reply_task_id = 0;
+        if(MB_FUNC_R == reply_modbus_function)
+            ESP_ERROR_CHECK(relay_intertask(reply_task_handle_id, idata));
+        reply_task_handle_id = 0;
     }
 }
 
@@ -178,4 +214,4 @@ static void modbus_payload_err(void *pvParameter)
     }
     ESP_ERROR_CHECK(1);
 }
-// ------------------- MODBUS PAYLOAD HANDLE ]
+// ------------------- MODBUS PAYLOAD HANDLE ------------------- ]

@@ -17,6 +17,7 @@
                                   //
 #define Lora_EN 2
 #define LED_ACT 13
+#define LORA_ADDR 2
 
 static const char *TAG = "lora_task";
 void pack_complete(void *pvParameters);
@@ -24,11 +25,10 @@ void parse_complete(void *pvParameters);
 
 static void lora_send();
 static esp_err_t intertask_handle();
-static e_task_handle_id_t reply_task_id = 0;
-static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter, size_t param_size);
+static e_task_handle_id_t reply_task_handle_id = 0;
+static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
 
 void lora_task(void* pvParameters) {
-    /*đăng ký callback để nhận thông báo khi đóng gói hoặc phân tích khung hoàn tất*/
     e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete); 
     if(LORA_PROTOCOL_ERR_OK != protocol_err){
         ESP_LOGE(TAG, "%s:Register callback failed, err:%d",__func__, protocol_err);
@@ -59,15 +59,18 @@ void lora_task(void* pvParameters) {
     lora_set_spreading_factor(LORA_SF);
     ESP_LOGI(TAG, "spreading_factor=%d", LORA_SF);
 
+    st_core_data_t coredata = { .cdataid = COREDATA_ID_MB_DATA };
     st_modbus_data_t mdata = {
         .addr = 1,
-        .reg = GD20_REG_ID,
-        .modbus_function = (uint8_t)MB_FUNC_R,
-        .value = 1,
+        .reg = GD20_REG_CONTROL_CMD,
+        .modbus_function = (uint8_t)MB_FUNC_W,
+        .value = 5,
     };
-    st_core_data_t coredata = { .cdataid = COREDATA_ID_MB_DATA, .cdata = (void*)&mdata, };
-    st_intertask_data_t idata = { .src_task_handle_id = TASK_ID_LORA, .payload = (void*)&coredata, };
-    ESP_ERROR_CHECK(send_to_intertask(TASK_ID_MODBUS, (void*)&idata, sizeof(idata)));
+    bzero(coredata.cdata, sizeof(coredata.cdata));
+    memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(coredata.cdata));
+
+    st_intertask_data_t idata = { .src_task_handle_id = TASK_ID_LORA, .coredata = coredata, };
+    ESP_ERROR_CHECK(relay_intertask(TASK_ID_MODBUS, idata));
     while (1) {
         // test_send();
         ESP_ERROR_CHECK(intertask_handle());
@@ -89,13 +92,42 @@ void pack_complete(void *pvParameters)
 void parse_complete(void *pvParameters)
 {
     ESP_LOGI(TAG, "Parse Callback");
+    st_core_data_t *coredata = (st_core_data_t*)pvParameters;
+    e_core_data_id_t cdataid = coredata->cdataid;
+    st_intertask_data_t idata = {
+        .src_task_handle_id = TASK_ID_LORA,
+        .coredata = *coredata,
+    };
+    switch(cdataid){
+        /* Relay to network task */
+        case COREDATA_ID_NET:
+            relay_intertask(TASK_ID_NETWORK,idata);
+            break;
+        /* Relay to modbus task */
+        case COREDATA_ID_MB_DATA:
+        case COREDATA_ID_MB_CFG:
+            relay_intertask(TASK_ID_MODBUS,idata);
+            break;
+        /* Handle Lora data itself */
+        case COREDATA_ID_LORA:
+            st_lora_cfg_t loracfg;
+            memcpy((void*)&loracfg, (void*)coredata->cdata, sizeof(st_lora_cfg_t));
+            ESP_LOGI(TAG, "Get lora config, addr:%u, sf:%u, cr:%u, bw:%u, freq:%lu", loracfg.addr, loracfg.cr, loracfg.bw, loracfg.freq);
+            break;
+        /* Node doesn't support sdcard and HMI */
+        case COREDATA_ID_SDCARD:
+        case COREDATA_ID_HMI:
+        default:
+            ESP_LOGE(TAG, "Core data ID not supported");
+            break;
+    }
 }
 
-static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter, size_t param_size)
+// ------------------- INTER_TASK ------------------- [
+
+static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t notifydata)
 {
     TaskHandle_t *task_handle = NULL;
-    uint8_t qidx = get_available_queue_common();
-    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
     switch(taskid) {
         case TASK_ID_NETWORK:
             task_handle = get_network_handle();
@@ -103,8 +135,6 @@ static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter,
         case TASK_ID_MODBUS:
             task_handle = get_modbus_task_handle();
             break;
-        case TASK_ID_LORA:
-        case TASK_ID_HMI:
         default:
             ESP_LOGE(TAG, "This TaskHandle doesn't supported");
             return ESP_ERR_NOT_SUPPORTED;
@@ -116,35 +146,63 @@ static esp_err_t send_to_intertask(e_task_handle_id_t taskid, void *pvParameter,
         return ESP_ERR_NOT_FOUND;
     }
 
-    if(xQueueSend(*p_queue, (void*)pvParameter, pdMS_TO_TICKS(200)) == pdPASS){}
-    else {
-        ESP_LOGE(TAG, "Fail to send queue");
-    }
-
-    if(xTaskNotify(*task_handle, (uint32_t)qidx, eSetValueWithoutOverwrite) == pdPASS) {}
+    if(xTaskNotify(*task_handle, notifydata.value, eSetValueWithoutOverwrite) == pdPASS) {}
     else {
         ESP_LOGE(TAG, "Fail to notify task");
     }
+    return ESP_OK;
+}
 
+static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata)
+{
+    uint8_t qidx = get_available_queue_common();
+    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+    if(xQueueSend(*p_queue, (void*)&idata, pdMS_TO_TICKS(200)) == pdPASS){}
+    else {
+        ESP_LOGE(TAG, "Fail to send queue");
+    }
+    u_intertask_noti_t notifydata ;
+    notifydata.notivalue.intertask_err = INTERTASK_ERR_NOT_USE;
+    notifydata.notivalue.qidx = qidx; // queue index
+    notify_intertask(taskid, notifydata);
     return ESP_OK;
 }
 
 static esp_err_t handle_intertask_request()
 {
-    uint8_t qidx;
-    if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&qidx, pdMS_TO_TICKS(100)) == pdFALSE)
+    /* Common step of handle intertask request */
+    u_intertask_noti_t notifydata ;
+    if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&notifydata.value, pdMS_TO_TICKS(100)) == pdFALSE)
         return ESP_OK;
-    ESP_LOGI(TAG, "Received notify, Get qidx:%u",qidx);
+    ESP_LOGI(TAG, "Received notify, qidx:%u, intertask_err:%u", 
+            notifydata.notivalue.qidx,
+            notifydata.notivalue.intertask_err
+            );
+    uint8_t qidx = notifydata.notivalue.qidx;
     QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
     st_intertask_data_t idata;
+    e_intertask_err_t ierr = notifydata.notivalue.intertask_err;
 
+    /* Bypass xQueueReceive if intertask reply with status */
+    if(INTERTASK_ERR_NOT_USE != ierr) {
+        ESP_LOGW(TAG, "Relay intertask has status:%d", ierr);
+        return ESP_OK;
+    }
     if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
-        uint8_t buffer[20] = {0};
-        st_modbus_data_t *mdata = (st_modbus_data_t*)idata.payload;
 
-        e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)mdata, sizeof(st_modbus_data_t), 1, 0);
+        st_core_data_t coredata =   idata.coredata;
+        uint8_t buffer[30] = {0};
+        reply_task_handle_id = idata.src_task_handle_id;
+        if(COREDATA_ID_LORA == coredata.cdataid){
+            /* TODO: Handle Lora request from other intertask 
+             * such as notify the status is OK */
+            return ESP_OK;
+        }
+
+        /* Perform core function */
+        e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&coredata, sizeof(st_core_data_t), LORA_ADDR, 0);
         if(LORA_PROTOCOL_ERR_OK != protocol_err) {
-            ESP_LOGE(TAG, "%s:Pack frame data failed, err:%d",__func__, protocol_err);
+            ESP_LOGE(TAG, "%s:Pack frame data failed, err:%d", __func__, protocol_err);
         }
         lora_send_packet(buffer, sizeof(buffer));
     }
@@ -161,3 +219,4 @@ static esp_err_t intertask_handle()
     return ESP_OK;
 
 }
+// ------------------- INTER TASK ------------------- ]
