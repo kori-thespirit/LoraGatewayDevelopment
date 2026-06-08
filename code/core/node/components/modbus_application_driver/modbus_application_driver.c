@@ -68,7 +68,7 @@ uint16_t crc16_modbus(const uint8_t *data, uint16_t len) {
 }
 
 esp_err_t modbus_send(e_modbus_function_t modbus_func, uint8_t slave_id, uint16_t reg_addr, uint16_t payload) {
-    if(MB_FUNC_W != modbus_func && MB_FUNC_R != modbus_func) 
+    if(MB_FUNC_R_COIL > modbus_func && MB_FUNC_W_HOLDING < modbus_func)
         return ESP_ERR_INVALID_ARG;
     uint8_t frame[8];
     frame[0] = slave_id;
