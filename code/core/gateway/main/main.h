@@ -28,6 +28,10 @@ typedef enum task_handle_id{
 } e_task_handle_id_t;
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 uint8_t lora_get_dest_addr();
 esp_err_t lora_set_dest_addr(uint8_t addr);
 uint8_t get_available_queue_common();
@@ -43,3 +47,7 @@ void common_task(void* pvParameters);
 void hmi_task(void* pvParameters);
 void other_task(void* pvParameters);
 #endif // _MAIN_H_
+
+#ifdef __cplusplus
+}
+#endif

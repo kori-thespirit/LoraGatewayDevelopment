@@ -5,21 +5,26 @@
 #include "freertos/task.h"
 #include "main.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 static const char *TAG = "hmi_task";
-static e_task_handle_id_t reply_task_handle_id = 0;
+static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
 
 void hmi_task(void* pvParameters) {
     ESP_LOGI(TAG, "task created");
     ESP_ERROR_CHECK(lora_set_dest_addr(2));
-    st_core_data_t coredata = { .cdataid = COREDATA_ID_MB_DATA };
+    st_core_data_t coredata;
     st_modbus_data_t mdata = {
         .addr = 8,
-        .reg = 1,
         .modbus_function = (uint8_t)MB_FUNC_R_INPUT,
+        .reg = 1,
         .value = 1,
     };
+    coredata.cdataid = COREDATA_ID_MB_DATA ;
     bzero(coredata.cdata, sizeof(coredata.cdata));
     memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(coredata.cdata));
 
@@ -92,7 +97,7 @@ static esp_err_t handle_intertask_request()
     uint8_t qidx = notifydata.notivalue.qidx;
     QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
     st_intertask_data_t idata;
-    e_intertask_err_t ierr = notifydata.notivalue.intertask_err;
+    e_intertask_err_t ierr = (e_intertask_err_t)notifydata.notivalue.intertask_err;
 
     /* Bypass xQueueReceive if intertask reply with status */
     if(INTERTASK_ERR_NOT_USE != ierr) {
@@ -101,8 +106,8 @@ static esp_err_t handle_intertask_request()
     }
     if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
 
-        st_core_data_t coredata =   idata.coredata;
-        reply_task_handle_id = idata.src_task_handle_id;
+        // st_core_data_t coredata =   idata.coredata;
+        reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
 
         /* TODO: Perform core function */
         ESP_LOGW(TAG, "HMI task work-in-progress");
@@ -121,3 +126,7 @@ static esp_err_t intertask_handle()
 
 }
 // ------------------- INTER TASK ------------------- ]
+
+#ifdef __cplusplus
+}
+#endif

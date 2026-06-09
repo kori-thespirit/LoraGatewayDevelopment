@@ -30,6 +30,10 @@ typedef enum task_priority
     TASK_PRIORITY_NETWORK,
 } task_priority;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void other_task(void* pvParameters) ;
 
 void app_main(void) {
@@ -108,3 +112,7 @@ TaskHandle_t  * get_lora_task_handle() { return &lora_task_handle; }
 TaskHandle_t  * get_network_handle() { return &network_task_handle; }
 TaskHandle_t  * get_hmi_handle() { return &hmi_task_handle; }
 TaskHandle_t  * get_common_handle() { return &common_task_handle; }
+
+#ifdef __cplusplus
+}
+#endif
