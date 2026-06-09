@@ -50,7 +50,7 @@ void app_main(void) {
     BaseType_t err = xTaskCreate(
     hmi_task,
     "hmi_task",
-    2048,
+    4096,
     NULL,
     TASK_PRIORITY_COMMON,
     &hmi_task_handle

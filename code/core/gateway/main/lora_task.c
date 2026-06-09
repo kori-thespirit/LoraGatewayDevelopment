@@ -28,6 +28,7 @@ static uint8_t dest_addr = 0;
 static uint8_t dev_addr = 1;
 static e_lora_function_t lorafunc = LORA_FUNC_ACTIVE_TRANSMIT;
 static e_task_handle_id_t reply_task_handle_id = 0;
+static uint8_t buf[60] = {0};
 
 void lora_task(void* pvParameters) {
 
@@ -54,6 +55,12 @@ void lora_task(void* pvParameters) {
     ESP_LOGI(TAG, "Start");
     while (1) {
         intertask_handle();
+        lora_receive();  // put into receive mode
+        if (lora_received()) {
+            int rxLen = lora_receive_packet(buf, sizeof(buf));
+            ESP_LOGI(pcTaskGetName(NULL), "%d byte packet received:[%.*s]", rxLen, rxLen, buf);
+            m_lora_protocol_frame_parse(buf,sizeof(buf));
+        }
         vTaskDelay(10);  // Avoid WatchDog alerts
     }  // end while
 
@@ -66,6 +73,9 @@ void pack_complete(void *pvParameters)
 
 void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
 {
+    uint16_t *value = (uint16_t*)pvParameters;
+    ESP_LOGI(TAG, "Gateway received reply message via lora, value:%u", *value);
+    ESP_LOGI(TAG, "src:%u ,dest:%u, payload:%u", header.src_addr, header.dest_addr, header.payload_length);
 }
 
 // ------------------- INTER_TASK ------------------- [
@@ -139,8 +149,9 @@ static esp_err_t handle_intertask_request()
     if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
 
         st_core_data_t coredata =   idata.coredata;
-        uint8_t buffer[30] = {0};
+        uint8_t buffer[60] = {0};
         reply_task_handle_id = idata.src_task_handle_id;
+        ESP_LOGI(TAG, "size coredata:%lu, dest_addr:%u, reply_task_handle_id:%d", sizeof(coredata), dest_addr, idata.src_task_handle_id);
         /* Perform core function */
         e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&coredata, sizeof(st_core_data_t), dev_addr, dest_addr, 0);
         if(LORA_PROTOCOL_OK != protocol_err) {
@@ -167,6 +178,7 @@ uint8_t lora_get_dest_addr() {return dest_addr;}
 esp_err_t lora_set_dest_addr(uint8_t addr) {
     if(addr == src_addr || addr == dev_addr) return ESP_ERR_INVALID_ARG;
     dest_addr = addr;
+    ESP_LOGI(TAG, "%s dest_addr:%u, addr:%u", __func__, dest_addr, addr);
     return ESP_OK;
 
 }

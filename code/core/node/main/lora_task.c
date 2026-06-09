@@ -30,6 +30,7 @@ static uint8_t src_addr = 0;
 static uint8_t dest_addr = 0;
 static uint8_t dev_addr = 2;
 static e_lora_function_t lorafunc = LORA_FUNC_LISTEN_ONLY;
+static uint8_t buf[60] = {0};
 
 void lora_task(void* pvParameters) {
     e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete); 
@@ -65,6 +66,13 @@ void lora_task(void* pvParameters) {
     while (1) {
         // test_send();
         ESP_ERROR_CHECK(intertask_handle());
+        lora_receive();  // put into receive mode
+        if (lora_received()) {
+            int rxLen = lora_receive_packet(buf, sizeof(buf));
+            ESP_LOGI(pcTaskGetName(NULL), "%d byte packet received:[%.*s]", rxLen, rxLen, buf);
+            m_lora_protocol_frame_parse(buf,sizeof(buf));
+
+        }
         int lost = lora_packet_lost();
         if (lost != 0) {
             ESP_LOGW(TAG, "%d packets lost", lost);
@@ -83,9 +91,10 @@ void pack_complete(void *pvParameters)
 void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
 {
     ESP_LOGI(TAG, "Parse Callback");
-    if(header.dest_addr == dev_addr) {
+    ESP_LOGI(TAG, "header.dest_addr:%u, dest_addr:%u", header.dest_addr, dest_addr);
+    if(header.dest_addr == dest_addr) {
        src_addr =  dev_addr;
-       dest_addr = header.src_addr;
+       dest_addr = header.src_addr; // The reply address is the received src_addr
     }
     else {
         /* TODO: Relay to adjacent lora node */
@@ -97,6 +106,7 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
         .src_task_handle_id = TASK_ID_LORA,
         .coredata = *coredata,
     };
+    ESP_LOGI(TAG, "src_addr:%u, dest_addr:%u, cdataid:%d", src_addr, dest_addr, cdataid);
     switch(cdataid){
         /* Relay to network task */
         case COREDATA_ID_NET:
@@ -105,6 +115,7 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
         /* Relay to modbus task */
         case COREDATA_ID_MB_DATA:
         case COREDATA_ID_MB_CFG:
+            ESP_LOGI(TAG, "Relay to Modbus task");
             relay_intertask(TASK_ID_MODBUS,idata);
             break;
         /* Handle Lora data itself */
@@ -187,7 +198,7 @@ static esp_err_t handle_intertask_request()
     if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
 
         st_core_data_t coredata =   idata.coredata;
-        uint8_t buffer[30] = {0}; 
+        uint8_t buffer[60] = {0}; 
         reply_task_handle_id = idata.src_task_handle_id;
         if(COREDATA_ID_LORA_CFG_REG == coredata.cdataid){
             /* TODO: Handle this case */

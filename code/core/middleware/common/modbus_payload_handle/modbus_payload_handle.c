@@ -26,7 +26,7 @@ static const st_modbus_params_descriptor_t desc_sensor_sht20[] = {
 };
 static const st_modbus_device_info_t dev[2] = {
     {.address = 1, .name = "GD20 Inverter"  , .desc = desc_inverter_gd20 , .total_idx = TOTAL_DESCRIPTOR(desc_inverter_gd20) },
-    {.address = 3, .name = "Sensor SHT20"   , .desc = desc_sensor_sht20  , .total_idx = TOTAL_DESCRIPTOR(desc_sensor_sht20)  },
+    {.address = 8, .name = "Sensor SHT20"   , .desc = desc_sensor_sht20  , .total_idx = TOTAL_DESCRIPTOR(desc_sensor_sht20)  },
 };
 
 

@@ -16,15 +16,16 @@ void hmi_task(void* pvParameters) {
     st_core_data_t coredata = { .cdataid = COREDATA_ID_MB_DATA };
     st_modbus_data_t mdata = {
         .addr = 8,
-        .reg = GD20_REG_CONTROL_CMD,
-        .modbus_function = (uint8_t)MB_FUNC_W_HOLDING,
-        .value = 5,
+        .reg = 1,
+        .modbus_function = (uint8_t)MB_FUNC_R_INPUT,
+        .value = 1,
     };
     bzero(coredata.cdata, sizeof(coredata.cdata));
     memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(coredata.cdata));
 
     st_intertask_data_t idata = { .src_task_handle_id = TASK_ID_HMI, .coredata = coredata, };
-    ESP_ERROR_CHECK(relay_intertask(TASK_ID_MODBUS, idata));
+
+    ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
     for(;;){
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
