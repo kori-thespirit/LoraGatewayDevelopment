@@ -21,12 +21,12 @@ const st_modbus_params_descriptor_t desc_inverter_gd20[] = {
     {.reg = GD20_REG_SET_FREQ   , .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_WRITE, .range.min = 1   , .range.max = 8     },
 };
 static const st_modbus_params_descriptor_t desc_sensor_sht20[] = {
-    {.reg = 0x0001, .unit = "°C"   , .size = 1, .type = MB_PARAM_INPUT, .perm = PERM_READ}, // Temperature
-    {.reg = 0x0002, .unit = "%rH"  , .size = 1, .type = MB_PARAM_INPUT, .perm = PERM_READ}, // Humidity
+    {.reg = SHT20_REG_TEMP, .unit = "°C"   , .size = 1, .type = MB_PARAM_INPUT, .perm = PERM_READ}, // Temperature
+    {.reg = SHT20_REG_HUMID, .unit = "%rH"  , .size = 1, .type = MB_PARAM_INPUT, .perm = PERM_READ}, // Humidity
 };
 static const st_modbus_device_info_t dev[2] = {
-    {.address = 1, .name = "GD20 Inverter"  , .desc = desc_inverter_gd20 , .total_idx = TOTAL_DESCRIPTOR(desc_inverter_gd20) },
-    {.address = 8, .name = "Sensor SHT20"   , .desc = desc_sensor_sht20  , .total_idx = TOTAL_DESCRIPTOR(desc_sensor_sht20)  },
+    {.address = GD20_SLAVE_ID, .name = "GD20 Inverter"  , .desc = desc_inverter_gd20 , .total_idx = TOTAL_DESCRIPTOR(desc_inverter_gd20) },
+    {.address = SHT20_SLAVE_ID, .name = "Sensor SHT20"   , .desc = desc_sensor_sht20  , .total_idx = TOTAL_DESCRIPTOR(desc_sensor_sht20)  },
 };
 
 

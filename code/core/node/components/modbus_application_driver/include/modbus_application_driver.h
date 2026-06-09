@@ -3,6 +3,7 @@
 #define MODBUS_APP_DRIVER_H
 
 #include "gd20_inverter.h"
+#include "sht20_sensor.h"
 #include <stdint.h>
 #include "esp_err.h"
 
