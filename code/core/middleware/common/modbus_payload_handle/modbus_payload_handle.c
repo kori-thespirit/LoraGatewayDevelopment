@@ -159,7 +159,8 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
                     _g_p_rx_cb((void*)&value, (descriptor + desc_idx));
                     break;
                 case MB_FUNC_R_INPUT:
-                    _g_p_rx_cb((void*)(modbus_payload + 3), (descriptor + desc_idx));
+                    _g_p_rx_cb((void*)&value, (descriptor + desc_idx));
+                    // _g_p_rx_cb((void*)(modbus_payload + 3), (descriptor + desc_idx));
                     break;
                 default:
                     break;

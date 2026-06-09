@@ -16,7 +16,8 @@ typedef union intertask_noti {
     struct {
         uint32_t intertask_err: 8;
         uint32_t qidx:8; // queue index
-        uint32_t reserve:16; // reserve for future use
+        uint32_t is_request:1; // Avoid replying to false intertask
+        uint32_t reserve:15; // reserve for future use
     }notivalue;
     uint32_t value;
 } u_intertask_noti_t;
