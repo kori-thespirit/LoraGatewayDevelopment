@@ -16,7 +16,7 @@ static esp_err_t intertask_handle();
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
 static e_task_handle_id_t reply_task_handle_id = 0;
 static uint8_t reply_dev_addr = 0;
-static uint8_t reply_modbus_function = 0;
+static e_modbus_function_t reply_modbus_function;
 
 void modbus_task(void* pvParameters)
 {
@@ -162,7 +162,7 @@ static void rx_complete(void *pvParameter, const st_modbus_params_descriptor_t *
         st_modbus_data_t mdata = {
             .addr = reply_dev_addr,
             .reg = desc->reg,
-            .modbus_function = reply_modbus_function,
+            .modbus_function = (uint8_t)reply_modbus_function,
             .value = *value,
         };
         st_core_data_t coredata = {
@@ -175,8 +175,7 @@ static void rx_complete(void *pvParameter, const st_modbus_params_descriptor_t *
             .src_task_handle_id = TASK_ID_MODBUS,
             .coredata = coredata
         };
-        if(MB_FUNC_R == reply_modbus_function)
-            ESP_ERROR_CHECK(relay_intertask(reply_task_handle_id, idata));
+        ESP_ERROR_CHECK(relay_intertask(reply_task_handle_id, idata));
         reply_task_handle_id = 0;
     }
 }
@@ -204,11 +203,14 @@ static void modbus_payload_err(void *pvParameter)
         case MB_PAYLOAD_ERR_ADDRESS_MISMACTH:
             ESP_LOGE(TAG, "Address mismatch");
             break;
-        case MB_PAYLOAD_ERR_DATA_INVALID: 
+        case MB_PAYLOAD_ERR_DATA_INVALID:
             ESP_LOGE(TAG, "Invalid data");
             break;
-        case MB_PAYLOAD_ERR_PERMISSON: 
+        case MB_PAYLOAD_ERR_PERMISSON:
             ESP_LOGE(TAG, "Invalid permission to read or write");
+            break;
+        case MB_PAYLOAD_ERR_MODBUS_TYPE:
+            ESP_LOGE(TAG, "Invalid modbus type");
             break;
 
     }

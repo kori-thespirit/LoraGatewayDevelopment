@@ -17,20 +17,23 @@
                                   //
 #define Lora_EN 2
 #define LED_ACT 13
-#define LORA_ADDR 2
 
 static const char *TAG = "lora_task";
 void pack_complete(void *pvParameters);
-void parse_complete(void *pvParameters);
-
+void parse_complete(void *pvParameters, st_lora_protocol_header_t header);
 static void lora_send();
 static esp_err_t intertask_handle();
-static e_task_handle_id_t reply_task_handle_id = 0;
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
+
+static e_task_handle_id_t reply_task_handle_id = 0;
+static uint8_t src_addr = 0; 
+static uint8_t dest_addr = 0;
+static uint8_t dev_addr = 2;
+static e_lora_function_t lorafunc = LORA_FUNC_LISTEN_ONLY;
 
 void lora_task(void* pvParameters) {
     e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete); 
-    if(LORA_PROTOCOL_ERR_OK != protocol_err){
+    if(LORA_PROTOCOL_OK != protocol_err){
         ESP_LOGE(TAG, "%s:Register callback failed, err:%d",__func__, protocol_err);
     }
     gpio_reset_pin(LED_ACT);
@@ -59,18 +62,6 @@ void lora_task(void* pvParameters) {
     lora_set_spreading_factor(LORA_SF);
     ESP_LOGI(TAG, "spreading_factor=%d", LORA_SF);
 
-    st_core_data_t coredata = { .cdataid = COREDATA_ID_MB_DATA };
-    st_modbus_data_t mdata = {
-        .addr = 1,
-        .reg = GD20_REG_CONTROL_CMD,
-        .modbus_function = (uint8_t)MB_FUNC_W,
-        .value = 5,
-    };
-    bzero(coredata.cdata, sizeof(coredata.cdata));
-    memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(coredata.cdata));
-
-    st_intertask_data_t idata = { .src_task_handle_id = TASK_ID_LORA, .coredata = coredata, };
-    ESP_ERROR_CHECK(relay_intertask(TASK_ID_MODBUS, idata));
     while (1) {
         // test_send();
         ESP_ERROR_CHECK(intertask_handle());
@@ -89,9 +80,17 @@ void pack_complete(void *pvParameters)
     ESP_LOGI(TAG, "Sending message via lora complete with %u bytes", *frame_length);
 }
 
-void parse_complete(void *pvParameters)
+void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
 {
     ESP_LOGI(TAG, "Parse Callback");
+    if(header.dest_addr == dev_addr) {
+       src_addr =  dev_addr;
+       dest_addr = header.src_addr;
+    }
+    else {
+        /* TODO: Relay to adjacent lora node */
+        return;
+    }
     st_core_data_t *coredata = (st_core_data_t*)pvParameters;
     e_core_data_id_t cdataid = coredata->cdataid;
     st_intertask_data_t idata = {
@@ -109,14 +108,11 @@ void parse_complete(void *pvParameters)
             relay_intertask(TASK_ID_MODBUS,idata);
             break;
         /* Handle Lora data itself */
-        case COREDATA_ID_LORA:
-            st_lora_cfg_t loracfg;
-            memcpy((void*)&loracfg, (void*)coredata->cdata, sizeof(st_lora_cfg_t));
-            ESP_LOGI(TAG, "Get lora config, addr:%u, sf:%u, cr:%u, bw:%u, freq:%lu", loracfg.addr, loracfg.cr, loracfg.bw, loracfg.freq);
+        case COREDATA_ID_LORA_CFG_REG:
+            st_lora_cfg_reg_t loracfg;
+            memcpy((void*)&loracfg, (void*)coredata->cdata, sizeof(st_lora_cfg_reg_t));
+            ESP_LOGI(TAG, "Get lora config, sf:%u, cr:%u, bw:%u, freq:%lu", loracfg.cr, loracfg.bw, loracfg.freq);
             break;
-        /* Node doesn't support sdcard and HMI */
-        case COREDATA_ID_SDCARD:
-        case COREDATA_ID_HMI:
         default:
             ESP_LOGE(TAG, "Core data ID not supported");
             break;
@@ -191,20 +187,19 @@ static esp_err_t handle_intertask_request()
     if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
 
         st_core_data_t coredata =   idata.coredata;
-        uint8_t buffer[30] = {0};
+        uint8_t buffer[30] = {0}; 
         reply_task_handle_id = idata.src_task_handle_id;
-        if(COREDATA_ID_LORA == coredata.cdataid){
-            /* TODO: Handle Lora request from other intertask 
-             * such as notify the status is OK */
+        if(COREDATA_ID_LORA_CFG_REG == coredata.cdataid){
+            /* TODO: Handle this case */
             return ESP_OK;
         }
 
         /* Perform core function */
-        e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&coredata, sizeof(st_core_data_t), LORA_ADDR, 0);
-        if(LORA_PROTOCOL_ERR_OK != protocol_err) {
+        e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&coredata, sizeof(st_core_data_t), src_addr, dest_addr, 0);
+        if(LORA_PROTOCOL_OK != protocol_err) {
             ESP_LOGE(TAG, "%s:Pack frame data failed, err:%d", __func__, protocol_err);
         }
-        lora_send_packet(buffer, sizeof(buffer));
+        lora_send_packet(buffer, sizeof(buffer)); // TODO: Sending all buffer is not neccessary, need to reduce this
     }
     else {
         ESP_LOGE(TAG, "%s:Fail to handle QueueReceive", __func__);
