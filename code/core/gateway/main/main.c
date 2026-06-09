@@ -15,20 +15,27 @@ StackType_t xLoraStack[LORA_STACK_SIZE];
 StaticTask_t xCommonTaskBuffer;
 StackType_t xCommonStack[COMMON_STACK_SIZE];
 
+TaskHandle_t hmi_task_handle;
+TaskHandle_t lora_task_handle;
+TaskHandle_t common_task_handle;
+TaskHandle_t network_task_handle;
+static QueueHandle_t q_common;
+
 typedef enum task_priority
 {
-  TASK_PRIORITY_DAEMON = 0,
-  TASK_PRIORITY_OTHER,
-  TASK_PRIORITY_COMMON,
-  TASK_PRIORITY_LORA,
-  TASK_PRIORITY_NETWORK,
+    TASK_PRIORITY_DAEMON = 0,
+    TASK_PRIORITY_OTHER,
+    TASK_PRIORITY_COMMON,
+    TASK_PRIORITY_LORA,
+    TASK_PRIORITY_NETWORK,
 } task_priority;
 
 void other_task(void* pvParameters) ;
 
 void app_main(void) {
 
-    TaskHandle_t lora_task_handle = xTaskCreateStatic(
+    q_common = xQueueCreate(QUEUE_COMMON_ITEMS, sizeof(st_intertask_data_t));
+    lora_task_handle = xTaskCreateStatic(
     lora_task,
     "lora_task",
     LORA_STACK_SIZE,
@@ -40,7 +47,18 @@ void app_main(void) {
     if (lora_task_handle == NULL) 
       ESP_LOGE(TAG,"Fail to create lora task");
 
-    TaskHandle_t common_task_handle = xTaskCreateStatic(
+    BaseType_t err = xTaskCreate(
+    hmi_task,
+    "hmi_task",
+    2048,
+    NULL,
+    TASK_PRIORITY_COMMON,
+    &hmi_task_handle
+    );
+    if (err != pdPASS) 
+      ESP_LOGE(TAG,"Fail to create HMI task");
+
+    common_task_handle = xTaskCreateStatic(
     common_task,
     "common_task",
     COMMON_STACK_SIZE,
@@ -54,18 +72,18 @@ void app_main(void) {
 
     /* Highspeed CPU core to handle network task */
     BaseType_t ret = xTaskCreatePinnedToCore(
-            network_task,          // Task function
-            "network_task",        // Name for debugging
-            4096,               // Stack size in words
-            NULL,               // Task input parameter
-            TASK_PRIORITY_NETWORK,                  // Priority (higher number = higher priority)
-            NULL,               // Task handle
-            1                   // Core ID (0 or 1)
+            network_task,           // Task function
+            "network_task",         // Name for debugging
+            4096,                   // Stack size in words
+            NULL,                   // Task input parameter
+            TASK_PRIORITY_NETWORK,  // Priority (higher number = higher priority)
+            &network_task_handle,    // Task handle
+            1                       // Core ID (0 or 1)
     );
     if (ret != pdPASS) 
       ESP_LOGE(TAG,"Fail to create network task");
 
-    xTaskCreate(other_task, "other_task", 1024 * 2, NULL, TASK_PRIORITY_OTHER, NULL);
+    // xTaskCreate(other_task, "other_task", 1024 * 2, NULL, TASK_PRIORITY_OTHER, NULL);
 
     for(;;){
         daemon_task(NULL);
@@ -79,3 +97,14 @@ void other_task(void* pvParameters) {
     }
 }
 
+uint8_t get_available_queue_common()
+{
+    /* TODO: Change queue index base on free mutex */
+    uint8_t idx = 0;
+    return idx;
+}
+QueueHandle_t * get_queue_common_addr() {return &q_common;}
+TaskHandle_t  * get_lora_task_handle() { return &lora_task_handle; }
+TaskHandle_t  * get_network_handle() { return &network_task_handle; }
+TaskHandle_t  * get_hmi_handle() { return &hmi_task_handle; }
+TaskHandle_t  * get_common_handle() { return &common_task_handle; }

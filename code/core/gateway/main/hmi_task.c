@@ -1,71 +1,33 @@
 /* -------------------------- LICENSE placeholder -------------------------- */
-#include <inttypes.h>
-#include <stdio.h>
-#include <string.h>
 
 #include "esp_log.h"
-#include "esp_err.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "lora.h"
-#include "lora_protocol.h"
 #include "main.h"
 
-#define RF_FREQUENCY 433000000LL  // Tần số: 433MHz (hoặc 866000000LL, 915000000LL)
-#define LORA_BW 7                 // Bandwidth: 7 là 125kHz
-#define LORA_SF 7                 // Spreading Factor: 7
-#define LORA_CR 1                 // Coding Rate: 1 là 4/5
-#define LORA_CRC 1                // 1: Bật CRC, 0: Tắt CRC
- 
-static const char *TAG = "lora_task";
-void pack_complete(void *pvParameters);
-void parse_complete(void *pvParameters, st_lora_protocol_header_t header);
-
-static esp_err_t intertask_handle();
-static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
-static uint8_t src_addr = 0;
-static uint8_t dest_addr = 0;
-static uint8_t dev_addr = 1;
-static e_lora_function_t lorafunc = LORA_FUNC_ACTIVE_TRANSMIT;
+static const char *TAG = "hmi_task";
 static e_task_handle_id_t reply_task_handle_id = 0;
 
-void lora_task(void* pvParameters) {
+static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
 
-    e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete);
-    if(LORA_PROTOCOL_OK != protocol_err)
-      ESP_LOGE(TAG, "register callback failed,err:%d",protocol_err);
+void hmi_task(void* pvParameters) {
+    ESP_LOGI(TAG, "task created");
+    ESP_ERROR_CHECK(lora_set_dest_addr(2));
+    st_core_data_t coredata = { .cdataid = COREDATA_ID_MB_DATA };
+    st_modbus_data_t mdata = {
+        .addr = 8,
+        .reg = GD20_REG_CONTROL_CMD,
+        .modbus_function = (uint8_t)MB_FUNC_W_HOLDING,
+        .value = 5,
+    };
+    bzero(coredata.cdata, sizeof(coredata.cdata));
+    memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(coredata.cdata));
 
-    if (lora_init() == 0) {
-        ESP_LOGE(TAG, "Does not recognize the module");
-        while (1) {
-            vTaskDelay(1);
-        }
+    st_intertask_data_t idata = { .src_task_handle_id = TASK_ID_HMI, .coredata = coredata, };
+    ESP_ERROR_CHECK(relay_intertask(TASK_ID_MODBUS, idata));
+    for(;;){
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
-
-    lora_set_frequency(RF_FREQUENCY);
-    lora_enable_crc();
-    lora_set_coding_rate(LORA_CR);
-    ESP_LOGI(TAG, "coding_rate=%d", LORA_CR);
-
-    lora_set_bandwidth(LORA_BW);
-    ESP_LOGI(TAG, "bandwidth=%d", LORA_BW);
-
-    lora_set_spreading_factor(LORA_SF);
-    ESP_LOGI(TAG, "Start");
-    while (1) {
-        intertask_handle();
-        vTaskDelay(10);  // Avoid WatchDog alerts
-    }  // end while
-
-}
-
-void pack_complete(void *pvParameters)
-{
-    ESP_LOGI(TAG, "Pack Callback");
-}
-
-void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
-{
 }
 
 // ------------------- INTER_TASK ------------------- [
@@ -77,8 +39,8 @@ static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t 
         case TASK_ID_NETWORK:
             task_handle = get_network_handle();
             break;
-        case TASK_ID_HMI:
-            task_handle = get_hmi_handle();
+        case TASK_ID_LORA:
+            task_handle = get_lora_task_handle();
             break;
         case TASK_ID_SDCARD:
             task_handle = get_common_handle();
@@ -139,14 +101,10 @@ static esp_err_t handle_intertask_request()
     if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
 
         st_core_data_t coredata =   idata.coredata;
-        uint8_t buffer[30] = {0};
         reply_task_handle_id = idata.src_task_handle_id;
-        /* Perform core function */
-        e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&coredata, sizeof(st_core_data_t), dev_addr, dest_addr, 0);
-        if(LORA_PROTOCOL_OK != protocol_err) {
-            ESP_LOGE(TAG, "%s:Pack frame data failed, err:%d", __func__, protocol_err);
-        }
-        lora_send_packet(buffer, sizeof(buffer));
+
+        /* TODO: Perform core function */
+        ESP_LOGW(TAG, "HMI task work-in-progress");
     }
     else {
         ESP_LOGE(TAG, "%s:Fail to handle QueueReceive", __func__);
@@ -162,13 +120,3 @@ static esp_err_t intertask_handle()
 
 }
 // ------------------- INTER TASK ------------------- ]
-// ------------------- HELPER FUNCTION ------------------- [
-uint8_t lora_get_dest_addr() {return dest_addr;}
-esp_err_t lora_set_dest_addr(uint8_t addr) {
-    if(addr == src_addr || addr == dev_addr) return ESP_ERR_INVALID_ARG;
-    dest_addr = addr;
-    return ESP_OK;
-
-}
-
-// ------------------- HELPER FUNCTION ------------------- ]
