@@ -10,7 +10,93 @@
 
 static char TAG[] = "dwin_app_driver";
 // Create an instance of the DWIN class
-DWIN hmi(UART_NUM_1, RX_PIN, TX_PIN, DGUS_BAUD);
+DWIN hmi(UART_PORT, RX_PIN, TX_PIN, DGUS_BAUD);
+
+void set_VP(uint16_t vpaddress, uint16_t data)
+{
+    uint8_t frame[8];
+    frame[0] = 0x5A;
+    frame[1] = 0xA5;
+    frame[2] = 0x05;
+    frame[3] = 0x82;
+    frame[4] = (vpaddress >> 8) & 0xFF;
+    frame[5] = vpaddress & 0xFF;
+    frame[6] = (data >> 8) & 0xFF;
+    frame[7] = data & 0xFF;
+    uart_write_bytes(UART_PORT, (const char*)frame, 8);
+}
+
+void send_text_dwin(uint16_t vpaddress, std::string &text)
+
+void send_to_dwin(uint16_t address, uint16_t data) {
+    uint8_t frame[8] = {
+        CMD_HEAD1,
+        CMD_HEAD2,
+        0x05,
+        CMD_WRITE,
+        (uint8_t)((address >> 8) & 0xFF),
+        (uint8_t)(address & 0xFF),
+        (uint8_t)((data >> 8) & 0xFF),
+        (uint8_t)(data & 0xFF),
+    };
+    uart_write_bytes(UART_PORT, (const char*)frame, 8);
+    ESP_LOGI(TAG, "send data 0x%x", data);
+}
+
+
+static void hmi_event_cb(std::string address, int lastByte, std::string message, std::string response)
+{  
+    ESP_LOGI(TAG, "OnEvent : [ A : %s | D : %02X | M : %s | R : %s ]", address.c_str(), lastByte, message.c_str(), response.c_str());
+    if(address == VP_KEYBOARD_INPUT) {
+        DWIN_Keyboard kb;
+        int result = kb.processKey(lastByte);
+        std::string buffer = kb.getBuffer();
+        switch(result){
+            case 1:
+                int value = 0;
+                if(!buffer.empty())  // If buffer is not empty
+                    value = std::stoi(buffer);
+                if (value > MAX_VALUE)
+                    value = MAX_VALUE;
+                set_VP(VP_DISPLAY_OUTPUT, value);
+                break;
+            case 2:
+                int value = buffer.empty() ? 0 : std:stoi(buffer);
+                set_VP(VP_DISPLAY_OUTPUT, value);
+                break;
+            case 4:
+                set_VP(VP_DISPLAY_OUTPUT, 0);
+                break;
+            case 5:
+                if(!buffer.empty()) // If buffer is not empty
+                    int value = std::stoi(buffer);
+                set_VP(VP_DISPLAY_OUTPUT, value);
+                kb.clearBuffer();
+        }
+
+    }
+    else if(address == VP_BUTTON) {
+
+        std::string buffer = kb.getBuffer();
+        value = std::stoi(buffer);
+        switch(lastByte) {
+            case 0x0001:
+                ESP_LOGI(TAG, "[BUTTON] Confirm");
+                if(!kb.getBuffer().empty) {
+                    int value = std::stoi;
+
+                }
+        }
+
+    }
+}
+
+void hmi_start()
+{
+    hmi.echoEnabled(true);
+    hmi.hmiCallBack(hmi_event_cb);
+    hmi.setPage(0);
+}
 
 static uint8_t wait_millis(uint32_t delay_ms)
 {
@@ -35,35 +121,4 @@ static void update_rtc(st_rtc_t *t)
     if(t->day / 24 > 0) { t->day += t->hour / 24; t->hour %= t->hour; }
     if(t->min / 60 > 0) { t->hour += t->min / 60; t->min %= t->min; }
     if(t->sec / 60 > 0) { t->min += t->sec / 60; t->sec %= t->sec; }
-}
-
-void send_to_dwin(uint16_t address, uint16_t data) {
-    uint8_t frame[8] = {
-        CMD_HEAD1,
-        CMD_HEAD2,
-        0x05,
-        CMD_WRITE,
-        (uint8_t)((address >> 8) & 0xFF),
-        (uint8_t)(address & 0xFF),
-        (uint8_t)((data >> 8) & 0xFF),
-        (uint8_t)(data & 0xFF),
-    };
-    uart_write_bytes(UART_PORT, (const char*)frame, 8);
-    ESP_LOGI(TAG, "send data 0x%x", data);
-}
-
-
-static void hmi_event_cb(std::string address, int lastByte, std::string message, std::string response)
-{  
-    ESP_LOGI(TAG, "OnEvent : [ A : %s | D : %02X | M : %s | R : %s ]", address.c_str(), lastByte, message.c_str(), response.c_str());
-    if (address == "1002") {
-      
-    }
-}
-
-void hmi_start()
-{
-    hmi.echoEnabled(true);
-    hmi.hmiCallBack(hmi_event_cb);
-    hmi.setPage(0);
 }

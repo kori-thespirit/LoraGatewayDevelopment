@@ -211,51 +211,29 @@ public:
     
     int processKey(int keyCode) {
         // Sử dụng KB_ constants để tránh trùng với DWIN.h
-        if (keyCode == KB_BACKSPACE) {
-            if (_inputBuffer.length() > 0) {
-                _inputBuffer.pop_back();
-            }
-            printf("[KEY] Backspace - Xoa 1 ky tu\n");
-            return 2;
-        }
-        else if (keyCode == KB_DELETE) {
-            printf("[KEY] Delete\n");
-            return 3;
-        }
-        else if (keyCode == KB_CLEAR) {
-            _inputBuffer = "";
-            printf("[KEY] Clear - Xoa toan bo\n");
-            return 4;
-        }
-        else if (keyCode == KB_ENTER) {
-            printf("[KEY] Enter - Xac nhan: %s\n", _inputBuffer.c_str());
-            return 5;
-        }
-        else if (keyCode == KB_CANCEL) {
-            _inputBuffer = "";
-            printf("[KEY] Cancel - Huy bo nhap lieu\n");
-            return 6;
-        }
-        else if (keyCode == KB_CAPS_LOCK) {
-            _capsLock = !_capsLock;
-            printf("[KEY] CapsLock - %s\n", _capsLock ? "BAT (chu hoa)" : "TAT (chu thuong)");
-            return 7;
-        }
-        else if (keyCode == KB_LEFT) {
-            printf("[KEY] Left - Di chuyen con tro sang trai\n");
-            return 0;
-        }
-        else if (keyCode == KB_RIGHT) {
-            printf("[KEY] Right - Di chuyen con tro sang phai\n");
-            return 0;
-        }
-        else {
-            char c = keyCodeToChar(keyCode);
-            if (c != '\0') {
-                _inputBuffer += c;
-                printf("[KEY] Nhap: %c | Buffer: %s\n", c, _inputBuffer.c_str());
-                return 1;
-            }
+        switch(keyCode) {
+            case KB_BACKSPACE: 
+                if (_inputBuffer.length() > 0) {
+                    _inputBuffer.pop_back();
+                }
+                return 2;
+            case KB_DELETE: return 3;
+            case KB_CLEAR: return 4;
+            case KB_ENTER: return 5;
+            case KB_CANCEL: return 6;
+            case KB_CAPS_LOCK: 
+                _capsLock = !_capsLock;
+                return 7;
+            case KB_LEFT: return 0;
+            case KB_RIGHT: return 0;
+            default:
+                char c = keyCodeToChar(keyCode);
+                if (c != '\0') {
+                    _inputBuffer += c;
+                    return 1;
+                }
+               break;
+
         }
         return 0;
     }
