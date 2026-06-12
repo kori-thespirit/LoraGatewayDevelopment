@@ -1,6 +1,7 @@
 #ifndef _DWIN_APP_DRIVER_H_
 #define _DWIN_APP_DRIVER_H_
 #include <stdint.h>
+#include <string>
 
 #define VP_DATE_DAY      0x1810  // Ngày (2 chữ số)
 #define VP_DATE_MONTH    0x1811  // Tháng (2 chữ số)
@@ -48,5 +49,19 @@ typedef struct rtc {
     uint8_t date;
     uint16_t year;
 } st_rtc_t;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void send_text_to_display(uint16_t vpaddress, std::string &text);
+void send_data_to_display(uint16_t address, uint16_t data);
+void hmi_start();
+void hmi_listen();
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // _DWIN_APP_DRIVER_H_

@@ -5,6 +5,9 @@
 #include <string>
 #include <cstdio>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 // ============================================================================
 // ĐỊNH NGHĨA ĐỊA CHỈ VP 
 // ============================================================================
@@ -343,4 +346,8 @@ public:
     }
 };
 
+
+#ifdef __cplusplus
+}
+#endif
 #endif // _DWIN_KEYBOARD_H_

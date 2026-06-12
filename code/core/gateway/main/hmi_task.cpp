@@ -4,7 +4,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "main.h"
-
+#include "DWIN.h"
+#include "dwin_app_driver.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -13,9 +14,11 @@ static const char *TAG = "hmi_task";
 static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
+static esp_err_t intertask_handle();
 
 void hmi_task(void* pvParameters) {
     ESP_LOGI(TAG, "task created");
+    hmi_start();
     ESP_ERROR_CHECK(lora_set_dest_addr(2));
     st_core_data_t coredata;
     st_modbus_data_t mdata = {
@@ -32,6 +35,8 @@ void hmi_task(void* pvParameters) {
 
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
     for(;;){
+        hmi_listen();
+        intertask_handle();
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
