@@ -16,22 +16,32 @@ static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
 static esp_err_t intertask_handle();
 
-void hmi_task(void* pvParameters) {
-    ESP_LOGI(TAG, "task created");
-    hmi_start();
-    ESP_ERROR_CHECK(lora_set_dest_addr(2));
+static st_intertask_data_t get_intertask_data_from_modbus(
+    uint8_t modbus_address, 
+    uint8_t modbus_function,
+    uint16_t reg,
+    uint16_t value)
+{
     st_core_data_t coredata;
     st_modbus_data_t mdata = {
-        .addr = 8,
-        .modbus_function = (uint8_t)MB_FUNC_R_INPUT,
-        .reg = 1,
-        .value = 1,
+        .addr = modbus_address,
+        .modbus_function = modbus_function,
+        .reg = reg,
+        .value = value,
     };
     coredata.cdataid = COREDATA_ID_MB_DATA ;
     bzero(coredata.cdata, sizeof(coredata.cdata));
     memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(coredata.cdata));
 
     st_intertask_data_t idata = { .src_task_handle_id = TASK_ID_HMI, .coredata = coredata, };
+    return idata;
+}
+
+void hmi_task(void* pvParameters) {
+    ESP_LOGI(TAG, "task created");
+    hmi_start();
+    ESP_ERROR_CHECK(lora_set_dest_addr(2));
+    st_intertask_data_t idata = get_intertask_data_from_modbus(1, (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_CONTROL_CMD, 1);
 
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
     for(;;){

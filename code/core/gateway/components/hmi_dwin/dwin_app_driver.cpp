@@ -77,9 +77,19 @@ static void hmi_event_cb(std::string address, int lastByte, std::string message,
             case 0x0001:
                 ESP_LOGI(TAG, "[BUTTON] Confirm");
                 if(!kb.getBuffer().empty()) {
-                    // int value = std::stoi;
-
+                    int value = std::stoi(kb.getBuffer());
+                    send_data_to_display(VP_DISPLAY_OUTPUT, value);
+                    ESP_LOGI(TAG, "Frequency: %d Hz", value);
+                    kb.clearBuffer();
                 }
+                break;
+            case 0x0002: ESP_LOGI(TAG, "[BUTTON] STOP"); break;
+            case 0x0003: ESP_LOGI(TAG, "[BUTTON] RUN"); break;
+            case 0x0004: ESP_LOGI(TAG, "[BUTTON] BACK TO KEYBOARD"); break;
+            case 0x0005: ESP_LOGI(TAG, "[BUTTON] FORWARD MOTOR"); break;
+            case 0x0006: ESP_LOGI(TAG, "[BUTTON] REVERSE MOTOR"); break;
+            default:
+                ESP_LOGI(TAG, "Unknown command"); break;
         }
 
     }
@@ -90,6 +100,11 @@ void hmi_start()
     hmi.echoEnabled(true);
     hmi.hmiCallBack(hmi_event_cb);
     hmi.setPage(0);
+}
+
+void hmi_register_callback()
+{
+
 }
 
 void hmi_listen() { hmi.listen(); }

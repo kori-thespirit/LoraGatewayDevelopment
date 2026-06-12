@@ -54,6 +54,8 @@ typedef struct rtc {
 extern "C" {
 #endif
 
+typedef void (* p_hmi_cb)(void *pvParameters);
+
 void send_text_to_display(uint16_t vpaddress, std::string &text);
 void send_data_to_display(uint16_t address, uint16_t data);
 void hmi_start();
