@@ -90,12 +90,12 @@ esp_err_t modbus_uart_event_handle()
 {
     uart_event_t event;
     if (xQueueReceive(q_uart_event, (void*)&event, pdMS_TO_TICKS(1000))) {
-        uint8_t* dtmp = (uint8_t*)malloc(BUF_SIZE);
+        uint8_t* dtmp = (uint8_t*)malloc(MODBUS_UART_BUF_SIZE);
         if(!dtmp) {
             ESP_LOGE(TAG, "Fail to allocate buffer");
             return ESP_ERR_NO_MEM;
         }
-        bzero(dtmp, BUF_SIZE);
+        bzero(dtmp, MODBUS_UART_BUF_SIZE);
         switch (event.type) {
             case UART_DATA:
                 // Đọc dữ liệu từ Ring Buffer

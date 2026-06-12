@@ -9,14 +9,14 @@
 
 #define TXD_PIN                (17)
 #define RXD_PIN                (14)
-#define RTS_DE_PIN             (16) // Ch├ón DE
-#define RE_PIN                 (15) // Ch├ón RE ri├¬ng
+#define RTS_DE_PIN             (16)
+#define RE_PIN                 (15)
 #define CTS_PIN                (UART_PIN_NO_CHANGE)
 #define RS485_EN_PIN           12
 
 #define UART_PORT              (UART_NUM_1)
-#define BAUD_RATE              (9600) 
-#define BUF_SIZE               (127)
+#define BAUD_RATE              (9600)
+#define MODBUS_UART_BUF_SIZE   (127)
 
 
 typedef enum {
