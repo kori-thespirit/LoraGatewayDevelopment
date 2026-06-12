@@ -3,11 +3,11 @@
 
 #include <stdint.h>
 
-#define M_LORA_ASSERT_DEFINE(_cond, _ret)                                       \
-    do {                                                                        \
-        if (!(_cond)) {                                                         \
-            return _ret;                                                        \
-        }                                                                       \
+#define M_LORA_ASSERT_DEFINE(_cond, _ret) \
+    do {                                  \
+        if (!(_cond)) {                   \
+            return _ret;                  \
+        }                                 \
     } while (0)
 
 #define M_LORA_ASSERT(_cond, _ret) M_LORA_ASSERT_DEFINE(_cond, _ret)
