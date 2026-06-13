@@ -50,14 +50,23 @@ typedef struct rtc {
     uint16_t year;
 } st_rtc_t;
 
+typedef struct hmi_frame {
+    uint8_t data_length;
+    uint8_t cmd_func;
+    uint16_t vp;
+    uint8_t  word_len;
+    uint16_t lastbyte;
+} st_hmi_frame_t;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef void (* p_hmi_cb)(void *pvParameters);
-
+typedef void (* p_hmi_tx_cb)();
+typedef void (* p_hmi_rx_cb)(st_hmi_frame_t hmiframe, void *pvParameter);
 void send_text_to_display(uint16_t vpaddress, std::string &text);
-void send_data_to_display(uint16_t address, uint16_t data);
+void hmi_send_data_to_display(uint16_t address, uint16_t data);
+void hmi_register_callback(void (* p_hmi_parse_cb)(st_hmi_frame_t, void *));
 void hmi_start();
 void hmi_listen();
 

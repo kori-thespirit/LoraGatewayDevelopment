@@ -16,7 +16,7 @@ static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
 static esp_err_t intertask_handle();
 
-static st_intertask_data_t get_intertask_data_from_modbus(
+static st_intertask_data_t get_intertask_modbus(
     uint8_t modbus_address, 
     uint8_t modbus_function,
     uint16_t reg,
@@ -37,13 +37,44 @@ static st_intertask_data_t get_intertask_data_from_modbus(
     return idata;
 }
 
+void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
+{
+    st_intertask_data_t idata;
+    uint16_t *value = (uint16_t*)pvParameter;
+    switch(hmiframe.lastbyte) {
+        case 0x0001:
+            ESP_LOGI(TAG, "[BUTTON] SET FREQUENCY");
+            idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, *value);
+        case 0x0002: 
+            ESP_LOGI(TAG, "[BUTTON] STOP");
+            idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 5);
+            break;
+        case 0x0003: 
+            ESP_LOGI(TAG, "[BUTTON] RUN");
+            idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 1);
+            break;
+        case 0x0004: 
+            ESP_LOGI(TAG, "[BUTTON] BACK TO KEYBOARD");
+            break;
+        case 0x0005: 
+            ESP_LOGI(TAG, "[BUTTON] FORWARD MOTOR");
+            idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 1);
+            break;
+        case 0x0006: 
+            ESP_LOGI(TAG, "[BUTTON] REVERSE MOTOR");
+            idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 2);
+            break;
+        default:
+            break;
+    }
+    ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
+}
+
 void hmi_task(void* pvParameters) {
     ESP_LOGI(TAG, "task created");
     hmi_start();
+    hmi_register_callback(hmi_parse_complete);
     ESP_ERROR_CHECK(lora_set_dest_addr(2));
-    st_intertask_data_t idata = get_intertask_data_from_modbus(1, (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_CONTROL_CMD, 1);
-
-    ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
     for(;;){
         hmi_listen();
         intertask_handle();
