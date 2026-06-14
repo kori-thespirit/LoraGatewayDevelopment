@@ -68,7 +68,9 @@ void lora_task(void* pvParameters) {
 
 void pack_complete(void *pvParameters)
 {
-    ESP_LOGI(TAG, "Pack Callback");
+    uint8_t *len = (uint8_t*)pvParameters;
+
+    ESP_LOGI(TAG, "Sending Callback complete with %u byte", *len);
 }
 
 void parse_complete(void *pvParameters, st_lora_protocol_header_t header)

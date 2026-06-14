@@ -44,7 +44,7 @@ void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
     switch(hmiframe.lastbyte) {
         case 0x0001:
             ESP_LOGI(TAG, "[BUTTON] SET FREQUENCY");
-            idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, *value);
+            idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_SET_FREQ, *value);
         case 0x0002: 
             ESP_LOGI(TAG, "[BUTTON] STOP");
             idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 5);
@@ -65,6 +65,7 @@ void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
             idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 2);
             break;
         default:
+            ESP_LOGE(TAG, "No command is found");
             break;
     }
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
@@ -78,7 +79,7 @@ void hmi_task(void* pvParameters) {
     for(;;){
         hmi_listen();
         intertask_handle();
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
 

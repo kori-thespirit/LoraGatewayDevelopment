@@ -23,7 +23,7 @@ extern "C" {
 
 static char TAG[] = "dwin_app_driver";
 // Create an instance of the DWIN class
-DWIN hmi(UART_PORT, RX_PIN, TX_PIN, DGUS_BAUD);
+DWIN hmi(UART_PORT, TX_PIN, RX_PIN, DGUS_BAUD);
 
 static p_hmi_rx_cb g_p_rxhmi;
 void send_text_to_display(uint16_t vpaddress, std::string &text)
@@ -50,13 +50,15 @@ static std::vector<std::string> tokenize(const std::string &str, char delimiter)
     std::vector<std::string> tokens;
     std::stringstream ss(str);
     std::string token;
+    uint8_t items = 0;
 
-    while (std::getline(ss, token, delimiter)) {
-        ESP_LOGI(TAG, "%s", token.c_str());
+    while (std::getline(ss, token, delimiter) && items < 10) {
         if (!token.empty()) { // Skip empty tokens
             tokens.push_back(token);
+            items++;
         }
     }
+    items = 0;
     return tokens;
 }
 
@@ -73,12 +75,6 @@ static esp_err_t parse_response_str(std::string response_str, st_hmi_frame_t *hm
         hmiframe->vp = (uint16_t)(temp[4] << 8 | temp[5]);
         hmiframe->word_len = temp[6];
         hmiframe->lastbyte = (uint16_t)(temp[7] << 8 | temp[8]);
-        ESP_LOGI(TAG, "data_length:%u, cmd_func:0x%x, vp:0x%x, ret_len:%u word, lastbyte:%u",
-                hmiframe->data_length, 
-                hmiframe->cmd_func, 
-                hmiframe->vp, 
-                hmiframe->word_len, 
-                hmiframe->lastbyte);
     }
     else {
         ESP_LOGE(TAG, "Response header invalid");
@@ -94,9 +90,16 @@ static void hmi_event_cb(std::string address, int lastByte, std::string message,
     if(ESP_OK != err)
         return;
     DWIN_Keyboard kb;
+    ESP_LOGI(TAG, "data_length:%u, cmd_func:0x%x, vp:0x%x, ret_len:%u word, lastbyte:0x%x",
+            hmiframe.data_length, 
+            hmiframe.cmd_func, 
+            hmiframe.vp, 
+            hmiframe.word_len, 
+            hmiframe.lastbyte);
     if(hmiframe.vp == VP_KEYBOARD_INPUT) {
         int result = kb.processKey(hmiframe.lastbyte);
         std::string buffer = kb.getBuffer();
+        ESP_LOGI(TAG, "result:%d, kbBuffer:%s",result, buffer);
         int value = 0;
         switch(result){
             case 1:
@@ -119,6 +122,7 @@ static void hmi_event_cb(std::string address, int lastByte, std::string message,
         hmi_send_data_to_display(VP_DISPLAY_OUTPUT, value);
     }
     else if(hmiframe.vp == VP_BUTTON) {
+        ESP_LOGI(TAG, "On VP_BUTTON, lastbyte:%u",hmiframe.lastbyte);
         switch(hmiframe.lastbyte) {
             case 0x0001:
                 ESP_LOGI(TAG, "[BUTTON] Confirm");
@@ -139,7 +143,7 @@ static void hmi_event_cb(std::string address, int lastByte, std::string message,
 
 void hmi_start()
 {
-    hmi.echoEnabled(true);
+    hmi.echoEnabled(false);
     hmi.hmiCallBack(hmi_event_cb);
     hmi.setPage(0);
 
@@ -152,6 +156,20 @@ void hmi_start()
     // "5A A5 06 83 26 00 01 00 01"
     // "5A A5 06 83 26 00 01 00 05"
     // "5A A5 06 83 26 00 01 00 02"
+    //5A
+    //A5
+    //03
+    //82
+    //4F
+    //4B
+    //string to integer
+    //temp[0]:90
+    //temp[1]:165
+    //temp[2]:3
+    //temp[3]:130
+    //temp[4]:79
+    //temp[5]:75
+    //data_length:3, cmd_func:0x82, vp:0x4f4b, ret_len:0 word, lastbyte:0
 }
 
 

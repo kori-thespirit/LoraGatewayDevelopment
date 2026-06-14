@@ -92,7 +92,7 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
 {
     ESP_LOGI(TAG, "Parse Callback");
     ESP_LOGI(TAG, "header.dest_addr:%u, dest_addr:%u", header.dest_addr, dest_addr);
-    if(header.dest_addr == dest_addr) {
+    if(header.dest_addr == dev_addr) {
        src_addr =  dev_addr;
        dest_addr = header.src_addr; // The reply address is the received src_addr
     }
