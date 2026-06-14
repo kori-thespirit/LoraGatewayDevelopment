@@ -26,9 +26,30 @@ static char TAG[] = "dwin_app_driver";
 DWIN hmi(UART_PORT, TX_PIN, RX_PIN, DGUS_BAUD);
 
 static p_hmi_rx_cb g_p_rxhmi;
-void send_text_to_display(uint16_t vpaddress, std::string &text)
+void hmi_send_text_to_display(uint16_t address, std::string &text)
 {
+    int textLength = text.length();
+    int dataLen = 5 + textLength * 2; // cmd(1) + addr(2) + data(2*len) + terminator(2)
+    uint8_t frame[256];
+    int idx = 0;
 
+    frame[idx++] = 0x5A;
+    frame[idx++] = 0xA5;
+    frame[idx++] = dataLen;
+    frame[idx++] = 0x82;
+    frame[idx++] = (address >> 8) & 0xFF;
+    frame[idx++] = address & 0xFF;
+
+    for (int i = 0; i < textLength; i++)
+    {
+        frame[idx++] = 0x00;
+        frame[idx++] = (uint8_t)text[i];
+    }
+
+    frame[idx++] = 0xFF;
+    frame[idx++] = 0xFF;
+
+    uart_write_bytes(UART_PORT, (const char *)frame, idx);
 }
 
 void hmi_send_data_to_display(uint16_t address, uint16_t data) 

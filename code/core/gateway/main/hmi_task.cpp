@@ -45,13 +45,14 @@ void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
         case 0x0001:
             ESP_LOGI(TAG, "[BUTTON] SET FREQUENCY");
             idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_SET_FREQ, *value);
-        case 0x0002: 
-            ESP_LOGI(TAG, "[BUTTON] STOP");
-            idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 5);
             break;
-        case 0x0003: 
+        case 0x0002: 
             ESP_LOGI(TAG, "[BUTTON] RUN");
             idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 1);
+            break;
+        case 0x0003: 
+            ESP_LOGI(TAG, "[BUTTON] STOP");
+            idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 5);
             break;
         case 0x0004: 
             ESP_LOGI(TAG, "[BUTTON] BACK TO KEYBOARD");
@@ -68,6 +69,23 @@ void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
             ESP_LOGE(TAG, "No command is found");
             break;
     }
+    ESP_LOGI(TAG, "\n");
+    ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
+}
+
+void test_send()
+{
+    st_intertask_data_t idata;
+    idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 1);
+    ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_STATUS, 1);
+    ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
+    vTaskDelay(pdMS_TO_TICKS(5000));
+    idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 5);
+    ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_STATUS, 1);
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
 }
 
@@ -76,6 +94,7 @@ void hmi_task(void* pvParameters) {
     hmi_start();
     hmi_register_callback(hmi_parse_complete);
     ESP_ERROR_CHECK(lora_set_dest_addr(2));
+    // test_send();
     for(;;){
         hmi_listen();
         intertask_handle();

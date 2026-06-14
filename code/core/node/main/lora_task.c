@@ -30,7 +30,7 @@ static uint8_t src_addr = 0;
 static uint8_t dest_addr = 0;
 static uint8_t dev_addr = 2;
 static e_lora_function_t lorafunc = LORA_FUNC_LISTEN_ONLY;
-static uint8_t buf[60] = {0};
+static uint8_t buf[40] = {0};
 
 void lora_task(void* pvParameters) {
     e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete); 
@@ -69,9 +69,11 @@ void lora_task(void* pvParameters) {
         lora_receive();  // put into receive mode
         if (lora_received()) {
             int rxLen = lora_receive_packet(buf, sizeof(buf));
-            ESP_LOGI(pcTaskGetName(NULL), "%d byte packet received:[%.*s]", rxLen, rxLen, buf);
-            m_lora_protocol_frame_parse(buf,sizeof(buf));
-
+            for(uint8_t i = 0; i < sizeof(buf); i++) {
+                printf("0x%x ", buf[i]);
+            }
+            printf("\n");
+            m_lora_protocol_frame_parse(buf, sizeof(buf));
         }
         int lost = lora_packet_lost();
         if (lost != 0) {
@@ -90,9 +92,12 @@ void pack_complete(void *pvParameters)
 
 void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
 {
-    ESP_LOGI(TAG, "Parse Callback");
-    ESP_LOGI(TAG, "header.dest_addr:%u, dest_addr:%u", header.dest_addr, dest_addr);
+    ESP_LOGI(TAG, "payload_length: %u", header.payload_length);
+    ESP_LOGI(TAG, "src_addr: %u", header.src_addr);
+    ESP_LOGI(TAG, "dest_addr: %u", header.dest_addr);
+    ESP_LOGI(TAG, "header.dest_addr:%u, dev_addr:%u", header.dest_addr, dev_addr);
     if(header.dest_addr == dev_addr) {
+       ESP_LOGI(TAG, "This message is for me");
        src_addr =  dev_addr;
        dest_addr = header.src_addr; // The reply address is the received src_addr
     }
@@ -198,7 +203,6 @@ static esp_err_t handle_intertask_request()
     if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
 
         st_core_data_t coredata =   idata.coredata;
-        uint8_t buffer[60] = {0}; 
         reply_task_handle_id = idata.src_task_handle_id;
         if(COREDATA_ID_LORA_CFG_REG == coredata.cdataid){
             /* TODO: Handle this case */
@@ -206,11 +210,12 @@ static esp_err_t handle_intertask_request()
         }
 
         /* Perform core function */
-        e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buffer, sizeof(buffer), (void*)&coredata, sizeof(st_core_data_t), src_addr, dest_addr, 0);
+        e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buf, sizeof(buf), (void*)&coredata, sizeof(st_core_data_t), src_addr, dest_addr, 0);
         if(LORA_PROTOCOL_OK != protocol_err) {
             ESP_LOGE(TAG, "%s:Pack frame data failed, err:%d", __func__, protocol_err);
         }
-        lora_send_packet(buffer, sizeof(buffer)); // TODO: Sending all buffer is not neccessary, need to reduce this
+        lora_send_packet(buf, sizeof(buf)); // TODO: Sending all buffer is not neccessary, need to reduce this
+        bzero(buf, sizeof(buf));
     }
     else {
         ESP_LOGE(TAG, "%s:Fail to handle QueueReceive", __func__);

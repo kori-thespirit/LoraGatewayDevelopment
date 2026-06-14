@@ -16,7 +16,7 @@ typedef enum core_data_id{
 
 typedef struct core_data{
     /* WARNING: Do not use pointer for cdata due to free allocated memory or local variable */
-    uint8_t cdata[40];
+    uint8_t cdata[20];
     e_core_data_id_t cdataid;
 } st_core_data_t;
 

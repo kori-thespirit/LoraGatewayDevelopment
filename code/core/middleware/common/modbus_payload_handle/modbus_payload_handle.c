@@ -1,5 +1,6 @@
 #include "modbus_payload_handle.h"
 #include "esp_log.h"
+#include "gd20_inverter.h"
 #define TOTAL_INDEX(_ARRAY_SIZE_,_INDEX_SIZE_) ((sizeof(_ARRAY_SIZE_))/(sizeof(_INDEX_SIZE_)))
 #define TOTAL_MODBUS_DEVICE TOTAL_INDEX(dev, st_modbus_device_info_t)
 #define TOTAL_DESCRIPTOR(_X_) TOTAL_INDEX(_X_, st_modbus_params_descriptor_t)
