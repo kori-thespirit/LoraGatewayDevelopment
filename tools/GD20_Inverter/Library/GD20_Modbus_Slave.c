@@ -2,7 +2,6 @@
 
 static UART_HandleTypeDef *uart;
 
-uint16_t CRC_Check;
 
 static uint16_t modbus_crc16(uint8_t *buffer, uint16_t length) {
     uint16_t crc = 0xFFFF;
@@ -32,6 +31,7 @@ bool GD20_Slave_RTU_Init(GD20_Slave_t *pHandle) {
 }
 void GD20_Slave_ProcessTx(GD20_Slave_t *pHandle){
 	if (pHandle == NULL) return;
+	static uint16_t CRC_Check;
 	static uint8_t Rx_Frame[30] = {0};
 	static bool printf_once = 0;
 	char *Temp = Serial_avalabile(&pHandle->Uart_Handle);
