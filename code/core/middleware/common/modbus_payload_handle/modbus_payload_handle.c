@@ -37,6 +37,8 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
     static uint8_t mb_target_addr = 0;
     /* To store descriptor index of the device which will be sent data */
     static uint8_t desc_idx = 0; 
+    /* To store device index */
+    static uint8_t dev_idx = 0; 
     /* To know which register is currently sent */
     static uint16_t register_to_send = 0; 
     uint8_t dev_addr = *(modbus_payload + 0);
@@ -50,6 +52,7 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
             if(dev_addr == dev[i].address) {
                 ESP_LOGI(TAG, "Found %s in supported device list", dev[i].name);
                 mb_target_addr = dev_addr;
+                dev_idx = i; // save device index for rx callback;
                 descriptor = dev[i].desc;
                 /* Save the requested register */
                 register_to_send = (*(modbus_payload + 2) << 8) | *(modbus_payload + 3);
@@ -114,8 +117,7 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
         int range_min = (descriptor + desc_idx)->range.min;
         int range_max = (descriptor + desc_idx)->range.max;
         uint16_t value = (*(modbus_payload + 4) << 8) | *(modbus_payload + 5);
-        ESP_LOGI(TAG,"register_to_send: 0x%x", register_to_send);
-        ESP_LOGI(TAG,"value: %u", value);
+        ESP_LOGI(TAG,"register_to_send: 0x%x, value: %u", register_to_send, value);
         switch(modbus_func) {
             case MB_FUNC_R_HOLDING:
                 if(permission != PERM_READ && permission != PERM_READWRITE) {
@@ -157,10 +159,10 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
             }
             switch(modbus_func){
                 case MB_FUNC_R_HOLDING:
-                    _g_p_rx_cb((void*)&value, (dev + mb_target_addr));
+                    _g_p_rx_cb((void*)&value, (dev + dev_idx));
                     break;
                 case MB_FUNC_R_INPUT:
-                    _g_p_rx_cb((void*)&value, (dev + mb_target_addr));
+                    _g_p_rx_cb((void*)&value, (dev + dev_idx));
                     // _g_p_rx_cb((void*)(modbus_payload + 3), (descriptor + desc_idx));
                     break;
                 default:
