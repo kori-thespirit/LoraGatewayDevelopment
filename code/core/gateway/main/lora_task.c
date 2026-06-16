@@ -58,7 +58,7 @@ void lora_task(void* pvParameters) {
         lora_receive();  // put into receive mode
         if (lora_received()) {
             int rxLen = lora_receive_packet(buf, sizeof(buf));
-            ESP_LOGI(pcTaskGetName(NULL), "%d byte packet received:[%.*s]", rxLen, rxLen, buf);
+            // ESP_LOGI(pcTaskGetName(NULL), "%d byte packet received:[%.*s]", rxLen, buf);
             m_lora_protocol_frame_parse(buf, sizeof(buf));
         }
         vTaskDelay(10);  // Avoid WatchDog alerts
@@ -75,7 +75,6 @@ void pack_complete(void *pvParameters)
 
 void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
 {
-    ESP_LOGI(TAG, "src:%u ,dest:%u, payload_length:%u", header.src_addr, header.dest_addr, header.payload_length);
     if(header.dest_addr == dev_addr) {
        ESP_LOGI(TAG, "This message is for me");
        src_addr =  dev_addr;

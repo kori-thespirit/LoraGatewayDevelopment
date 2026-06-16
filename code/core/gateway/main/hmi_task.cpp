@@ -77,6 +77,7 @@ void test_send()
 {
     st_intertask_data_t idata;
     idata = get_intertask_modbus(SHT20_SLAVE_ID, (uint8_t)0x04, SHT20_REG_TEMP, 1);
+    // idata = get_intertask_modbus(SHT20_SLAVE_ID, (uint8_t)0x04, SHT20_REG_HUMID, 1);
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
 }
 
@@ -93,6 +94,33 @@ void hmi_task(void* pvParameters) {
 }
 
 // ------------------- INTER_TASK ------------------- [
+
+static void hmi_intertask_core_function(st_core_data_t coredata)
+{
+    ESP_LOGI(TAG, "Inside %s",__func__);
+    float fdata;
+    switch(coredata.cdataid)
+    {
+        case COREDATA_ID_SHT20_TEMP:
+            memcpy((void*)&fdata, (void*)&coredata.cdata, sizeof(float));
+            ESP_LOGI(TAG, "SHT20_TEMP - fdata:%.2f",fdata);
+            // hmi_send_data_to_display(ADDRESS_TEMP, fdata);
+            break;
+        case COREDATA_ID_SHT20_HUMID:
+            memcpy((void*)&fdata, (void*)&coredata.cdata, sizeof(float));
+            ESP_LOGI(TAG, "SHT20_HUMID - fdata:%.2f",fdata);
+        case COREDATA_ID_GD20_ID:
+        case COREDATA_ID_GD20_SPEED:
+        case COREDATA_ID_GD20_POWER:
+        case COREDATA_ID_GD20_TORQUE:
+        case COREDATA_ID_GD20_STATUS:
+        case COREDATA_ID_GD20_FREQ:
+        case COREDATA_ID_GD20_CURRENT:
+        case COREDATA_ID_GD20_VOLTAGE:
+        default:
+            break;
+    }
+}
 
 static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t notifydata)
 {
@@ -164,10 +192,10 @@ static esp_err_t handle_intertask_request()
     }
     if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
 
-        // st_core_data_t coredata =   idata.coredata;
         reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
 
         /* TODO: Perform core function */
+        hmi_intertask_core_function(idata.coredata);
         ESP_LOGW(TAG, "HMI task work-in-progress");
     }
     else {
