@@ -76,16 +76,7 @@ void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
 void test_send()
 {
     st_intertask_data_t idata;
-    idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 1);
-    ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_STATUS, 1);
-    ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
-    vTaskDelay(pdMS_TO_TICKS(5000));
-    idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 5);
-    ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_STATUS, 1);
+    idata = get_intertask_modbus(SHT20_SLAVE_ID, (uint8_t)0x04, SHT20_REG_TEMP, 1);
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
 }
 
@@ -94,11 +85,10 @@ void hmi_task(void* pvParameters) {
     hmi_start();
     hmi_register_callback(hmi_parse_complete);
     ESP_ERROR_CHECK(lora_set_dest_addr(2));
-    // test_send();
+    test_send();
     for(;;){
         hmi_listen();
         intertask_handle();
-        vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
 
@@ -128,7 +118,9 @@ static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t 
         return ESP_ERR_NOT_FOUND;
     }
 
-    if(xTaskNotify(*task_handle, notifydata.value, eSetValueWithoutOverwrite) == pdPASS) {}
+    if(xTaskNotify(*task_handle, notifydata.value, eSetValueWithoutOverwrite) == pdPASS) {
+        ESP_LOGI(TAG, "Notify to :%d", taskid);
+    }
     else {
         ESP_LOGE(TAG, "Fail to notify task");
     }

@@ -7,6 +7,7 @@
 #include "../intertask_typedef.h"
 #include "../data_typedef.h"
 #include "gd20_inverter.h"
+#include "sht20_sensor.h"
 #include "modbus_application_driver.h"
 
 /* Dimensions of the buffer that the task being created will use as its stack.

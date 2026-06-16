@@ -75,17 +75,25 @@ void pack_complete(void *pvParameters)
 
 void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
 {
+    ESP_LOGI(TAG, "src:%u ,dest:%u, payload_length:%u", header.src_addr, header.dest_addr, header.payload_length);
     if(header.dest_addr == dev_addr) {
        ESP_LOGI(TAG, "This message is for me");
        src_addr =  dev_addr;
        dest_addr = header.src_addr; // The reply address is the received src_addr
+       if(reply_task_handle_id) {
+           ESP_LOGI(TAG, "Found reply_task_handle_id:%d, relay to this id");
+           st_core_data_t *coredata = (st_core_data_t*)pvParameters;
+           st_intertask_data_t idata = {
+               .src_task_handle_id = TASK_ID_LORA,
+               .coredata = *coredata,
+           };
+           relay_intertask(reply_task_handle_id, idata);
+       }
     }
     else {
         /* TODO: Relay to adjacent lora node */
         return;
     }
-    // ESP_LOGI(TAG, "Gateway received reply message via lora, value:%u", *value);
-    ESP_LOGI(TAG, "src:%u ,dest:%u, payload_length:%u", header.src_addr, header.dest_addr, header.payload_length);
 }
 
 // ------------------- INTER_TASK ------------------- [
@@ -114,7 +122,9 @@ static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t 
         return ESP_ERR_NOT_FOUND;
     }
 
-    if(xTaskNotify(*task_handle, notifydata.value, eSetValueWithoutOverwrite) == pdPASS) {}
+    if(xTaskNotify(*task_handle, notifydata.value, eSetValueWithoutOverwrite) == pdPASS) {
+        ESP_LOGI(TAG, "Notify to :%d", taskid);
+    }
     else {
         ESP_LOGE(TAG, "Fail to notify task");
     }
