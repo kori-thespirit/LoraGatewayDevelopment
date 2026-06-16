@@ -79,7 +79,6 @@ void lora_task(void* pvParameters) {
         if (lost != 0) {
             ESP_LOGW(TAG, "%d packets lost", lost);
         }
-        vTaskDelay(pdMS_TO_TICKS(3000));
     }
     vTaskDelete(NULL);
 }
