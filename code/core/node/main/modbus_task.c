@@ -212,13 +212,18 @@ static void rx_complete(void *pvParameter, const st_modbus_device_info_t *devinf
                     break;
 
             }
+            break;
         case SHT20_SLAVE_ID:
             switch(reg){
                 case SHT20_REG_TEMP:
                     coredata.cdataid = COREDATA_ID_SHT20_TEMP;
+                    fdata = (float)*value/10;
+                    memcpy((void*)coredata.cdata, (void*)&fdata, sizeof(fdata));
                     break;
                 case SHT20_REG_HUMID:
                     coredata.cdataid = COREDATA_ID_SHT20_HUMID;
+                    fdata = (float)*value/10;
+                    memcpy((void*)coredata.cdata, (void*)&fdata, sizeof(fdata));
                     break;
                 default:
                     break;

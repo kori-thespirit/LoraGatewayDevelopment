@@ -69,10 +69,6 @@ void lora_task(void* pvParameters) {
         lora_receive();  // put into receive mode
         if (lora_received()) {
             int rxLen = lora_receive_packet(buf, sizeof(buf));
-            for(uint8_t i = 0; i < sizeof(buf); i++) {
-                printf("0x%x ", buf[i]);
-            }
-            printf("\n");
             m_lora_protocol_frame_parse(buf, sizeof(buf));
         }
         int lost = lora_packet_lost();
@@ -91,10 +87,6 @@ void pack_complete(void *pvParameters)
 
 void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
 {
-    ESP_LOGI(TAG, "payload_length: %u", header.payload_length);
-    ESP_LOGI(TAG, "src_addr: %u", header.src_addr);
-    ESP_LOGI(TAG, "dest_addr: %u", header.dest_addr);
-    ESP_LOGI(TAG, "header.dest_addr:%u, dev_addr:%u", header.dest_addr, dev_addr);
     if(header.dest_addr == dev_addr) {
        ESP_LOGI(TAG, "This message is for me");
        src_addr =  dev_addr;
@@ -110,7 +102,6 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
         .src_task_handle_id = TASK_ID_LORA,
         .coredata = *coredata,
     };
-    ESP_LOGI(TAG, "src_addr:%u, dest_addr:%u, cdataid:%d", src_addr, dest_addr, cdataid);
     switch(cdataid){
         /* Relay to network task */
         case COREDATA_ID_NET:
