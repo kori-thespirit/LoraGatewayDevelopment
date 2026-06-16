@@ -9,7 +9,7 @@
 #include "modbus_payload_handle.h"
 
 static void tx_complete(void *pvParameter);
-static void rx_complete(void *pvParameter, const st_modbus_params_descriptor_t *desc);
+static void rx_complete(void *pvParameter, const st_modbus_device_info_t *devinfo);
 static void modbus_payload_err(void *pvParameter);
 static const char *TAG = "modbus_task";
 static esp_err_t intertask_handle();
@@ -154,30 +154,83 @@ static void tx_complete(void *pvParameter)
     reply_task_handle_id = 0;
 }
 
-static void rx_complete(void *pvParameter, const st_modbus_params_descriptor_t *desc)
+static void rx_complete(void *pvParameter, const st_modbus_device_info_t *devinfo)
 {
-    ESP_LOGI(TAG, "Read data successfully");
-    if(reply_task_handle_id) {
-        uint16_t *value = (uint16_t*)pvParameter;
-        st_modbus_data_t mdata = {
-            .addr = reply_dev_addr,
-            .reg = desc->reg,
-            .modbus_function = (uint8_t)reply_modbus_function,
-            .value = *value,
-        };
-        st_core_data_t coredata = {
-            .cdataid = COREDATA_ID_MB_DATA,
-        };
-        /* Cleanup data before copy */
-        bzero(coredata.cdata,sizeof(coredata.cdata));
-        memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(mdata));
-        st_intertask_data_t idata = {
-            .src_task_handle_id = TASK_ID_MODBUS,
-            .coredata = coredata
-        };
-        ESP_ERROR_CHECK(relay_intertask(reply_task_handle_id, idata));
-        reply_task_handle_id = 0;
+    ESP_LOGI(TAG, "Read data successfully from %s:%u", devinfo->name, reply_dev_addr);
+    const st_modbus_params_descriptor_t *desc = devinfo->desc;
+    uint8_t mb_target_addr = devinfo->address;
+    st_core_data_t coredata;
+    uint16_t reg = desc->reg;
+    uint16_t *value = (uint16_t*)pvParameter;
+    float fdata;
+    if(!reply_task_handle_id) {
+        ESP_LOGE(TAG,"%s:%d reply_task_handle_id not found", __func__, __LINE__);
+        return;
     }
+    /* Cleanup data before copy */
+    bzero(coredata.cdata,sizeof(coredata.cdata));
+    switch(mb_target_addr) {
+        case GD20_SLAVE_ID:
+            switch(reg){
+                case GD20_REG_ID:
+                    coredata.cdataid = COREDATA_ID_GD20_ID;
+                    uint16_t u16data = *value;
+                    memcpy((void*)coredata.cdata, (void*)&u16data, sizeof(u16data));
+                    break;
+                case GD20_OUTPUT_SPEED:
+                    coredata.cdataid = COREDATA_ID_GD20_SPEED;
+                    fdata = (float)*value / 100.0;
+                    memcpy((void*)coredata.cdata, (void*)&fdata, sizeof(fdata));
+                    break;
+                case GD20_OUTPUT_POWER:
+                    coredata.cdataid = COREDATA_ID_GD20_POWER;
+                    break;
+                case GD20_OUTPUT_TORQUE:
+                    coredata.cdataid = COREDATA_ID_GD20_TORQUE;
+                    break;
+                case GD20_REG_STATUS:
+                    coredata.cdataid = COREDATA_ID_GD20_STATUS;
+                    uint8_t u8data = *value;
+                    memcpy((void*)coredata.cdata, (void*)&u8data, sizeof(u8data));
+                    break;
+                case GD20_OPERATION_FREQ:
+                    coredata.cdataid = COREDATA_ID_GD20_FREQ;
+                    fdata = (float)*value / 100.0;
+                    memcpy((void*)coredata.cdata, (void*)&fdata, sizeof(fdata));
+                    break;
+                case GD20_OUTPUT_CURRENT:
+                    coredata.cdataid = COREDATA_ID_GD20_CURRENT;
+                    fdata = (float)*value / 10.0;
+                    memcpy((void*)coredata.cdata, (void*)&fdata, sizeof(fdata));
+                    break;
+                case GD20_OUTPUT_VOLTAGE:
+                    coredata.cdataid = COREDATA_ID_GD20_VOLTAGE;
+                    fdata = (float)*value;
+                    memcpy((void*)coredata.cdata, (void*)&fdata, sizeof(fdata));
+                    break;
+                default:
+                    break;
+
+            }
+        case SHT20_SLAVE_ID:
+            switch(reg){
+                case SHT20_REG_TEMP:
+                    coredata.cdataid = COREDATA_ID_SHT20_TEMP;
+                    break;
+                case SHT20_REG_HUMID:
+                    coredata.cdataid = COREDATA_ID_SHT20_HUMID;
+                    break;
+                default:
+                    break;
+
+            }
+    }
+    st_intertask_data_t idata = {
+        .src_task_handle_id = TASK_ID_MODBUS,
+        .coredata = coredata
+    };
+    ESP_ERROR_CHECK(relay_intertask(reply_task_handle_id, idata));
+    reply_task_handle_id = 0;
 }
 
 static void modbus_payload_err(void *pvParameter)

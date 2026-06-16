@@ -1,6 +1,5 @@
 #include "modbus_payload_handle.h"
 #include "esp_log.h"
-#include "gd20_inverter.h"
 #define TOTAL_INDEX(_ARRAY_SIZE_,_INDEX_SIZE_) ((sizeof(_ARRAY_SIZE_))/(sizeof(_INDEX_SIZE_)))
 #define TOTAL_MODBUS_DEVICE TOTAL_INDEX(dev, st_modbus_device_info_t)
 #define TOTAL_DESCRIPTOR(_X_) TOTAL_INDEX(_X_, st_modbus_params_descriptor_t)
@@ -35,8 +34,9 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
 {
     e_modbus_payload_err_t err = MB_PAYLOAD_OK;
     /* To check whether modbus target address is known in device info */
-    static uint8_t send_addr = 0;
-    static uint8_t desc_idx = 0;
+    static uint8_t mb_target_addr = 0;
+    /* To store descriptor index of the device which will be sent data */
+    static uint8_t desc_idx = 0; 
     /* To know which register is currently sent */
     static uint16_t register_to_send = 0; 
     uint8_t dev_addr = *(modbus_payload + 0);
@@ -49,7 +49,7 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
         for(uint8_t i = 0; i < TOTAL_MODBUS_DEVICE; i++) {
             if(dev_addr == dev[i].address) {
                 ESP_LOGI(TAG, "Found %s in supported device list", dev[i].name);
-                send_addr = dev_addr;
+                mb_target_addr = dev_addr;
                 descriptor = dev[i].desc;
                 /* Save the requested register */
                 register_to_send = (*(modbus_payload + 2) << 8) | *(modbus_payload + 3);
@@ -71,7 +71,7 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
             }
         }
 
-        if(!send_addr) {
+        if(!mb_target_addr) {
             err = MB_PAYLOAD_ERR_DEVICE_NOT_FOUND;
             goto error_callback;
         }
@@ -145,7 +145,7 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
             uint16_t value = (*(modbus_payload + 3) << 8) | *(modbus_payload + 4);
             uint8_t receive_payload_size = *(modbus_payload + 2);
             /* Check device address between send and receive phase */
-            if(send_addr != dev_addr) {
+            if(mb_target_addr != dev_addr) {
                 err = MB_PAYLOAD_ERR_ADDRESS_MISMACTH;
                 goto error_callback;
             }
@@ -157,10 +157,10 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
             }
             switch(modbus_func){
                 case MB_FUNC_R_HOLDING:
-                    _g_p_rx_cb((void*)&value, (descriptor + desc_idx));
+                    _g_p_rx_cb((void*)&value, (dev + mb_target_addr));
                     break;
                 case MB_FUNC_R_INPUT:
-                    _g_p_rx_cb((void*)&value, (descriptor + desc_idx));
+                    _g_p_rx_cb((void*)&value, (dev + mb_target_addr));
                     // _g_p_rx_cb((void*)(modbus_payload + 3), (descriptor + desc_idx));
                     break;
                 default:
@@ -169,7 +169,7 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
             }
         }
         /* Reset static variable to default */
-        send_addr = 0;
+        mb_target_addr = 0;
         desc_idx = 0;
         register_to_send = 0; 
         descriptor = NULL;
@@ -183,7 +183,7 @@ error_callback:
 
 e_modbus_payload_err_t m_modbus_register_callback(
             void (* p_modbus_tx_complete_cb)(void *),
-            void (* p_modbus_rx_complete_cb)(void *, const st_modbus_params_descriptor_t *desc),
+            void (* p_modbus_rx_complete_cb)(void *, const st_modbus_device_info_t *devinfo),
             void (* p_modbus_error_cb)      (void *))
 {
     if( NULL == p_modbus_tx_complete_cb || 
