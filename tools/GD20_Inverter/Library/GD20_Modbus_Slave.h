@@ -7,6 +7,8 @@
 #include "stdlib.h"
 #include "string.h"
 #include "stm32f1xx_hal.h"// thay the ten cua chip khac vi du stm32f4xx_hal.h // sai cho STM32F405
+#include "Uart_Comm.h"
+
 #ifdef _cplusplus
 extern "C" {
 #endif
@@ -60,15 +62,11 @@ typedef struct{
 	GD20_Motor_Control Motor_Control;
 }GD20_Inverter_Status;
 
-typedef struct {
-    uint8_t DMA_RX_Complete;
-    uint8_t DMA_TX_Complete;
-}flags;
 
 typedef struct {
-    UART_HandleTypeDef *huart;
+	Uart_context Uart_Handle;
     GD20_Inverter_Status GD20_Status;
-    flags flags;
+
     RTU_Contex_Write_t rx_frame;
     RTU_Contex_Write_t tx_write_frame;
     RTU_Contex_Read_t  tx_read_frame;
@@ -76,11 +74,13 @@ typedef struct {
 
 } GD20_Slave_t;
 
-bool GD20_Slave_RTU_Init(GD20_Slave_t *ctx);
+bool GD20_Slave_RTU_Init(GD20_Slave_t *pHandle);
 
-void GD20_Slave_Process(GD20_Slave_t *ctx);
-void GD20_Slave_SendReadResponse(GD20_Slave_t *ctx,uint8_t comnand,uint8_t number_of_byte ,uint16_t content);
-void GD20_Slave_SendWriteResponse(GD20_Slave_t *ctx,uint8_t comnand,uint16_t parametter_address,uint16_t command_address);
+void GD20_Slave_ProcessTx(GD20_Slave_t *pHandle);
+void GD20_Slave_ProcessRx(GD20_Slave_t *pHandle,uint16_t size);
+void GD20_Slave_TxDone(GD20_Slave_t *pHandle);
+void GD20_Slave_SendReadResponse(GD20_Slave_t *pHandle,uint8_t command,uint8_t number_of_byte ,uint16_t content);
+void GD20_Slave_SendWriteResponse(GD20_Slave_t *pHandle,uint8_t command,uint8_t *src);
 #ifdef _cplusplus
 }
 #endif
