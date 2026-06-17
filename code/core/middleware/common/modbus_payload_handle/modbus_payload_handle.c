@@ -160,11 +160,10 @@ void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send)
             }
             switch(modbus_func){
                 case MB_FUNC_R_HOLDING:
-                    _g_p_rx_cb((void*)&value, (dev + dev_idx));
+                    _g_p_rx_cb((void*)&value, (dev + dev_idx), (descriptor + desc_idx));
                     break;
                 case MB_FUNC_R_INPUT:
-                    _g_p_rx_cb((void*)&value, (dev + dev_idx));
-                    // _g_p_rx_cb((void*)(modbus_payload + 3), (descriptor + desc_idx));
+                    _g_p_rx_cb((void*)&value, (dev + dev_idx), (descriptor + desc_idx));
                     break;
                 default:
                     break;
@@ -186,7 +185,9 @@ error_callback:
 
 e_modbus_payload_err_t m_modbus_register_callback(
             void (* p_modbus_tx_complete_cb)(void *),
-            void (* p_modbus_rx_complete_cb)(void *, const st_modbus_device_info_t *devinfo),
+            void (* p_modbus_rx_complete_cb)(void *, 
+                const st_modbus_device_info_t *devinfo, 
+                const st_modbus_params_descriptor_t *desc),
             void (* p_modbus_error_cb)      (void *))
 {
     if( NULL == p_modbus_tx_complete_cb || 
