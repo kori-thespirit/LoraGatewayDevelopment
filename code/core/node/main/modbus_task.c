@@ -9,7 +9,9 @@
 #include "modbus_payload_handle.h"
 
 static void tx_complete(void *pvParameter);
-static void rx_complete(void *pvParameter, const st_modbus_device_info_t *devinfo);
+static void rx_complete(void *pvParameter, 
+        const st_modbus_device_info_t *devinfo,
+        const st_modbus_params_descriptor_t *desc);
 static void modbus_payload_err(void *pvParameter);
 static const char *TAG = "modbus_task";
 static esp_err_t intertask_handle();
@@ -154,10 +156,11 @@ static void tx_complete(void *pvParameter)
     reply_task_handle_id = 0;
 }
 
-static void rx_complete(void *pvParameter, const st_modbus_device_info_t *devinfo)
+static void rx_complete(void *pvParameter, 
+        const st_modbus_device_info_t *devinfo,
+        const st_modbus_params_descriptor_t *desc)
 {
     ESP_LOGI(TAG, "Read data successfully from %s:%u", devinfo->name, reply_dev_addr);
-    const st_modbus_params_descriptor_t *desc = devinfo->desc;
     uint8_t mb_target_addr = devinfo->address;
     st_core_data_t coredata;
     uint16_t reg = desc->reg;
@@ -169,6 +172,7 @@ static void rx_complete(void *pvParameter, const st_modbus_device_info_t *devinf
     }
     /* Cleanup data before copy */
     bzero(coredata.cdata,sizeof(coredata.cdata));
+    ESP_LOGI(TAG,"modbus reg:%u",  reg);
     switch(mb_target_addr) {
         case GD20_SLAVE_ID:
             switch(reg){
@@ -206,6 +210,11 @@ static void rx_complete(void *pvParameter, const st_modbus_device_info_t *devinf
                 case GD20_OUTPUT_VOLTAGE:
                     coredata.cdataid = COREDATA_ID_GD20_VOLTAGE;
                     fdata = (float)*value;
+                    memcpy((void*)coredata.cdata, (void*)&fdata, sizeof(fdata));
+                    break;
+                case GD20_CONVERTER_TEMP:
+                    coredata.cdataid = COREDATA_ID_GD20_CONVETER_TEMP;
+                    fdata = (float)*value / 10.0;
                     memcpy((void*)coredata.cdata, (void*)&fdata, sizeof(fdata));
                     break;
                 default:

@@ -120,7 +120,7 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
             ESP_LOGI(TAG, "Get lora config, sf:%u, cr:%u, bw:%u, freq:%lu", loracfg.cr, loracfg.bw, loracfg.freq);
             break;
         default:
-            ESP_LOGE(TAG, "Core data ID not supported");
+            ESP_LOGE(TAG, "Core data ID not supported:%d", cdataid);
             break;
     }
 }

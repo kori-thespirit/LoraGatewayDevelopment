@@ -16,6 +16,10 @@
 #define VP_DISPLAY_OUTPUT 0x2000
 #define ADDRESS_TEMP      0x1010
 #define ADDRESS_HUMID     0x1515
+#define ADDRESS_GD20_TEMP 0x1700
+#define ADDRESS_GD20_AMP  0x1701
+#define ADDRESS_GD20_VOLT 0x1702
+#define ADDRESS_GD20_FREQ 0x1703
 
 /* Matrix key define */
 #define KEY_RUN           0x0002

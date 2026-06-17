@@ -98,7 +98,7 @@ static esp_err_t parse_response_str(std::string response_str, st_hmi_frame_t *hm
         hmiframe->lastbyte = (uint16_t)(temp[7] << 8 | temp[8]);
     }
     else {
-        ESP_LOGE(TAG, "Response header invalid");
+        // ESP_LOGE(TAG, "Response header invalid");
         return ESP_ERR_INVALID_RESPONSE;
     }
     return ESP_OK;

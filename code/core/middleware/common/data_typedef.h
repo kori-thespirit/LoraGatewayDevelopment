@@ -22,6 +22,7 @@ typedef enum core_data_id{
     COREDATA_ID_GD20_FREQ,
     COREDATA_ID_GD20_CURRENT,
     COREDATA_ID_GD20_VOLTAGE,
+    COREDATA_ID_GD20_CONVETER_TEMP,
 } e_core_data_id_t;
 
 typedef struct core_data{

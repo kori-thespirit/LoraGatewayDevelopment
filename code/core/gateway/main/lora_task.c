@@ -34,7 +34,7 @@ void lora_task(void* pvParameters) {
 
     e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete);
     if(LORA_PROTOCOL_OK != protocol_err)
-      ESP_LOGE(TAG, "register callback failed,err:%d",protocol_err);
+        ESP_LOGE(TAG, "register callback failed,err:%d",protocol_err);
 
     if (lora_init() == 0) {
         ESP_LOGE(TAG, "Does not recognize the module");

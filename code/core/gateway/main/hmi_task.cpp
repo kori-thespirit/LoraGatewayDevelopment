@@ -76,8 +76,16 @@ void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
 void test_send()
 {
     st_intertask_data_t idata;
-    idata = get_intertask_modbus(SHT20_SLAVE_ID, (uint8_t)0x04, SHT20_REG_TEMP, 1);
-    // idata = get_intertask_modbus(SHT20_SLAVE_ID, (uint8_t)0x04, SHT20_REG_HUMID, 1);
+    // idata = get_intertask_modbus(SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT, SHT20_REG_TEMP, 1);
+    // idata = get_intertask_modbus(SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT, SHT20_REG_HUMID, 1);
+    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_SET_FREQ      , 1);
+    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_ID   , 1);
+    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_VOLTAGE, 1);
+    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_CURRENT, 1);
+    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_SPEED  , 1);
+    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_POWER  , 1);
+    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_TORQUE , 1);
+    idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, 0x070C, 1);
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
 }
 
@@ -99,24 +107,57 @@ static void hmi_intertask_core_function(st_core_data_t coredata)
 {
     ESP_LOGI(TAG, "Inside %s",__func__);
     float fdata;
+    uint16_t u16data;
+    uint8_t u8data;
     switch(coredata.cdataid)
     {
         case COREDATA_ID_SHT20_TEMP:
             memcpy((void*)&fdata, (void*)&coredata.cdata, sizeof(float));
+            hmi_send_data_to_display(ADDRESS_TEMP, (uint16_t)(fdata * 100));
             ESP_LOGI(TAG, "SHT20_TEMP - fdata:%.2f",fdata);
-            // hmi_send_data_to_display(ADDRESS_TEMP, fdata);
             break;
         case COREDATA_ID_SHT20_HUMID:
             memcpy((void*)&fdata, (void*)&coredata.cdata, sizeof(float));
+            hmi_send_data_to_display(ADDRESS_HUMID, (uint16_t)(fdata * 100));
             ESP_LOGI(TAG, "SHT20_HUMID - fdata:%.2f",fdata);
+            break;
         case COREDATA_ID_GD20_ID:
+            memcpy((void*)&u16data, (void*)&coredata.cdata, sizeof(uint16_t));
+            ESP_LOGI(TAG, "GD20_ID:0x%x",u16data);
+            break;
         case COREDATA_ID_GD20_SPEED:
+            memcpy((void*)&fdata, (void*)&coredata.cdata, sizeof(float));
+            ESP_LOGI(TAG, "GD20_SPEED:%.2f",fdata);
+            break;
         case COREDATA_ID_GD20_POWER:
+            break;
         case COREDATA_ID_GD20_TORQUE:
+            break;
         case COREDATA_ID_GD20_STATUS:
+            memcpy((void*)&u8data, (void*)&coredata.cdata, sizeof(uint8_t));
+            ESP_LOGI(TAG, "GD20_STATUS:%u",u8data);
+            break;
         case COREDATA_ID_GD20_FREQ:
+            memcpy((void*)&fdata, (void*)&coredata.cdata, sizeof(float));
+            ESP_LOGI(TAG, "GD20_FREQ:%.2f",fdata);
+            hmi_send_data_to_display(ADDRESS_GD20_FREQ, (uint16_t)(fdata * 100));
+            break;
         case COREDATA_ID_GD20_CURRENT:
+            memcpy((void*)&fdata, (void*)&coredata.cdata, sizeof(float));
+            ESP_LOGI(TAG, "GD20_CURRENT:%.2f",fdata);
+            hmi_send_data_to_display(ADDRESS_GD20_AMP, (uint16_t)(fdata * 100));
+            break;
         case COREDATA_ID_GD20_VOLTAGE:
+            memcpy((void*)&fdata, (void*)&coredata.cdata, sizeof(float));
+            ESP_LOGI(TAG, "GD20_VOLTAGE:%.2f",fdata);
+            hmi_send_data_to_display(ADDRESS_GD20_VOLT, (uint16_t)(fdata * 100));
+            break;
+        case COREDATA_ID_GD20_CONVETER_TEMP:
+            memcpy((void*)&fdata, (void*)&coredata.cdata, sizeof(float));
+            ESP_LOGI(TAG, "GD20_CONVETER_TEMP:%.2f",fdata);
+            hmi_send_data_to_display(ADDRESS_GD20_TEMP, (uint16_t)(fdata * 100));
+
+            break;
         default:
             break;
     }
@@ -193,10 +234,7 @@ static esp_err_t handle_intertask_request()
     if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
 
         reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
-
-        /* TODO: Perform core function */
         hmi_intertask_core_function(idata.coredata);
-        ESP_LOGW(TAG, "HMI task work-in-progress");
     }
     else {
         ESP_LOGE(TAG, "%s:Fail to handle QueueReceive", __func__);
