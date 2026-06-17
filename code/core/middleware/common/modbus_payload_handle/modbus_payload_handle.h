@@ -2,6 +2,7 @@
 #define MODBUS_PAYLOAD_HANDLE_H
 
 #include "modbus_application_driver.h"
+#include "gd20_inverter.h"
 #include <stdint.h>
 #include <stdbool.h>
 
