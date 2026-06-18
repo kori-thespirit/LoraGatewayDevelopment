@@ -1,0 +1,255 @@
+Command: make -j 6 all
+In file included from /home/tathuan/esp-idf/components/esp_netif/include/esp_netif.h:10,
+                 from /home/tathuan/esp-idf/components/esp_wifi/src/wifi_default_ap.c:9:
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:253:14: error: unknown type name 'esp_netif_netstack_config_t'
+  253 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_eth;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/tathuan/esp-idf/components/esp_netif/include/esp_netif.h:10,
+                 from /home/tathuan/esp-idf/components/esp_wifi/include/esp_wifi_default.h:10,
+                 from /home/tathuan/esp-idf/components/esp_wifi/include/esp_wifi.h:57,
+                 from /home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:8:
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:253:14: error: unknown type name 'esp_netif_netstack_config_t'
+  253 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_eth;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/tathuan/esp-idf/components/esp_netif/include/esp_netif.h:10,
+                 from /home/tathuan/esp-idf/components/esp_wifi/include/esp_wifi_default.h:10,
+                 from /home/tathuan/esp-idf/components/esp_wifi/include/esp_wifi.h:57,
+                 from /home/tathuan/esp-idf/components/esp_wifi/include/esp_private/wifi.h:29,
+                 from /home/tathuan/esp-idf/components/esp_wifi/src/smartconfig.c:11:
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:253:14: error: unknown type name 'esp_netif_netstack_config_t'
+  253 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_eth;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/tathuan/esp-idf/components/esp_netif/include/esp_netif.h:10,
+                 from /home/tathuan/esp-idf/components/esp_wifi/include/esp_wifi_default.h:10,
+                 from /home/tathuan/esp-idf/components/esp_wifi/include/esp_wifi.h:57,
+                 from /home/tathuan/esp-idf/components/esp_wifi/src/wifi_netif.c:6:
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:253:14: error: unknown type name 'esp_netif_netstack_config_t'
+  253 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_eth;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:254:14: error: unknown type name 'esp_netif_netstack_config_t'
+  254 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_br;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:254:14: error: unknown type name 'esp_netif_netstack_config_t'
+  254 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_br;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:254:14: error: unknown type name 'esp_netif_netstack_config_t'
+  254 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_br;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:255:14: error: unknown type name 'esp_netif_netstack_config_t'
+  255 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_wifi_sta;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:254:14: error: unknown type name 'esp_netif_netstack_config_t'
+  254 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_br;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:257:14: error: unknown type name 'esp_netif_netstack_config_t'
+  257 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_wifi_ap;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/tathuan/esp-idf/components/esp_netif/include/esp_netif.h:10,
+                 from /home/tathuan/esp-idf/components/esp_wifi/include/esp_wifi_default.h:10,
+                 from /home/tathuan/esp-idf/components/esp_wifi/include/esp_wifi.h:57,
+                 from /home/tathuan/esp-idf/components/esp_wifi/src/wifi_init.c:8:
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:253:14: error: unknown type name 'esp_netif_netstack_config_t'
+  253 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_eth;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:270:14: error: unknown type name 'esp_netif_inherent_config_t'
+  270 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_sta_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:255:14: error: unknown type name 'esp_netif_netstack_config_t'
+  255 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_wifi_sta;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:255:14: error: unknown type name 'esp_netif_netstack_config_t'
+  255 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_wifi_sta;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:272:14: error: unknown type name 'esp_netif_inherent_config_t'
+  272 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_ap_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:255:14: error: unknown type name 'esp_netif_netstack_config_t'
+  255 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_wifi_sta;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:277:14: error: unknown type name 'esp_netif_inherent_config_t'
+  277 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_eth_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:257:14: error: unknown type name 'esp_netif_netstack_config_t'
+  257 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_wifi_ap;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:282:14: error: unknown type name 'esp_netif_ip_info_t'
+  282 | extern const esp_netif_ip_info_t _g_esp_netif_soft_ap_ip;
+      |              ^~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:257:14: error: unknown type name 'esp_netif_netstack_config_t'
+  257 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_wifi_ap;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:257:14: error: unknown type name 'esp_netif_netstack_config_t'
+  257 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_wifi_ap;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+make[2]: *** [esp-idf/esp_wifi/CMakeFiles/__idf_esp_wifi.dir/build.make:163: esp-idf/esp_wifi/CMakeFiles/__idf_esp_wifi.dir/src/wifi_default_ap.c.obj] Error 1
+make[2]: *** Waiting for unfinished jobs....
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:270:14: error: unknown type name 'esp_netif_inherent_config_t'
+  270 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_sta_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:254:14: error: unknown type name 'esp_netif_netstack_config_t'
+  254 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_br;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:270:14: error: unknown type name 'esp_netif_inherent_config_t'
+  270 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_sta_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:270:14: error: unknown type name 'esp_netif_inherent_config_t'
+  270 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_sta_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:272:14: error: unknown type name 'esp_netif_inherent_config_t'
+  272 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_ap_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:255:14: error: unknown type name 'esp_netif_netstack_config_t'
+  255 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_wifi_sta;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:272:14: error: unknown type name 'esp_netif_inherent_config_t'
+  272 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_ap_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:272:14: error: unknown type name 'esp_netif_inherent_config_t'
+  272 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_ap_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:257:14: error: unknown type name 'esp_netif_netstack_config_t'
+  257 | extern const esp_netif_netstack_config_t *_g_esp_netif_netstack_default_wifi_ap;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:277:14: error: unknown type name 'esp_netif_inherent_config_t'
+  277 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_eth_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:277:14: error: unknown type name 'esp_netif_inherent_config_t'
+  277 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_eth_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:277:14: error: unknown type name 'esp_netif_inherent_config_t'
+  277 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_eth_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:282:14: error: unknown type name 'esp_netif_ip_info_t'
+  282 | extern const esp_netif_ip_info_t _g_esp_netif_soft_ap_ip;
+      |              ^~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:282:14: error: unknown type name 'esp_netif_ip_info_t'
+  282 | extern const esp_netif_ip_info_t _g_esp_netif_soft_ap_ip;
+      |              ^~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:270:14: error: unknown type name 'esp_netif_inherent_config_t'
+  270 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_sta_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:282:14: error: unknown type name 'esp_netif_ip_info_t'
+  282 | extern const esp_netif_ip_info_t _g_esp_netif_soft_ap_ip;
+      |              ^~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c: In function 'esp_netif_create_default_wifi_ap':
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:211:48: error: initialization of 'const esp_netif_inherent_config_t *' {aka 'const struct esp_netif_inherent_config *'} from incompatible pointer type 'const int *' [-Wincompatible-pointer-types]
+  211 | #define ESP_NETIF_BASE_DEFAULT_WIFI_AP         &_g_esp_netif_inherent_ap_config
+      |                                                ^
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:162:17: note: in expansion of macro 'ESP_NETIF_BASE_DEFAULT_WIFI_AP'
+  162 |         .base = ESP_NETIF_BASE_DEFAULT_WIFI_AP,      \
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:406:30: note: in expansion of macro 'ESP_NETIF_DEFAULT_WIFI_AP'
+  406 |     esp_netif_config_t cfg = ESP_NETIF_DEFAULT_WIFI_AP();
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:272:14: error: unknown type name 'esp_netif_inherent_config_t'
+  272 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_ap_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:211:48: note: (near initialization for 'cfg.base')
+  211 | #define ESP_NETIF_BASE_DEFAULT_WIFI_AP         &_g_esp_netif_inherent_ap_config
+      |                                                ^
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:162:17: note: in expansion of macro 'ESP_NETIF_BASE_DEFAULT_WIFI_AP'
+  162 |         .base = ESP_NETIF_BASE_DEFAULT_WIFI_AP,      \
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:406:30: note: in expansion of macro 'ESP_NETIF_DEFAULT_WIFI_AP'
+  406 |     esp_netif_config_t cfg = ESP_NETIF_DEFAULT_WIFI_AP();
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:238:49: error: initialization of 'const esp_netif_netstack_config_t *' {aka 'const struct esp_netif_netstack_config *'} from incompatible pointer type 'const int *' [-Wincompatible-pointer-types]
+  238 | #define ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP      _g_esp_netif_netstack_default_wifi_ap
+      |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:164:18: note: in expansion of macro 'ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP'
+  164 |         .stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP, \
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:406:30: note: in expansion of macro 'ESP_NETIF_DEFAULT_WIFI_AP'
+  406 |     esp_netif_config_t cfg = ESP_NETIF_DEFAULT_WIFI_AP();
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:238:49: note: (near initialization for 'cfg.stack')
+  238 | #define ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP      _g_esp_netif_netstack_default_wifi_ap
+      |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:164:18: note: in expansion of macro 'ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP'
+  164 |         .stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP, \
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:406:30: note: in expansion of macro 'ESP_NETIF_DEFAULT_WIFI_AP'
+  406 |     esp_netif_config_t cfg = ESP_NETIF_DEFAULT_WIFI_AP();
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c: In function 'esp_netif_create_default_wifi_sta':
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:205:48: error: initialization of 'const esp_netif_inherent_config_t *' {aka 'const struct esp_netif_inherent_config *'} from incompatible pointer type 'const int *' [-Wincompatible-pointer-types]
+  205 | #define ESP_NETIF_BASE_DEFAULT_WIFI_STA        &_g_esp_netif_inherent_sta_config
+      |                                                ^
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:185:17: note: in expansion of macro 'ESP_NETIF_BASE_DEFAULT_WIFI_STA'
+  185 |         .base = ESP_NETIF_BASE_DEFAULT_WIFI_STA,      \
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:420:30: note: in expansion of macro 'ESP_NETIF_DEFAULT_WIFI_STA'
+  420 |     esp_netif_config_t cfg = ESP_NETIF_DEFAULT_WIFI_STA();
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:205:48: note: (near initialization for 'cfg.base')
+  205 | #define ESP_NETIF_BASE_DEFAULT_WIFI_STA        &_g_esp_netif_inherent_sta_config
+      |                                                ^
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:185:17: note: in expansion of macro 'ESP_NETIF_BASE_DEFAULT_WIFI_STA'
+  185 |         .base = ESP_NETIF_BASE_DEFAULT_WIFI_STA,      \
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:420:30: note: in expansion of macro 'ESP_NETIF_DEFAULT_WIFI_STA'
+  420 |     esp_netif_config_t cfg = ESP_NETIF_DEFAULT_WIFI_STA();
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:236:49: error: initialization of 'const esp_netif_netstack_config_t *' {aka 'const struct esp_netif_netstack_config *'} from incompatible pointer type 'const int *' [-Wincompatible-pointer-types]
+  236 | #define ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA     _g_esp_netif_netstack_default_wifi_sta
+      |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:187:18: note: in expansion of macro 'ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA'
+  187 |         .stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA, \
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:420:30: note: in expansion of macro 'ESP_NETIF_DEFAULT_WIFI_STA'
+  420 |     esp_netif_config_t cfg = ESP_NETIF_DEFAULT_WIFI_STA();
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:236:49: note: (near initialization for 'cfg.stack')
+  236 | #define ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA     _g_esp_netif_netstack_default_wifi_sta
+      |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:187:18: note: in expansion of macro 'ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA'
+  187 |         .stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA, \
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:420:30: note: in expansion of macro 'ESP_NETIF_DEFAULT_WIFI_STA'
+  420 |     esp_netif_config_t cfg = ESP_NETIF_DEFAULT_WIFI_STA();
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~
+make[2]: *** [esp-idf/esp_wifi/CMakeFiles/__idf_esp_wifi.dir/build.make:149: esp-idf/esp_wifi/CMakeFiles/__idf_esp_wifi.dir/src/wifi_netif.c.obj] Error 1
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c: In function 'esp_netif_create_wifi':
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:463:19: error: assignment to 'const esp_netif_netstack_config_t *' {aka 'const struct esp_netif_netstack_config *'} from incompatible pointer type 'const int *' [-Wincompatible-pointer-types]
+  463 |         cfg.stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA;
+      |                   ^
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:466:19: error: assignment to 'const esp_netif_netstack_config_t *' {aka 'const struct esp_netif_netstack_config *'} from incompatible pointer type 'const int *' [-Wincompatible-pointer-types]
+  466 |         cfg.stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP;
+      |                   ^
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c: In function 'esp_netif_create_default_wifi_mesh_netifs':
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:238:49: error: initialization of 'const esp_netif_netstack_config_t *' {aka 'const struct esp_netif_netstack_config *'} from incompatible pointer type 'const int *' [-Wincompatible-pointer-types]
+  238 | #define ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP      _g_esp_netif_netstack_default_wifi_ap
+      |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:495:18: note: in expansion of macro 'ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP'
+  495 |         .stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP,
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:238:49: note: (near initialization for 'cfg_ap.stack')
+  238 | #define ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP      _g_esp_netif_netstack_default_wifi_ap
+      |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:495:18: note: in expansion of macro 'ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP'
+  495 |         .stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_AP,
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:236:49: error: initialization of 'const esp_netif_netstack_config_t *' {aka 'const struct esp_netif_netstack_config *'} from incompatible pointer type 'const int *' [-Wincompatible-pointer-types]
+  236 | #define ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA     _g_esp_netif_netstack_default_wifi_sta
+      |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:512:18: note: in expansion of macro 'ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA'
+  512 |         .stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA,
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:236:49: note: (near initialization for 'cfg_sta.stack')
+  236 | #define ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA     _g_esp_netif_netstack_default_wifi_sta
+      |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_wifi/src/wifi_default.c:512:18: note: in expansion of macro 'ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA'
+  512 |         .stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA,
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+make[2]: *** [esp-idf/esp_wifi/CMakeFiles/__idf_esp_wifi.dir/build.make:107: esp-idf/esp_wifi/CMakeFiles/__idf_esp_wifi.dir/src/smartconfig.c.obj] Error 1
+make[2]: *** [esp-idf/esp_wifi/CMakeFiles/__idf_esp_wifi.dir/build.make:135: esp-idf/esp_wifi/CMakeFiles/__idf_esp_wifi.dir/src/wifi_default.c.obj] Error 1
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:277:14: error: unknown type name 'esp_netif_inherent_config_t'
+  277 | extern const esp_netif_inherent_config_t _g_esp_netif_inherent_eth_config;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/tathuan/esp-idf/components/esp_netif/include/esp_netif_defaults.h:282:14: error: unknown type name 'esp_netif_ip_info_t'
+  282 | extern const esp_netif_ip_info_t _g_esp_netif_soft_ap_ip;
+      |              ^~~~~~~~~~~~~~~~~~~
+make[2]: *** [esp-idf/esp_wifi/CMakeFiles/__idf_esp_wifi.dir/build.make:121: esp-idf/esp_wifi/CMakeFiles/__idf_esp_wifi.dir/src/wifi_init.c.obj] Error 1
+make[1]: *** [CMakeFiles/Makefile2:7298: esp-idf/esp_wifi/CMakeFiles/__idf_esp_wifi.dir/all] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:136: all] Error 2

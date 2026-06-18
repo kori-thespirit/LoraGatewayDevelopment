@@ -1,0 +1,4 @@
+Command: make -j 6 all
+make[2]: *** No rule to make target 'esp-idf/main/libmain.a', needed by 'esp-idf/esp_system/ld/sections.ld'.  Stop.
+make[1]: *** [CMakeFiles/Makefile2:4359: CMakeFiles/__ldgen_output_sections.ld.dir/all] Error 2
+make: *** [Makefile:136: all] Error 2
