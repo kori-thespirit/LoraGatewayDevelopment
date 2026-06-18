@@ -71,7 +71,7 @@ void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
     switch(hmiframe.lastbyte) {
         case 0x0001:
             ESP_LOGI(TAG, "[BUTTON] SET FREQUENCY");
-            idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_SET_FREQ, *value);
+            idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_SET_FREQ, (*value)*100);
             break;
         case 0x0002: 
             ESP_LOGI(TAG, "[BUTTON] RUN");
@@ -103,12 +103,13 @@ void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
 void test_send_modbus_request()
 {
     if(on_processing) return;
-    on_processing = 1;
     static uint8_t request_idx = 0;
     if(request_idx >= TOTAL_MODBUS_REQUEST)
         request_idx = 0;
     st_intertask_data_t idata = get_intertask_modbus_data(intetask_request_data[request_idx++]);
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
+    ESP_LOGI(TAG, "request_idx: %d", request_idx);
+    on_processing = 1;
 }
 
 void hmi_task(void* pvParameters) {

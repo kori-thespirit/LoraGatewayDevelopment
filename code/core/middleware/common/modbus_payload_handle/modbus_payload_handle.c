@@ -18,7 +18,7 @@ const st_modbus_params_descriptor_t desc_inverter_gd20[] = {
     {.reg = GD20_OUTPUT_CURRENT , .unit = "A"    , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = 0   , .range.max = 5000  },
     {.reg = GD20_OUTPUT_VOLTAGE , .unit = "V"    , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = 0   , .range.max = 1200  },
     {.reg = GD20_REG_CONTROL_CMD, .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_WRITE, .range.min = 1   , .range.max = 8     },
-    {.reg = GD20_REG_SET_FREQ   , .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_WRITE, .range.min = 1   , .range.max = 8     },
+    {.reg = GD20_REG_SET_FREQ   , .unit = ""     , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_WRITE, .range.min = 1   , .range.max = 7000  },
     {.reg = GD20_CONVERTER_TEMP , .unit = "°C"   , .size = 1, .type = MB_PARAM_HOLDING, .perm = PERM_READ , .range.min = -20 , .range.max = 120   },
 };
 static const st_modbus_params_descriptor_t desc_sensor_sht20[] = {

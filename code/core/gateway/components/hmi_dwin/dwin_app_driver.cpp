@@ -104,13 +104,14 @@ static esp_err_t parse_response_str(std::string response_str, st_hmi_frame_t *hm
     return ESP_OK;
 }
 
+static DWIN_Keyboard kb;
 static void hmi_event_cb(std::string address, int lastByte, std::string message, std::string response)
 {
     st_hmi_frame_t hmiframe;
     esp_err_t err = parse_response_str(response, &hmiframe);
     if(ESP_OK != err)
         return;
-    DWIN_Keyboard kb;
+
     ESP_LOGI(TAG, "data_length:%u, cmd_func:0x%x, vp:0x%x, ret_len:%u word, lastbyte:0x%x",
             hmiframe.data_length, 
             hmiframe.cmd_func, 

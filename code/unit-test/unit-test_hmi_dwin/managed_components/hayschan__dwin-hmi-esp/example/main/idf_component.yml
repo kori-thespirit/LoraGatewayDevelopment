@@ -1,0 +1,4 @@
+dependencies:
+  hayschan/dwin-hmi-esp:
+    version: "*"
+    override_path: '../../'
