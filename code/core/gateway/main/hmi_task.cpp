@@ -15,23 +15,50 @@ static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
 static esp_err_t intertask_handle();
+static uint8_t on_processing = 0; // To check whether new request can be processed
+
+
+#define TOTAL_MODBUS_REQUEST (sizeof(intetask_request_data)/sizeof(st_modbus_data_t))
+static st_modbus_data_t intetask_request_data[] = {
+    {SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT  , SHT20_REG_TEMP     , 1},
+    {SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT  , SHT20_REG_HUMID    , 1},
+    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_SET_FREQ      , 1},
+    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_ID        , 1},
+    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_VOLTAGE, 1},
+    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_CURRENT, 1},
+    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_SPEED  , 1},
+    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_POWER  , 1},
+    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_TORQUE , 1},
+};
+
 
 static st_intertask_data_t get_intertask_modbus(
-    uint8_t modbus_address, 
+    uint8_t modbus_address,
     uint8_t modbus_function,
     uint16_t reg,
     uint16_t value)
 {
     st_core_data_t coredata;
+    coredata.cdataid = COREDATA_ID_MB_DATA ;
     st_modbus_data_t mdata = {
         .addr = modbus_address,
         .modbus_function = modbus_function,
         .reg = reg,
         .value = value,
     };
+    bzero(coredata.cdata, sizeof(coredata.cdata));
+    memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(st_modbus_data_t));
+
+    st_intertask_data_t idata = { .src_task_handle_id = TASK_ID_HMI, .coredata = coredata, };
+    return idata;
+}
+
+static st_intertask_data_t get_intertask_modbus_data(st_modbus_data_t mdata)
+{
+    st_core_data_t coredata;
     coredata.cdataid = COREDATA_ID_MB_DATA ;
     bzero(coredata.cdata, sizeof(coredata.cdata));
-    memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(coredata.cdata));
+    memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(st_modbus_data_t));
 
     st_intertask_data_t idata = { .src_task_handle_id = TASK_ID_HMI, .coredata = coredata, };
     return idata;
@@ -73,19 +100,14 @@ void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
 }
 
-void test_send()
+void test_send_modbus_request()
 {
-    st_intertask_data_t idata;
-    // idata = get_intertask_modbus(SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT, SHT20_REG_TEMP, 1);
-    // idata = get_intertask_modbus(SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT, SHT20_REG_HUMID, 1);
-    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_SET_FREQ      , 1);
-    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_ID   , 1);
-    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_VOLTAGE, 1);
-    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_CURRENT, 1);
-    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_SPEED  , 1);
-    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_POWER  , 1);
-    // idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_TORQUE , 1);
-    idata = get_intertask_modbus(GD20_SLAVE_ID, (uint8_t)MB_FUNC_R_HOLDING, 0x070C, 1);
+    if(on_processing) return;
+    on_processing = 1;
+    static uint8_t request_idx = 0;
+    if(request_idx >= TOTAL_MODBUS_REQUEST)
+        request_idx = 0;
+    st_intertask_data_t idata = get_intertask_modbus_data(intetask_request_data[request_idx++]);
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
 }
 
@@ -94,8 +116,8 @@ void hmi_task(void* pvParameters) {
     hmi_start();
     hmi_register_callback(hmi_parse_complete);
     ESP_ERROR_CHECK(lora_set_dest_addr(2));
-    test_send();
     for(;;){
+        test_send_modbus_request();
         hmi_listen();
         intertask_handle();
     }
@@ -161,6 +183,7 @@ static void hmi_intertask_core_function(st_core_data_t coredata)
         default:
             break;
     }
+    on_processing = 0;
 }
 
 static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t notifydata)
