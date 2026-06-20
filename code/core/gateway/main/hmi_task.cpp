@@ -6,6 +6,7 @@
 #include "main.h"
 #include "DWIN.h"
 #include "dwin_app_driver.h"
+#include "rtc_ds3231.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -23,12 +24,14 @@ static st_modbus_data_t intetask_request_data[] = {
     {SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT  , SHT20_REG_TEMP     , 1},
     {SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT  , SHT20_REG_HUMID    , 1},
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_SET_FREQ      , 1},
-    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_ID        , 1},
+    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OPERATION_FREQ, 1},
+    // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_ID        , 1},
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_VOLTAGE, 1},
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_CURRENT, 1},
-    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_SPEED  , 1},
-    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_POWER  , 1},
-    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_TORQUE , 1},
+    // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_SPEED  , 1},
+    // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_POWER  , 1},
+    // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_TORQUE , 1},
+    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_CONVERTER_TEMP, 1},
 };
 
 
@@ -117,10 +120,31 @@ void hmi_task(void* pvParameters) {
     hmi_start();
     hmi_register_callback(hmi_parse_complete);
     ESP_ERROR_CHECK(lora_set_dest_addr(2));
+
+    // Khởi tạo RTC
+    ds3231_init();
+    
+    TickType_t last_rtc_update = 0;
+
     for(;;){
         test_send_modbus_request();
         hmi_listen();
         intertask_handle();
+
+        // Cập nhật RTC lên DWIN mỗi 1 giây
+        if ((xTaskGetTickCount() * portTICK_PERIOD_MS) - last_rtc_update > 1000) {
+            st_rtc_time_t current_time;
+            if (ds3231_get_time(&current_time) == ESP_OK) {
+                hmi_send_data_to_display(VP_TIME_HOUR,   current_time.hour);
+                hmi_send_data_to_display(VP_TIME_MINUTE, current_time.minute);
+                hmi_send_data_to_display(VP_TIME_SECOND, current_time.second);
+                hmi_send_data_to_display(VP_DATE_DAY,    current_time.date);
+                hmi_send_data_to_display(VP_DATE_MONTH,  current_time.month);
+                hmi_send_data_to_display(VP_DATE_YEAR,   2000 + current_time.year);
+            }
+            last_rtc_update = xTaskGetTickCount() * portTICK_PERIOD_MS;
+        }
+        vTaskDelay(pdMS_TO_TICKS(10)); // Tránh Watchdog Trigger
     }
 }
 

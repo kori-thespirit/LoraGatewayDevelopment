@@ -56,6 +56,34 @@ void ds3231_set_datetime(uint8_t second,
     }
 }
 
+esp_err_t ds3231_get_time(st_rtc_time_t *time_out)
+{
+    uint8_t data[7];
+    i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+    i2c_master_start(cmd);
+    i2c_master_write_byte(cmd, (DS3231_ADDR << 1) | I2C_MASTER_WRITE, true);
+    i2c_master_write_byte(cmd, 0x00, true);
+    i2c_master_start(cmd);
+    i2c_master_write_byte(cmd, (DS3231_ADDR << 1) | I2C_MASTER_READ, true);
+    i2c_master_read(cmd, data, 7, I2C_MASTER_LAST_NACK);
+    i2c_master_stop(cmd);
+    
+    esp_err_t ret = i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, pdMS_TO_TICKS(1000));
+    i2c_cmd_link_delete(cmd);
+    
+    if (ret == ESP_OK) {
+        time_out->second = ((data[0] >> 4) * 10) + (data[0] & 0x0F);
+        time_out->minute = ((data[1] >> 4) * 10) + (data[1] & 0x0F);
+        time_out->hour   = ((data[2] >> 4) * 10) + (data[2] & 0x0F);
+        time_out->day    = data[3]; // Thứ trong tuần
+        time_out->date   = ((data[4] >> 4) * 10) + (data[4] & 0x0F);
+        time_out->month  = ((data[5] >> 4) * 10) + (data[5] & 0x0F);
+        time_out->year   = ((data[6] >> 4) * 10) + (data[6] & 0x0F); // 2 số cuối (VD: 24)
+        return ESP_OK;
+    }
+    return ESP_FAIL;
+}
+
 void ds3231_readtime()
 {
     uint8_t data[7];
