@@ -100,19 +100,61 @@ void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
             break;
     }
     ESP_LOGI(TAG, "\n");
-    ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
+    
+    // Đưa lệnh DWIN vào hàng chờ ưu tiên, KHÔNG gửi ngay lập tức để tránh đụng độ (collision) 
+    // trên đường truyền LoRa khi Gateway đang đợi dữ liệu từ Node.
+    extern bool dwin_cmd_pending;
+    extern st_intertask_data_t dwin_cmd_data;
+    dwin_cmd_data = idata;
+    dwin_cmd_pending = true;
 }
+
+bool dwin_cmd_pending = false;
+st_intertask_data_t dwin_cmd_data;
 
 void test_send_modbus_request()
 {
-    if(on_processing) return;
+    static uint32_t last_request_tick = 0;
     static uint8_t request_idx = 0;
+    uint32_t current_tick = xTaskGetTickCount() * portTICK_PERIOD_MS;
+
+    // 1. TIMEOUT RECOVERY: Chống kẹt nếu Node không trả lời
+    if(on_processing) {
+        if ((current_tick - last_request_tick) > 2000) {
+            ESP_LOGW(TAG, "Timeout! Reset on_processing.");
+            on_processing = 0;
+        } else {
+            return; // Đang xử lý, không được gửi đè
+        }
+    }
+
+    // 2. GIÃN CÁCH TRUYỀN: Chờ ít nhất 500ms giữa các lần hỏi dữ liệu để đường truyền thoáng
+    // Nhưng nếu có lệnh từ DWIN đang chờ, thì chỉ cần chờ 50ms (rất nhanh) để gửi đi ngay.
+    if (dwin_cmd_pending) {
+        if ((current_tick - last_request_tick) < 50) return;
+    } else {
+        if ((current_tick - last_request_tick) < 500) return;
+    }
+
+    // 3. XỬ LÝ ƯU TIÊN LỆNH TỪ DWIN
+    if (dwin_cmd_pending) {
+        ESP_LOGI(TAG, "Gửi lệnh ưu tiên từ DWIN!");
+        ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, dwin_cmd_data));
+        dwin_cmd_pending = false;
+        on_processing = 1;
+        last_request_tick = current_tick;
+        return; // Thoát ra để nhường luồng, không gửi request auto
+    }
+
+    // 4. AUTO POLLING BÌNH THƯỜNG
     if(request_idx >= TOTAL_MODBUS_REQUEST)
         request_idx = 0;
     st_intertask_data_t idata = get_intertask_modbus_data(intetask_request_data[request_idx++]);
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
-    ESP_LOGI(TAG, "request_idx: %d", request_idx);
+    
+    // ESP_LOGI(TAG, "request_idx: %d", request_idx);
     on_processing = 1;
+    last_request_tick = current_tick;
 }
 
 void hmi_task(void* pvParameters) {
