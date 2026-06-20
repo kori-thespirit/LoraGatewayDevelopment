@@ -15,6 +15,8 @@ idf_build_set_property(MINIMAL_BUILD ON)
 project(core_gateway)
 
 
+set(CERTIFICATE_PATH components/network/mqtts/certificates)
+target_add_binary_data(${CMAKE_PROJECT_NAME}.elf "${CERTIFICATE_PATH}/kolabori.pem" TEXT)
 
 
 

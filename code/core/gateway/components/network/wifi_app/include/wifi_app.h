@@ -10,6 +10,8 @@
 #define WIFI_SSID      CONFIG_ESP_WIFI_SSID
 #define WIFI_PASS      CONFIG_ESP_WIFI_PASSWORD
 
+// #define WIFI_SSID      "GL-AXT1800-e75"
+// #define WIFI_PASS      "M9D87Q22BE"
 
 void wifi_station_init(EventGroupHandle_t *net_eg);
 
