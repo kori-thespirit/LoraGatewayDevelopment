@@ -24,4 +24,5 @@ esp_err_t mqtts_app_register_callback(
         void (* p_mqtt_data_cb)     (esp_mqtt_event_handle_t),
         void (* p_mqtt_error_cb)    (esp_mqtt_error_codes_t *));
 esp_err_t mqtts_app_use_subscribe_list(const char **sublist, uint8_t total);
+esp_err_t mqtts_app_publish(const char* topic, char* data);
 #endif // MQTTS_APP_H

@@ -14,14 +14,32 @@ EventGroupHandle_t network_event_group;
 static const char *TAG = "network";
 
 #define TOTAL_TOPIC(_X_) TOTAL_INDEX(_X_, const char*)
-const char *loragateway_topic_list[] = {
+const char *sub_topic_list[] = {
     "/topic/project/lora/gateway/#",
-    "/topic/project/lora/node/#",
+    "/topic/project/lora/node/2/gd20/control",
+};
+
+const char *pub_topic_list[] = {
+    "/topic/project/lora/node/2/gd20/data",
 };
 
 const char *example_topic_list[] = {
     "/topic/example/#",
 };
+
+/*
+char *mqtt_gd20_data_json_format = "\
+{                                   \
+    \"Ouput Current\":%.2f A   ,    \
+    \"Frequency\":%.2f     Hz  ,    \
+    \"Out Voltage\":%.2f   V   ,    \
+    \"Speed\":%.2f         rpm ,    \
+    \"Temperature\":%.2f   °C       \
+}";
+*/
+
+char *mqtt_gd20_data_json_format =\
+" { \"Ouput Current\":%.2f, \"Frequency\":%.2f, \"Out Voltage\":%.2f, \"Speed\":%.2f, \"Temperature\":%.2f }";
 
 static void data_receive_handle(esp_mqtt_event_handle_t event);
 static void error_handle(esp_mqtt_error_codes_t *error);
@@ -47,15 +65,19 @@ void network_task(void* pvParameters) {
         ESP_LOGI(TAG, "Connecting to %s ... broker", MQTT_URI);
         ESP_ERROR_CHECK(mqtts_app_start(&network_event_group));
         ESP_ERROR_CHECK(mqtts_app_register_callback(data_receive_handle, error_handle));
-        ESP_ERROR_CHECK(mqtts_app_use_subscribe_list(loragateway_topic_list, TOTAL_TOPIC(loragateway_topic_list)));
+        ESP_ERROR_CHECK(mqtts_app_use_subscribe_list(sub_topic_list, TOTAL_TOPIC(sub_topic_list)));
         ESP_LOGI(TAG, "MQTT connected");
     }
     else {
         ESP_LOGE(TAG, "Failed to connect to network");
     }
 
+    ESP_LOGI(TAG, "size of mqtt_gd20_data_json_format:%d", sizeof(mqtt_gd20_data_json_format));
+    char buffer[sizeof(mqtt_gd20_data_json_format) + 100] = {0};
     for(;;){
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        vTaskDelay(pdMS_TO_TICKS(5000));
+        sprintf(buffer, mqtt_gd20_data_json_format, 1.2, 50.0, 198.12, 2000.0, 39.42);
+        ESP_ERROR_CHECK(mqtts_app_publish(*(pub_topic_list + 0), buffer));
     }
 }
 
@@ -67,6 +89,6 @@ static void data_receive_handle(esp_mqtt_event_handle_t event)
 
 static void error_handle(esp_mqtt_error_codes_t *error)
 {
-    ESP_LOGE(TAG, "MQTT error:%s, %d",__func__, __LINE__);
+    ESP_LOGE(TAG, "Func:%s, line:%d",__func__, __LINE__);
 
 }
