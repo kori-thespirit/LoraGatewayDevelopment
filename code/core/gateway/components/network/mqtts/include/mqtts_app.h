@@ -6,6 +6,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
+#include "mqtt_client.h"
 
 #define MQTT_URI CONFIG_MQTT_URI
 #define MQTT_USERNAME CONFIG_MQTT_USERNAME
@@ -15,5 +16,12 @@
 // #define MQTT_USERNAME "example"
 // #define MQTT_PASSWORD "12345"
 
+typedef void (* p_mqtt_data_cb)(esp_mqtt_event_handle_t event_data);
+typedef void (* p_mqtt_error_cb)(esp_mqtt_error_codes_t *errhandle);
 esp_err_t mqtts_app_start(EventGroupHandle_t *net_eg);
+
+esp_err_t mqtts_app_register_callback(
+        void (* p_mqtt_data_cb)     (esp_mqtt_event_handle_t),
+        void (* p_mqtt_error_cb)    (esp_mqtt_error_codes_t *));
+esp_err_t mqtts_app_use_subscribe_list(const char **sublist, uint8_t total);
 #endif // MQTTS_APP_H
