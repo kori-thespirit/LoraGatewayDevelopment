@@ -9,8 +9,8 @@
 #include "mqtt_client.h"
 
 #define MQTT_URI CONFIG_MQTT_URI
-#define MQTT_USERNAME CONFIG_MQTT_USERNAME
-#define MQTT_PASSWORD CONFIG_MQTT_PASSWORD
+// #define MQTT_USERNAME CONFIG_MQTT_USERNAME
+// #define MQTT_PASSWORD CONFIG_MQTT_PASSWORD
 
 // #define MQTT_URI "mqtts://kolabori.com.vn"
 // #define MQTT_USERNAME "example"
