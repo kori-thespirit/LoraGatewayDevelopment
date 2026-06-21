@@ -12,6 +12,10 @@
 
 static const char *TAG = "MQTT";
 static EventGroupHandle_t *eg;
+const char **p_p_subscribe_list;
+static p_mqtt_error_cb g_p_mqtt_err_cb;
+static p_mqtt_data_cb  g_p_mqtt_data_cb;
+static uint8_t total_topic_subscribe = 0;
 extern const uint8_t server_cert_pem_start[] asm("_binary_kolabori_pem_start");
 extern const uint8_t server_cert_pem_end[] asm("_binary_kolabori_pem_end");
 /*
@@ -34,28 +38,26 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
     switch ((esp_mqtt_event_id_t)event_id) {
         case MQTT_EVENT_CONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
-            xEventGroupSetBits(*eg, NET_EG_BIT_GET_VALUE(NET_MQTT_IS_CONNECTED));
-            msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
-            ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
-
-            msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
-            ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
-
-            msg_id = esp_mqtt_client_unsubscribe(client, "/topic/qos1");
-            ESP_LOGI(TAG, "sent unsubscribe successful, msg_id=%d", msg_id);
+            xEventGroupSetBits(*eg, BIT_TO_VALUE(NET_MQTT_IS_CONNECTED));
+            for(uint8_t topic = 0; topic < total_topic_subscribe; topic++) {
+                msg_id = esp_mqtt_client_subscribe(client, *p_p_subscribe_list, 0);
+                ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+            }
             break;
         case MQTT_EVENT_DISCONNECTED:
-            xEventGroupClearBits(*eg, NET_EG_BIT_GET_VALUE(NET_MQTT_IS_CONNECTED));
+            xEventGroupClearBits(*eg, BIT_TO_VALUE(NET_MQTT_IS_CONNECTED));
             ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
             break;
 
         case MQTT_EVENT_SUBSCRIBED:
+            xEventGroupSetBits(*eg, BIT_TO_VALUE(NET_MQTT_IS_SUBSCRIBED));
             ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d, return code=0x%02x ",
                     event->msg_id, (uint8_t)*event->data);
             msg_id = esp_mqtt_client_publish(client, "/topic/qos0", "data", 0, 0, 0);
             ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
             break;
         case MQTT_EVENT_UNSUBSCRIBED:
+            xEventGroupClearBits(*eg, BIT_TO_VALUE(NET_MQTT_IS_SUBSCRIBED));
             ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
             break;
         case MQTT_EVENT_PUBLISHED:
@@ -65,9 +67,11 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
             ESP_LOGI(TAG, "MQTT_EVENT_DATA");
             printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
             printf("DATA=%.*s\r\n", event->data_len, event->data);
+            g_p_mqtt_data_cb(event);
             break;
         case MQTT_EVENT_ERROR:
             ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
+            g_p_mqtt_err_cb(event->error_handle);
             if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT) {
                 ESP_LOGI(TAG, "Last error code reported from esp-tls: 0x%x",
                         event->error_handle->esp_tls_last_esp_err);
@@ -91,6 +95,30 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
     }
 }
 
+esp_err_t mqtts_app_register_callback(
+        void (* p_mqtt_data_cb)     (esp_mqtt_event_handle_t),
+        void (* p_mqtt_error_cb)    (esp_mqtt_error_codes_t *))
+{
+    if( NULL == p_mqtt_data_cb || 
+        NULL == p_mqtt_error_cb) 
+        return ESP_ERR_INVALID_ARG; 
+     g_p_mqtt_data_cb = p_mqtt_data_cb;
+     g_p_mqtt_err_cb = p_mqtt_error_cb;
+    return ESP_OK;
+}
+
+esp_err_t mqtts_app_use_subscribe_list(const char **sublist, uint8_t total)
+{
+    if(!total) {
+        ESP_LOGE(TAG, "Invalid total subscribe topic:%u", total);
+        return ESP_ERR_INVALID_ARG;
+    }
+    ESP_LOGI(TAG, "Total topic list:%u", total);
+    p_p_subscribe_list = sublist;
+    total_topic_subscribe = total;
+    return ESP_OK;
+}
+
 esp_err_t mqtts_app_start(EventGroupHandle_t *net_eg) {
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker.address.uri = MQTT_URI,
@@ -100,8 +128,8 @@ esp_err_t mqtts_app_start(EventGroupHandle_t *net_eg) {
     };
     eg = net_eg;
 
-        ESP_LOGI(TAG, "[APP] Free memory: %" PRIu32 " bytes",
-                esp_get_free_heap_size());
+    ESP_LOGI(TAG, "[APP] Free memory: %" PRIu32 " bytes",
+            esp_get_free_heap_size());
     esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
     /* The last argument may be used to pass data to the event handler, in this
      * example mqtt_event_handler */
