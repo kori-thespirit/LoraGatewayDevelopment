@@ -39,5 +39,5 @@ void w5500_init(EventGroupHandle_t *net_eg) {
   esp_netif_attach(eth_netif, esp_eth_new_netif_glue(eth_handles[0])));
   // Start Ethernet driver state machine
   ESP_ERROR_CHECK(esp_eth_start(eth_handles[0]));
-  xEventGroupSetBits(*eg, NET_EG_BIT_GET_VALUE(NET_ETH_IS_CONNECTED));
+  xEventGroupSetBits(*eg, BIT_TO_VALUE(NET_ETH_IS_CONNECTED));
 }
