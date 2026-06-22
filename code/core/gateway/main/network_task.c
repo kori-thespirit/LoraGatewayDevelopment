@@ -82,38 +82,37 @@ void network_task(void* pvParameters) {
     }
 }
 
-static void handle_topic_request(char *topic, char *json_data)
+static void handle_topic_request(esp_mqtt_event_handle_t event)
 {
-    char *project_topic = "/topic/project/lora/";
-    uint8_t project_topic_length = strlen(base_topic);
+    char topic[50] = {0};
+    char json_data[50] = {0};
+    memcpy(topic, event->topic, event->topic_len);
+    memcpy(json_data, event->data, event->data_len);
+
+    char project_topic[] = "/topic/project/lora/";
+    size_t project_topic_length = strlen(project_topic);
 
     /* Get the device topic, e.g: node/2/gd20/control 
      * Extracted from topic /topic/project/lora/node/2/gd20/control */
     char *extracted_device_topic = topic + project_topic_length;
-    ESP_LOGI(TAG, "project_topic_length:%u, extracted_device_topic:%s", project_topic_length, *extracted_device_topic);
-    ESP_LOGI(TAG, "*(sub_topic_list + 1):%s", *(sub_topic_list + 1));
-    ESP_LOGI(TAG, "Extract device sub_topic_list + 1:%s", *(sub_topic_list + 1) + project_topic_length);
-    uint8_t sub;
-    /* Compare extracted topic with known subscribe topic list */
-    for(sub = 0; sub < TOTAL_TOPIC(sub_topic_list); sub++){
-        if(strstr(*(sub_topic_list + sub), extracted_device_topic))
-            break;
+    ESP_LOGI(TAG, "extracted_device_topic:%s", extracted_device_topic);
+
+    char *token = strtok(extracted_device_topic, "/");
+    char token_storage[4][10] = {0};
+    uint8_t i = 0;
+    while (token != NULL) {
+        strcpy(token_storage[i++], token);
+        ESP_LOGI(TAG, "token_storage[%u]:%s", i - 1, token_storage[i - 1]);
+        token = strtok(NULL, "/");
     }
 
-    switch(sub) {
-        case 1:
-            break;
-        case 2:
-            break;
-    }
-
-    cJSON *name = cJSON_GetObjectItemCaseSensitive(json_data, "name");
-    if (cJSON_IsString(name) && (name->valuestring != NULL)) {
-        printf("Name: %s\n", name->valuestring);
-    }
-
-    // delete the JSON object
-    cJSON_Delete(json);
+    // cJSON *name = cJSON_GetObjectItemCaseSensitive(json_data, "name");
+    // if (cJSON_IsString(name) && (name->valuestring != NULL)) {
+    //     printf("Name: %s\n", name->valuestring);
+    // }
+    //
+    // // delete the JSON object
+    // cJSON_Delete(json_data);
 }
 
 static void data_receive_handle(esp_mqtt_event_handle_t event)
@@ -121,7 +120,7 @@ static void data_receive_handle(esp_mqtt_event_handle_t event)
     ESP_LOGI(TAG, "MQTT get data:%s, %d",__func__, __LINE__);
     printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
     printf("DATA=%.*s\r\n", event->data_len, event->data);
-    handle_topic_request(event->data, event->topic);
+    handle_topic_request(event);
 
 }
 
