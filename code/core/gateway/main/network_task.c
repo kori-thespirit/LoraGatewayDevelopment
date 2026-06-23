@@ -9,6 +9,7 @@
 #include "main.h"
 #include "wifi_app.h"
 #include "mqtts_app.h"
+#include <ctype.h>
 #include <cJSON.h>
 
 EventGroupHandle_t network_event_group;
@@ -17,11 +18,11 @@ static const char *TAG = "network";
 #define TOTAL_TOPIC(_X_) TOTAL_INDEX(_X_, const char*)
 const char *sub_topic_list[] = {
     "/topic/project/lora/gateway/#",
-    "/topic/project/lora/node/2/gd20/control",
+    "/topic/project/lora/node/+/devices/+/control",
 };
 
 const char *pub_topic_list[] = {
-    "/topic/project/lora/node/2/gd20/data",
+    "/topic/project/lora/node/2/devices/gd20/data",
 };
 
 const char *example_topic_list[] = {
@@ -77,17 +78,19 @@ void network_task(void* pvParameters) {
     char buffer[sizeof(mqtt_gd20_data_json_format) + 100] = {0};
     for(;;){
         vTaskDelay(pdMS_TO_TICKS(5000));
-        sprintf(buffer, mqtt_gd20_data_json_format, 1.2, 50.0, 198.12, 2000.0, 39.42);
-        ESP_ERROR_CHECK(mqtts_app_publish(*(pub_topic_list + 0), buffer));
+        // sprintf(buffer, mqtt_gd20_data_json_format, 1.2, 50.0, 198.12, 2000.0, 39.42);
+        // ESP_ERROR_CHECK(mqtts_app_publish(*(pub_topic_list + 0), buffer));
     }
 }
 
 static void handle_topic_request(esp_mqtt_event_handle_t event)
 {
-    char topic[50] = {0};
-    char json_data[50] = {0};
+    char *topic = (char*)calloc(event->topic_len + 1, sizeof(char));
+    char *json_str = (char*)calloc(event->data_len + 1, sizeof(char));
     memcpy(topic, event->topic, event->topic_len);
-    memcpy(json_data, event->data, event->data_len);
+    memcpy(json_str, event->data, event->data_len);
+    // ESP_LOGI(TAG, "topic:%s", topic);
+    // ESP_LOGI(TAG, "json_str:%s", json_str);
 
     char project_topic[] = "/topic/project/lora/";
     size_t project_topic_length = strlen(project_topic);
@@ -95,24 +98,69 @@ static void handle_topic_request(esp_mqtt_event_handle_t event)
     /* Get the device topic, e.g: node/2/gd20/control 
      * Extracted from topic /topic/project/lora/node/2/gd20/control */
     char *extracted_device_topic = topic + project_topic_length;
-    ESP_LOGI(TAG, "extracted_device_topic:%s", extracted_device_topic);
+    // ESP_LOGI(TAG, "extracted_device_topic:%s", extracted_device_topic);
 
     char *token = strtok(extracted_device_topic, "/");
-    char token_storage[4][10] = {0};
+    char token_storage[5][10] = {0};
     uint8_t i = 0;
     while (token != NULL) {
         strcpy(token_storage[i++], token);
-        ESP_LOGI(TAG, "token_storage[%u]:%s", i - 1, token_storage[i - 1]);
+        // ESP_LOGI(TAG, "token_storage[%u]:%s", i - 1, token_storage[i - 1]);
         token = strtok(NULL, "/");
     }
 
-    // cJSON *name = cJSON_GetObjectItemCaseSensitive(json_data, "name");
-    // if (cJSON_IsString(name) && (name->valuestring != NULL)) {
-    //     printf("Name: %s\n", name->valuestring);
-    // }
-    //
-    // // delete the JSON object
-    // cJSON_Delete(json_data);
+    for(uint8_t i = 0; i < strlen(token_storage[1]); i++) {
+        char test = token_storage[1][i];
+        if(!isdigit(test)) {
+            ESP_LOGE(TAG, "%s:Lora address is not digit, refuse to process",__func__);
+            return;
+        }
+    }
+    uint8_t lora_address = atoi(token_storage[1]);
+    // ESP_LOGI(TAG, "lora_address:%u", lora_address);
+
+    // parse the JSON data
+    cJSON *json = cJSON_Parse(json_str);
+    if (json == NULL) {
+        const char *error_ptr = cJSON_GetErrorPtr();
+        if (error_ptr != NULL) {
+            printf("Error at: %s\n", error_ptr);
+        }
+        cJSON_Delete(json);
+        return;
+    }
+
+    bool motor_run = false;
+    bool forward = false;
+    uint16_t frequency = 0;
+    uint8_t modbus_device_addr = 0;
+    cJSON *temp = cJSON_GetObjectItemCaseSensitive(json, "run");
+    if(cJSON_IsBool(temp))
+        if(cJSON_IsTrue(temp))
+            motor_run = true;
+
+    temp = cJSON_GetObjectItemCaseSensitive(json, "forward");
+    if(cJSON_IsBool(temp))
+        if(cJSON_IsTrue(temp))
+            forward = true;
+
+    temp = cJSON_GetObjectItemCaseSensitive(json, "frequency");
+    if(cJSON_IsNumber(temp))
+        frequency = (uint16_t)cJSON_GetNumberValue(temp);
+
+    temp = cJSON_GetObjectItemCaseSensitive(json, "device address");
+    if(cJSON_IsNumber(temp))
+        modbus_device_addr = (uint8_t)cJSON_GetNumberValue(temp);
+
+    ESP_LOGI(TAG, "motor_run:%u", motor_run);
+    ESP_LOGI(TAG, "forward:%u", forward);
+    ESP_LOGI(TAG, "frequency:%u", frequency);
+    ESP_LOGI(TAG, "modbus_device_addr:%u", modbus_device_addr);
+
+    // delete the JSON object
+    cJSON_Delete(json);
+    free(topic);
+    free(json_str);
 }
 
 static void data_receive_handle(esp_mqtt_event_handle_t event)
