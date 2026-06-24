@@ -5,6 +5,7 @@
  */
 /*Private library*/
 #include "MQTT.h"
+#include "cJSON.h"
 #include "driver/uart.h"
 #include "esp_wifi.h"
 #include "freertos/FreeRTOS.h"
@@ -13,6 +14,12 @@
 #include "nvs_flash.h"
 #include <stdio.h>
 #include <string.h>
+
+#define CMD_Write 0x06
+#define CMD_Read 0x03
+
+#define com_control_cmd 0x2000
+#define com_setting_freq 0x2001
 
 #define UART_PORT UART_NUM_2
 #define TXD_PIN 17
@@ -26,8 +33,25 @@
 #define Password "nihongo"
 
 #define Mosquitto_URI "mqtt://192.168.1.10:1884" // ip + Port number
+
 /*Private Variables*/
 MQTT_Handle_t MQTT_Ctrl;
+static uint16_t modbus_crc16(uint8_t *buffer, uint16_t length) {
+  uint16_t crc = 0xFFFF;
+
+  for (uint16_t i = 0; i < length; i++) {
+    crc ^= buffer[i];
+
+    for (uint8_t j = 0; j < 8; j++) {
+      if (crc & 0x0001)
+        crc = (crc >> 1) ^ 0xA001;
+      else
+        crc >>= 1;
+    }
+  }
+
+  return crc;
+}
 /*Private Functions*/
 void MQTT_Conected(void) {
   ESP_LOGI("APP", "MQTT Connected");
@@ -44,29 +68,71 @@ void MQTT_Conected(void) {
 //   MQTT_Publish(&MQTT_Ctrl, "test1", "Hello", 0, 0);
 //   vTaskDelay(pdMS_TO_TICKS(3000));
 // }
+static void Send_Modbus_RTU(uint8_t slave, uint8_t CMD, uint16_t reg,
+                            uint16_t value) {
+  uint8_t frame[8];
 
-void MQTT_Subcribe(const char *topic, const char *data, int topic_len,
-                   int data_len) {
-  if (data_len < 1)
-    return;
-  uint8_t frame[64];
+  frame[0] = slave;
+  frame[1] = CMD;
 
-  int frame_len = data_len / 2;
+  frame[2] = reg >> 8;
+  frame[3] = reg & 0xFF;
 
-  for (int i = 0; i < frame_len; i++) {
-    char tmp[3];
+  frame[4] = value >> 8;
+  frame[5] = value & 0xFF;
 
-    tmp[0] = data[i * 2];
-    tmp[1] = data[i * 2 + 1];
-    tmp[2] = '\0';
+  uint16_t crc = modbus_crc16(frame, 6);
 
-    frame[i] = (uint8_t)strtol(tmp, NULL, 16);
-  }
-  uart_write_bytes(UART_PORT, (const char *)frame, frame_len);
-  printf("%02X%02X%02X%02X%02X%02X%02X%02X", frame[0], frame[1], frame[2],
-         frame[3], frame[4], frame[5], frame[6], frame[7]);
+  frame[6] = crc & 0xFF;
+  frame[7] = crc >> 8;
+
+  uart_write_bytes(UART_PORT, (const char *)frame, sizeof(frame));
+
+  printf("RTU TX : ");
+
+  for (int i = 0; i < 8; i++)
+    printf("%02X ", frame[i]);
 
   printf("\n");
+}
+void MQTT_Subcribe(const char *topic, const char *data, int topic_len,
+                   int data_len) {
+  char buff[256];
+  if (data_len >= sizeof(buff)) {
+    data_len = sizeof(buff) - 1;
+  }
+  memcpy(buff, data, data_len);
+  buff[data_len] = '\0';
+  cJSON *root = cJSON_Parse(buff);
+
+  if (root == NULL) {
+    cJSON_Delete(root);
+    return;
+  }
+  cJSON *run = cJSON_GetObjectItem(root, "run");
+  cJSON *frequency = cJSON_GetObjectItem(root, "frequency");
+  cJSON *device_address = cJSON_GetObjectItem(root, "device address");
+
+  if (run == NULL || frequency == NULL || device_address == NULL) {
+    cJSON_Delete(root);
+    return;
+  }
+  uint8_t slave = (uint8_t)cJSON_GetNumberValue(device_address);
+
+  uint16_t freq = (uint16_t)cJSON_GetNumberValue(frequency);
+
+  uint16_t run_cmd = (uint16_t)cJSON_GetNumberValue(run);
+
+  printf("Slave=%u Freq=%u Run=%u\n", slave, freq, run_cmd);
+
+  /* Set Frequency */
+  Send_Modbus_RTU(slave, CMD_Write, com_setting_freq, freq * 100);
+
+  vTaskDelay(pdMS_TO_TICKS(100));
+
+  /* Run / Stop */
+  Send_Modbus_RTU(slave, CMD_Write, com_control_cmd, run_cmd);
+  cJSON_Delete(root);
 }
 void MQTT_Disconnected(void) { ESP_LOGW("APP", "MQTT Disconnected"); }
 
@@ -86,17 +152,47 @@ void uart_init_app(void) {
                UART_PIN_NO_CHANGE);
 }
 void uart_task(void *arg) {
-  uint8_t rxbuf[128];
+  uint8_t rxbuf[256];
+
+  static uint16_t status = 0;
+  static uint16_t frequency = 0;
 
   while (1) {
     int len =
-        uart_read_bytes(UART_PORT, rxbuf, sizeof(rxbuf), pdMS_TO_TICKS(100));
-    if (len > 0) {
-      for (int i = 0; i < len; i++) {
-        printf("%02X ", rxbuf[i]);
-      }
-      printf("\n");
+        uart_read_bytes(UART_PORT, rxbuf, sizeof(rxbuf), pdMS_TO_TICKS(10));
+
+    if (len < 6) {
+      vTaskDelay(pdMS_TO_TICKS(10));
+      continue;
     }
+
+    uint8_t address = rxbuf[0];
+    uint16_t reg = ((uint16_t)rxbuf[3] << 8) | rxbuf[2];
+    uint16_t value = ((uint16_t)rxbuf[5] << 8) | rxbuf[4];
+
+    printf("RX: ADDR=%02X REG=%04X VAL=%04X\n", address, reg, value);
+
+    if (reg == com_setting_freq) {
+      frequency = value / 100;
+      printf("Freq updated = %u\n", frequency);
+    } else if (reg == com_control_cmd) {
+      status = value;
+
+      char json[128];
+      snprintf(json, sizeof(json),
+               "{\n"
+               "  \"response\": {\n"
+               "    \"status\": %u,\n"
+               "    \"frequency\": %u,\n"
+               "    \"device_address\": %u\n"
+               "  }\n"
+               "}",
+               status, frequency, address);
+      printf("MQTT TX: %s\n", json);
+
+      MQTT_Publish(&MQTT_Ctrl, "test1", json, 0, 0);
+    }
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
 }
 void khoitao(void) {
