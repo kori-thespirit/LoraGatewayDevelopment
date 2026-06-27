@@ -33,11 +33,13 @@ typedef struct map_str_to_value {
 }st_map_str_to_value_t;
 
 typedef struct param_descriptor {
-    const char* param_name;
-    e_data_type_t param_type;
+    const char* paramkey;
+    e_data_type_t datatype;
+    void * p_val;
 } st_param_descriptor_t;
 
 typedef struct modbus_topic_descriptor{
+    uint32_t  modbus_function;
     st_map_str_to_value_t modbus_reg;
     st_param_descriptor_t param_desc[2];
 }st_modbus_topic_descriptor_t;
@@ -45,22 +47,26 @@ typedef struct modbus_topic_descriptor{
 static void error_handle(esp_mqtt_error_codes_t *error);
 static void handle_topic_request(esp_mqtt_event_handle_t event);
 static void handle_topic_gd20_control(void *vParameters);
+static void mqtt_log(const char* status, const char * message);
 
 EventGroupHandle_t network_event_group;
+st_modbus_data_t g_mdata;
 
 const st_modbus_topic_descriptor_t topic_gd20_control[] = {
     {
+        0x03, //Modbus function: Holding
         {"command", 0x2000}, // parameter:command
         {
-            {"value", TYPE_U16},
-            {"modbus address", TYPE_U8},
+            {"value", TYPE_U16, (void*)&g_mdata.value},
+            {"modbus address", TYPE_U8, (void*)&g_mdata.addr},
         }
     },
     {
+        0x03, //Modbus function: Holding
         {"frequency", 0x2001}, // parameter:frequency
         {
-            {"value", TYPE_U16},
-            {"modbus address", TYPE_U8},
+            {"value", TYPE_U16, (void*)&g_mdata.value},
+            {"modbus address", TYPE_U8, (void*)&g_mdata.addr},
         }
     }
 
@@ -73,7 +79,7 @@ const st_map_str_to_value_t topic_gd20_query[] = {
 
 #define TOTAL_TOPIC(_X_) TOTAL_INDEX(_X_, const char*)
 const char *sub_topic_list[] = {
-    "/topic/project/lora/gateway/#",
+    // "/topic/project/lora/gateway/#",
     "/topic/project/lora/node/+/devices/+/control",
     "/topic/project/lora/node/+/devices/+/query",
     "/topic/project/lora/node/+/config/",
@@ -81,13 +87,12 @@ const char *sub_topic_list[] = {
 
 const char *pub_topic_list[] = {
     "/topic/project/lora/node/2/devices/gd20/data",
+    "/topic/project/lora/gateway/status",
 };
 
 const char *example_topic_list[] = {
     "/topic/example/#",
 };
-
-
 
 /*
 char *mqtt_gd20_data_json_format = "\
@@ -103,6 +108,8 @@ char *mqtt_gd20_data_json_format = "\
 char *mqtt_gd20_data_json_format =\
 " { \"Ouput Current\":%.2f, \"Frequency\":%.2f, \"Out Voltage\":%.2f, \"Speed\":%.2f, \"Temperature\":%.2f }";
 
+char *mqtt_gateway_status_json_format =\
+"{\t\n\"status\":\"%s\",\n\t\"message\":\"%s\"\n}";
 
 void network_task(void* pvParameters) 
 {
@@ -133,15 +140,11 @@ void network_task(void* pvParameters)
         ESP_LOGE(TAG, "Failed to connect to network");
     }
 
-    ESP_LOGI(TAG, "size of mqtt_gd20_data_json_format:%d", sizeof(mqtt_gd20_data_json_format));
-    // char buffer[sizeof(mqtt_gd20_data_json_format) + 100] = {0};
     for(;;){
-        handle_topic_request(get_mqtt_event());
         vTaskDelay(pdMS_TO_TICKS(5000));
-        // sprintf(buffer, mqtt_gd20_data_json_format, 1.2, 50.0, 198.12, 2000.0, 39.42);
-        // ESP_ERROR_CHECK(mqtts_app_publish(*(pub_topic_list + 0), buffer));
     }
 }
+
 
 static void handle_topic_request(esp_mqtt_event_handle_t event)
 {
@@ -177,9 +180,10 @@ static void handle_topic_request(esp_mqtt_event_handle_t event)
         }
     }
     uint8_t lora_address = atoi(token_storage[1]);
-    // ESP_LOGI(TAG, "lora_address:%u", lora_address);
+    ESP_LOGI(TAG, "lora_address:%u", lora_address);
+    mqtt_log("OK", "Parsed lora_address successfully");
     char* device_name = token_storage[3];
-    // ESP_LOGI(TAG, "Handle topic of device: %s", device_name);
+    ESP_LOGI(TAG, "Handle topic of device: %s", device_name);
 
     cJSON *json = cJSON_Parse(json_str);
     if (json == NULL) {
@@ -191,76 +195,133 @@ static void handle_topic_request(esp_mqtt_event_handle_t event)
         return;
     }
 
-    if(!strcmp(token_storage[5],"control")){
+    // ESP_LOGI(TAG, "token_storage[4]:%s", token_storage[4]);
+    if(!strcmp(token_storage[4],"control")){
+        mqtt_log("OK", "Handle GD20 control");
         handle_topic_gd20_control((void*)json);
     }
 
-
-    // delete the JSON object
     cJSON_Delete(json);
     free(topic);
     free(json_str);
 }
 
-static void get_value_from_json_key()
+static void get_value_from_json_key(cJSON *key, const char *str, e_data_type_t datatype, void *p_val)
+{
+    double tempvalue = 0;
+    if((datatype >= TYPE_U8 && datatype <= TYPE_DOUBLE) && cJSON_IsNumber(key)) {
+        tempvalue = cJSON_GetNumberValue(key);
+    }
+    switch(datatype){
+        case TYPE_BOOL:
+            break;
+        case TYPE_STRING:
+            break;
+        case TYPE_U8:
+            uint8_t u8val = (uint8_t)tempvalue;
+            memcpy((void*)p_val, (void*)&u8val, sizeof(u8val));
+            break;
+        case TYPE_U16:
+            uint16_t u16val = (uint16_t)tempvalue;
+            memcpy((void*)p_val, (void*)&u16val, sizeof(u16val));
+            break;
+        case TYPE_U32:
+            uint32_t u32val = (uint32_t)tempvalue;
+            memcpy((void*)p_val, (void*)&u32val, sizeof(u32val));
+            break;
+        case TYPE_I8:
+            int8_t i8val = (int8_t)tempvalue;
+            memcpy((void*)p_val, (void*)&i8val, sizeof(i8val));
+            break;
+        case TYPE_I16:
+            int16_t i16val = (int16_t)tempvalue;
+            memcpy((void*)p_val, (void*)&i16val, sizeof(i16val));
+            break;
+        case TYPE_I32:
+            int32_t i32val = (int32_t)tempvalue;
+                memcpy((void*)p_val, (void*)&i32val, sizeof(i32val));
+            break;
+        case TYPE_FLOAT:
+            float fval = (float)tempvalue;
+            memcpy((void*)p_val, (void*)&fval, sizeof(fval));
+            break;
+        default:
+            ESP_LOGE(TAG, "%s, %d: datatype not found:%d", __func__, __LINE__, datatype);
+            break;
+    }
+
+}
 
 static void handle_topic_gd20_control(void *vParameters)
 {
-    ESP_LOGI(TAG, "Inside %s", __func__);
     cJSON *json = (cJSON *)vParameters;
     cJSON *temp = cJSON_GetObjectItemCaseSensitive(json, "parameter");
-    st_modbus_data_t mdata;
     if(temp == NULL) {
-        ESP_LOGE(TAG, "%s, %d: key parameter not found", __func__, __LINE__);
+        ESP_LOGE(TAG, "%s, %d: required key not found: %s", 
+                __func__, 
+                __LINE__, 
+                "parameter");
         return;
     }
 
     uint8_t i;
+    char *mb_reg = NULL;
     if(cJSON_IsString(temp))
-        char *mb_reg = cJSON_GetStringValue(temp);
+        mb_reg = cJSON_GetStringValue(temp);
+    else {
+        ESP_LOGE(TAG, "%s, %d - mb_reg is not string", __func__, __LINE__);
+        return;
+    }
+
+    ESP_LOGI(TAG, "mb_reg:%s", mb_reg);
     
     for(i = 0; i < TOTAL_INDEX(topic_gd20_control); i++) {
-        if(!strcmp(topic_gd20_control[i].modbus_reg.str)) {
-            ESP_LOGI(TAG, "Found register:%s, value:%u", topic_gd20_control[i].modbus_reg.str, topic_gd20_control[i].modbus_reg.val);
-            mdata.reg = topic_gd20_control[i].modbus_reg.val;
-            mdata.modbus_function = 0x03;
-            
+        if(!strcmp(topic_gd20_control[i].modbus_reg.str, mb_reg)) {
+            ESP_LOGI(TAG, "Found register:%s, reg_value:0x%x at topic %u", topic_gd20_control[i].modbus_reg.str, topic_gd20_control[i].modbus_reg.val, i);
+            g_mdata.reg = topic_gd20_control[i].modbus_reg.val;
+            g_mdata.modbus_function = topic_gd20_control[i].modbus_function;
+            const st_param_descriptor_t *param_desc = topic_gd20_control[i].param_desc;
+            for(uint8_t descriptor = 0; descriptor < TOTAL_INDEX(topic_gd20_control[i].param_desc); descriptor++){
+                cJSON *temp = cJSON_GetObjectItemCaseSensitive(json,(param_desc + descriptor)->paramkey);
+                if(temp == NULL) {
+                    ESP_LOGE(TAG, "%s, %d: required key not found: %s", 
+                            __func__, 
+                            __LINE__, 
+                            (param_desc + descriptor)->paramkey);
+                    return;
+                }
+                ESP_LOGI(TAG, "paramkey:%s, datatype:%d", 
+                        (param_desc + descriptor)->paramkey, 
+                        (param_desc + descriptor)->datatype);
+                get_value_from_json_key(temp,
+                        (param_desc + descriptor)->paramkey,
+                        (param_desc + descriptor)->datatype,
+                        (param_desc + descriptor)->p_val);
+            }
             break;
         }
     }
-
-
-    bool motor_run = false;
-    bool forward = false;
-    uint16_t frequency = 0;
-    uint8_t modbus_device_addr = 0;
-    cJSON *temp = cJSON_GetObjectItemCaseSensitive(json, "run");
-    if(cJSON_IsBool(temp))
-        if(cJSON_IsTrue(temp))
-            motor_run = true;
-
-    temp = cJSON_GetObjectItemCaseSensitive(json, "forward");
-    if(cJSON_IsBool(temp))
-        if(cJSON_IsTrue(temp))
-            forward = true;
-
-    temp = cJSON_GetObjectItemCaseSensitive(json, "frequency");
-    if(cJSON_IsNumber(temp))
-        frequency = (uint16_t)cJSON_GetNumberValue(temp);
-
-    temp = cJSON_GetObjectItemCaseSensitive(json, "device address");
-    if(cJSON_IsNumber(temp))
-        modbus_device_addr = (uint8_t)cJSON_GetNumberValue(temp);
-
-    ESP_LOGI(TAG, "motor_run:%u", motor_run);
-    ESP_LOGI(TAG, "forward:%u", forward);
-    ESP_LOGI(TAG, "frequency:%u", frequency);
-    ESP_LOGI(TAG, "modbus_device_addr:%u", modbus_device_addr);
-
+    ESP_LOGI(TAG, "g_mdata - value:%u, addr:%u", g_mdata.value, g_mdata.addr);
+    mqtt_log("OK", "Parse received data completed");
 }
 
 static void error_handle(esp_mqtt_error_codes_t *error)
 {
     ESP_LOGE(TAG, "Func:%s, line:%d",__func__, __LINE__);
 
+}
+
+static void mqtt_log(const char* status, const char * message)
+{
+    char buffer[sizeof(mqtt_gateway_status_json_format) + 150] = {0};
+    uint16_t total_len = sizeof(mqtt_gateway_status_json_format) + strlen(message) + strlen(status);
+    ESP_LOGI(TAG, "total_len:%u", total_len);
+    if(total_len > sizeof(buffer)) {
+        ESP_LOGE(TAG, "%s - message is too long:%d, expect:%d", __func__, total_len, sizeof(mqtt_gateway_status_json_format) + 150);
+    }
+    if(strcmp(status, "OK") && strcmp(status, "ERROR")) {
+        ESP_LOGE(TAG, "status must be OK or ERROR:%s", status);
+    }
+    sprintf(buffer, mqtt_gateway_status_json_format, status, message);
+    ESP_ERROR_CHECK(mqtts_app_publish(*(pub_topic_list + 1), buffer));
 }
