@@ -15,17 +15,19 @@
    bytes. For example, if each stack item is 32-bits, and this is set to 200,
    then 800 bytes (200 * 32-bits) will be allocated. */
 #define LORA_STACK_SIZE 3072
-#define COMMON_STACK_SIZE 3072 
+#define COMMON_STACK_SIZE 3072
 
-#define QUEUE_COMMON_ITEMS 3
+#define QUEUE_COMMON_ITEMS 5
+
+#define TOTAL_IDX(_ARRAY_) (sizeof(_ARRAY_)/sizeof(_ARRAY_[0]))
 
 /* NOTE: Can try the idea of using OR bit for supported task ID to handle instead of using switch case*/
 typedef enum task_handle_id{
-    TASK_ID_MODBUS = 1,
     TASK_ID_NETWORK,
     TASK_ID_LORA,
     TASK_ID_HMI,
-    TASK_ID_SDCARD,
+    TASK_ID_COMMON,
+    TASK_ID_MAX,
 } e_task_handle_id_t;
 
 

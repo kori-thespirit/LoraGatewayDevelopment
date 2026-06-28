@@ -19,7 +19,8 @@ TaskHandle_t hmi_task_handle;
 TaskHandle_t lora_task_handle;
 TaskHandle_t common_task_handle;
 TaskHandle_t network_task_handle;
-static QueueHandle_t q_common;
+// static QueueHandle_t q_common;
+static QueueHandle_t q_common[TASK_ID_MAX];
 
 typedef enum task_priority
 {
@@ -38,7 +39,13 @@ void other_task(void* pvParameters) ;
 
 void app_main(void) {
 
-    q_common = xQueueCreate(QUEUE_COMMON_ITEMS, sizeof(st_intertask_data_t));
+    for(uint8_t i = 0; i < TOTAL_IDX(q_common); i++) {
+        q_common[i] = xQueueCreate(QUEUE_COMMON_ITEMS, sizeof(st_core_data_t));
+        if(NULL == q_common[i]) {
+            ESP_LOGE(TAG,"Fail to create queue: %u", i);
+        }
+    }
+    // q_common = xQueueCreate(QUEUE_COMMON_ITEMS, sizeof(st_intertask_data_t));
     lora_task_handle = xTaskCreateStatic(
     lora_task,
     "lora_task",
@@ -107,7 +114,8 @@ uint8_t get_available_queue_common()
     uint8_t idx = 0;
     return idx;
 }
-QueueHandle_t * get_queue_common_addr() {return &q_common;}
+// QueueHandle_t * get_queue_common_addr() {return &q_common;}
+QueueHandle_t * get_queue_common_addr() {return q_common;}
 TaskHandle_t  * get_lora_task_handle() { return &lora_task_handle; }
 TaskHandle_t  * get_network_handle() { return &network_task_handle; }
 TaskHandle_t  * get_hmi_handle() { return &hmi_task_handle; }
