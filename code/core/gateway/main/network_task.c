@@ -48,9 +48,14 @@ static void error_handle(esp_mqtt_error_codes_t *error);
 static void handle_topic_request(esp_mqtt_event_handle_t event);
 static void handle_topic_gd20_control(void *vParameters);
 static void mqtt_log(const char* status, const char * message);
+static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t notifydata);
+static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
+static esp_err_t handle_intertask_request();
+static st_intertask_data_t get_intertask_modbus();
 
 EventGroupHandle_t network_event_group;
 st_modbus_data_t g_mdata;
+static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 
 const st_modbus_topic_descriptor_t topic_gd20_control[] = {
     {
@@ -141,7 +146,7 @@ void network_task(void* pvParameters)
     }
 
     for(;;){
-        vTaskDelay(pdMS_TO_TICKS(5000));
+        ESP_ERROR_CHECK(handle_intertask_request());
     }
 }
 
@@ -176,12 +181,13 @@ static void handle_topic_request(esp_mqtt_event_handle_t event)
         char test = token_storage[1][i];
         if(!isdigit(test)) {
             ESP_LOGE(TAG, "%s:Lora address is not digit, refuse to process",__func__);
+            mqtt_log("ERROR", "Failed to get Lora address");
             return;
         }
     }
     uint8_t lora_address = atoi(token_storage[1]);
     ESP_LOGI(TAG, "lora_address:%u", lora_address);
-    mqtt_log("OK", "Parsed lora_address successfully");
+    ESP_ERROR_CHECK(lora_set_dest_addr(lora_address));
     char* device_name = token_storage[3];
     ESP_LOGI(TAG, "Handle topic of device: %s", device_name);
 
@@ -191,13 +197,13 @@ static void handle_topic_request(esp_mqtt_event_handle_t event)
         if (error_ptr != NULL) {
             printf("Error at: %s\n", error_ptr);
         }
+        mqtt_log("ERROR", "Failed to parse receive data");
         cJSON_Delete(json);
         return;
     }
 
     // ESP_LOGI(TAG, "token_storage[4]:%s", token_storage[4]);
     if(!strcmp(token_storage[4],"control")){
-        mqtt_log("OK", "Handle GD20 control");
         handle_topic_gd20_control((void*)json);
     }
 
@@ -247,6 +253,7 @@ static void get_value_from_json_key(cJSON *key, const char *str, e_data_type_t d
             break;
         default:
             ESP_LOGE(TAG, "%s, %d: datatype not found:%d", __func__, __LINE__, datatype);
+            mqtt_log("ERROR", "datatype not found");
             break;
     }
 
@@ -261,6 +268,7 @@ static void handle_topic_gd20_control(void *vParameters)
                 __func__, 
                 __LINE__, 
                 "parameter");
+        mqtt_log("ERROR", "required key not found: parameter");
         return;
     }
 
@@ -270,6 +278,7 @@ static void handle_topic_gd20_control(void *vParameters)
         mb_reg = cJSON_GetStringValue(temp);
     else {
         ESP_LOGE(TAG, "%s, %d - mb_reg is not string", __func__, __LINE__);
+        mqtt_log("ERROR", "mb_reg is not string");
         return;
     }
 
@@ -284,10 +293,12 @@ static void handle_topic_gd20_control(void *vParameters)
             for(uint8_t descriptor = 0; descriptor < TOTAL_INDEX(topic_gd20_control[i].param_desc); descriptor++){
                 cJSON *temp = cJSON_GetObjectItemCaseSensitive(json,(param_desc + descriptor)->paramkey);
                 if(temp == NULL) {
-                    ESP_LOGE(TAG, "%s, %d: required key not found: %s", 
+                    ESP_LOGE(TAG, "%s, %d: required paramkey not found: %s", 
                             __func__, 
                             __LINE__, 
                             (param_desc + descriptor)->paramkey);
+                    mqtt_log("ERROR", "required paramkey not found");
+
                     return;
                 }
                 ESP_LOGI(TAG, "paramkey:%s, datatype:%d", 
@@ -302,7 +313,10 @@ static void handle_topic_gd20_control(void *vParameters)
         }
     }
     ESP_LOGI(TAG, "g_mdata - value:%u, addr:%u", g_mdata.value, g_mdata.addr);
-    mqtt_log("OK", "Parse received data completed");
+    mqtt_log("OK", "Parse receive data completed");
+
+    st_intertask_data_t idata = get_intertask_modbus();
+    relay_intertask(TASK_ID_LORA, idata);
 }
 
 static void error_handle(esp_mqtt_error_codes_t *error)
@@ -310,6 +324,118 @@ static void error_handle(esp_mqtt_error_codes_t *error)
     ESP_LOGE(TAG, "Func:%s, line:%d",__func__, __LINE__);
 
 }
+
+// ------------------- INTER_TASK ------------------- [
+
+static st_intertask_data_t get_intertask_modbus()
+{
+    st_core_data_t coredata;
+    coredata.cdataid = COREDATA_ID_MB_DATA;
+    bzero(coredata.cdata, sizeof(coredata.cdata));
+    memcpy((void*)coredata.cdata, (void*)&g_mdata, sizeof(st_modbus_data_t));
+
+    st_intertask_data_t idata = { .src_task_handle_id = TASK_ID_NETWORK, .coredata = coredata, };
+    return idata;
+}
+
+static void network_intertask_core_function(st_core_data_t coredata)
+{
+    // ESP_LOGI(TAG, "Inside %s",__func__);
+    // float fdata;
+    // uint16_t u16data;
+    // uint8_t u8data;
+    // switch(coredata.cdataid)
+    // {
+    // }
+}
+
+static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t notifydata)
+{
+    TaskHandle_t *task_handle = NULL;
+    switch(taskid) {
+        case TASK_ID_HMI:
+            task_handle = get_hmi_handle();
+            break;
+        case TASK_ID_LORA:
+            task_handle = get_lora_task_handle();
+            break;
+        case TASK_ID_SDCARD:
+            task_handle = get_common_handle();
+            break;
+        default:
+            ESP_LOGE(TAG, "This TaskHandle doesn't supported");
+            return ESP_ERR_NOT_SUPPORTED;
+            break;
+
+    }
+    if(!task_handle){
+        ESP_LOGE(TAG, "Not found required TaskHandle");
+        return ESP_ERR_NOT_FOUND;
+    }
+
+    if(xTaskNotify(*task_handle, notifydata.value, eSetValueWithoutOverwrite) == pdPASS) {
+        ESP_LOGI(TAG, "Notify to :%d", taskid);
+    }
+    else {
+        ESP_LOGE(TAG, "Fail to notify task");
+    }
+    return ESP_OK;
+}
+
+static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata)
+{
+    uint8_t qidx = get_available_queue_common();
+    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+    if(xQueueSend(*p_queue, (void*)&idata, pdMS_TO_TICKS(200)) == pdPASS){}
+    else {
+        ESP_LOGE(TAG, "Fail to send queue");
+    }
+    u_intertask_noti_t notifydata ;
+    notifydata.notivalue.intertask_err = INTERTASK_ERR_NOT_USE;
+    notifydata.notivalue.qidx = qidx; // queue index
+    notify_intertask(taskid, notifydata);
+    return ESP_OK;
+}
+
+static esp_err_t handle_intertask_request()
+{
+    /* Common step of handle intertask request */
+    u_intertask_noti_t notifydata ;
+    if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&notifydata.value, pdMS_TO_TICKS(100)) == pdFALSE)
+        return ESP_OK;
+    ESP_LOGI(TAG, "Received notify, qidx:%u, intertask_err:%u", 
+            notifydata.notivalue.qidx,
+            notifydata.notivalue.intertask_err
+            );
+    uint8_t qidx = notifydata.notivalue.qidx;
+    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+    st_intertask_data_t idata;
+    e_intertask_err_t ierr = (e_intertask_err_t)notifydata.notivalue.intertask_err;
+
+    /* Bypass xQueueReceive if intertask reply with status */
+    if(INTERTASK_ERR_NOT_USE != ierr) {
+        ESP_LOGW(TAG, "Relay intertask has status:%d", ierr);
+        return ESP_OK;
+    }
+    if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
+
+        reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
+        network_intertask_core_function(idata.coredata);
+    }
+    else {
+        ESP_LOGE(TAG, "%s:Fail to handle QueueReceive", __func__);
+    }
+    return ESP_OK;
+
+}
+
+static esp_err_t intertask_handle()
+{
+    ESP_ERROR_CHECK(handle_intertask_request());
+    return ESP_OK;
+
+}
+// ------------------- INTER TASK ------------------- ]
 
 static void mqtt_log(const char* status, const char * message)
 {
