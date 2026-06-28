@@ -11,29 +11,14 @@
 extern "C" {
 #endif
 
-static const char *TAG = "hmi_task";
-static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 
+static esp_err_t handle_intertask_request();
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
-static esp_err_t intertask_handle();
+static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
+static e_task_handle_id_t task_id_name = TASK_ID_HMI;
 static uint8_t on_processing = 0; // To check whether new request can be processed
 
-
-#define TOTAL_MODBUS_REQUEST (sizeof(intetask_request_data)/sizeof(st_modbus_data_t))
-static st_modbus_data_t intetask_request_data[] = {
-    {SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT  , SHT20_REG_TEMP     , 1},
-    {SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT  , SHT20_REG_HUMID    , 1},
-    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_SET_FREQ      , 1},
-    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OPERATION_FREQ, 1},
-    // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_ID        , 1},
-    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_VOLTAGE, 1},
-    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_CURRENT, 1},
-    // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_SPEED  , 1},
-    // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_POWER  , 1},
-    // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_TORQUE , 1},
-    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_CONVERTER_TEMP, 1},
-};
-
+static const char *TAG = "hmi_task";
 
 static st_intertask_data_t get_intertask_modbus(
     uint8_t modbus_address,
@@ -56,105 +41,46 @@ static st_intertask_data_t get_intertask_modbus(
     return idata;
 }
 
-static st_intertask_data_t get_intertask_modbus_data(st_modbus_data_t mdata)
-{
-    st_core_data_t coredata;
-    coredata.cdataid = COREDATA_ID_MB_DATA ;
-    bzero(coredata.cdata, sizeof(coredata.cdata));
-    memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(st_modbus_data_t));
-
-    st_intertask_data_t idata = { .src_task_handle_id = TASK_ID_HMI, .coredata = coredata, };
-    return idata;
-}
-
 void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
 {
     st_intertask_data_t idata;
     uint16_t *value = (uint16_t*)pvParameter;
+    e_task_handle_id_t taskid;
     switch(hmiframe.lastbyte) {
         case 0x0001:
             ESP_LOGI(TAG, "[BUTTON] SET FREQUENCY");
             idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_SET_FREQ, (*value)*100);
+            taskid = TASK_ID_LORA;
             break;
         case 0x0002: 
             ESP_LOGI(TAG, "[BUTTON] RUN");
             idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 1);
+            taskid = TASK_ID_LORA;
             break;
         case 0x0003: 
             ESP_LOGI(TAG, "[BUTTON] STOP");
             idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 5);
+            taskid = TASK_ID_LORA;
             break;
         case 0x0004: 
             ESP_LOGI(TAG, "[BUTTON] BACK TO KEYBOARD");
+            return;
             break;
         case 0x0005: 
             ESP_LOGI(TAG, "[BUTTON] FORWARD MOTOR");
             idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 1);
+            taskid = TASK_ID_LORA;
             break;
         case 0x0006: 
             ESP_LOGI(TAG, "[BUTTON] REVERSE MOTOR");
             idata = get_intertask_modbus(1, (uint8_t)MB_FUNC_W_HOLDING, GD20_REG_CONTROL_CMD, 2);
+            taskid = TASK_ID_LORA;
             break;
         default:
             ESP_LOGE(TAG, "No command is found");
             break;
     }
-    ESP_LOGI(TAG, "\n");
-    
-    // Đưa lệnh DWIN vào hàng chờ ưu tiên, KHÔNG gửi ngay lập tức để tránh đụng độ (collision) 
-    // trên đường truyền LoRa khi Gateway đang đợi dữ liệu từ Node.
-    extern bool dwin_cmd_pending;
-    extern st_intertask_data_t dwin_cmd_data;
-    dwin_cmd_data = idata;
-    dwin_cmd_pending = true;
-}
-
-bool dwin_cmd_pending = false;
-st_intertask_data_t dwin_cmd_data;
-
-void test_send_modbus_request()
-{
-    static uint32_t last_request_tick = 0;
-    static uint8_t request_idx = 0;
-    uint32_t current_tick = xTaskGetTickCount() * portTICK_PERIOD_MS;
-
-    // 1. TIMEOUT RECOVERY: Chống kẹt nếu Node không trả lời
-    if(on_processing) {
-        if ((current_tick - last_request_tick) > 2000) {
-            ESP_LOGW(TAG, "Timeout! Reset on_processing.");
-            on_processing = 0;
-        } else {
-            return; // Đang xử lý, không được gửi đè
-        }
-    }
-
-    // 2. GIÃN CÁCH TRUYỀN: Chờ ít nhất 500ms giữa các lần hỏi dữ liệu để đường truyền thoáng
-    // Nhưng nếu có lệnh từ DWIN đang chờ, thì chỉ cần chờ 50ms (rất nhanh) để gửi đi ngay.
-    if (dwin_cmd_pending) {
-        if ((current_tick - last_request_tick) < 50) return;
-    } else {
-        if ((current_tick - last_request_tick) < 500) return;
-    }
-
-    // 3. XỬ LÝ ƯU TIÊN LỆNH TỪ DWIN
-    if (dwin_cmd_pending) {
-        ESP_LOGI(TAG, "Gửi lệnh ưu tiên từ DWIN!");
-        ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, dwin_cmd_data));
-        dwin_cmd_pending = false;
-        on_processing = 1;
-        last_request_tick = current_tick;
-        return; // Thoát ra để nhường luồng, không gửi request auto
-    }
-
-    // 4. AUTO POLLING BÌNH THƯỜNG
-    if(request_idx >= TOTAL_MODBUS_REQUEST)
-        request_idx = 0;
-    st_intertask_data_t idata = get_intertask_modbus_data(intetask_request_data[request_idx++]);
-    ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
-    
-    // ESP_LOGI(TAG, "request_idx: %d", request_idx);
-    on_processing = 1;
-    last_request_tick = current_tick;
+    relay_intertask(taskid, idata);
 }
 
 void hmi_task(void* pvParameters) {
@@ -165,13 +91,11 @@ void hmi_task(void* pvParameters) {
 
     // Khởi tạo RTC
     ds3231_init();
-    
     TickType_t last_rtc_update = 0;
 
     for(;;){
-        test_send_modbus_request();
         hmi_listen();
-        intertask_handle();
+        handle_intertask_request();
 
         // Cập nhật RTC lên DWIN mỗi 1 giây
         if ((xTaskGetTickCount() * portTICK_PERIOD_MS) - last_rtc_update > 1000) {
@@ -186,7 +110,7 @@ void hmi_task(void* pvParameters) {
             }
             last_rtc_update = xTaskGetTickCount() * portTICK_PERIOD_MS;
         }
-        vTaskDelay(pdMS_TO_TICKS(10)); // Tránh Watchdog Trigger
+        vTaskDelay(10);
     }
 }
 
@@ -253,92 +177,34 @@ static void hmi_intertask_core_function(st_core_data_t coredata)
     on_processing = 0;
 }
 
-static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t notifydata)
-{
-    TaskHandle_t *task_handle = NULL;
-    switch(taskid) {
-        case TASK_ID_NETWORK:
-            task_handle = get_network_handle();
-            break;
-        case TASK_ID_LORA:
-            task_handle = get_lora_task_handle();
-            break;
-        case TASK_ID_SDCARD:
-            task_handle = get_common_handle();
-            break;
-        default:
-            ESP_LOGE(TAG, "This TaskHandle doesn't supported");
-            return ESP_ERR_NOT_SUPPORTED;
-            break;
-
-    }
-    if(!task_handle){
-        ESP_LOGE(TAG, "Not found required TaskHandle");
-        return ESP_ERR_NOT_FOUND;
-    }
-
-    if(xTaskNotify(*task_handle, notifydata.value, eSetValueWithoutOverwrite) == pdPASS) {
-        ESP_LOGI(TAG, "Notify to :%d", taskid);
-    }
-    else {
-        ESP_LOGE(TAG, "Fail to notify task");
-    }
-    return ESP_OK;
-}
-
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata)
 {
-    uint8_t qidx = get_available_queue_common();
-    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+    QueueHandle_t *p_queue = (get_queue_common_addr() + taskid);
     if(xQueueSend(*p_queue, (void*)&idata, pdMS_TO_TICKS(200)) == pdPASS){}
     else {
-        ESP_LOGE(TAG, "Fail to send queue");
+        ESP_LOGE(TAG, "Fail to send queue to task handle id:%d", taskid);
     }
-    u_intertask_noti_t notifydata ;
-    notifydata.notivalue.intertask_err = INTERTASK_ERR_NOT_USE;
-    notifydata.notivalue.qidx = qidx; // queue index
-    notify_intertask(taskid, notifydata);
     return ESP_OK;
 }
+
 
 static esp_err_t handle_intertask_request()
 {
-    /* Common step of handle intertask request */
-    u_intertask_noti_t notifydata ;
-    if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&notifydata.value, pdMS_TO_TICKS(100)) == pdFALSE)
+    if(on_processing)
         return ESP_OK;
-    ESP_LOGI(TAG, "Received notify, qidx:%u, intertask_err:%u", 
-            notifydata.notivalue.qidx,
-            notifydata.notivalue.intertask_err
-            );
-    uint8_t qidx = notifydata.notivalue.qidx;
-    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+
+    QueueHandle_t *p_queue = (get_queue_common_addr() + task_id_name);
     st_intertask_data_t idata;
-    e_intertask_err_t ierr = (e_intertask_err_t)notifydata.notivalue.intertask_err;
-
-    /* Bypass xQueueReceive if intertask reply with status */
-    if(INTERTASK_ERR_NOT_USE != ierr) {
-        ESP_LOGW(TAG, "Relay intertask has status:%d", ierr);
-        return ESP_OK;
-    }
-    if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
-
+    if((xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS)){
+        on_processing = 1;
         reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
+        ESP_LOGI(TAG, "Receive queue from :%d", reply_task_handle_id);
         hmi_intertask_core_function(idata.coredata);
     }
-    else {
-        ESP_LOGE(TAG, "%s:Fail to handle QueueReceive", __func__);
-    }
     return ESP_OK;
 
 }
 
-static esp_err_t intertask_handle()
-{
-    ESP_ERROR_CHECK(handle_intertask_request());
-    return ESP_OK;
-
-}
 // ------------------- INTER TASK ------------------- ]
 
 #ifdef __cplusplus

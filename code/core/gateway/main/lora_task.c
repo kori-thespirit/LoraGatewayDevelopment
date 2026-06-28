@@ -16,18 +16,23 @@
 #define LORA_SF 7                 // Spreading Factor: 7
 #define LORA_CR 1                 // Coding Rate: 1 là 4/5
 #define LORA_CRC 1                // 1: Bật CRC, 0: Tắt CRC
+#define LORA_QUEUE_INDEX 0
  
 static const char *TAG = "lora_task";
 void pack_complete(void *pvParameters);
 void parse_complete(void *pvParameters, st_lora_protocol_header_t header);
 
-static esp_err_t intertask_handle();
+static esp_err_t handle_intertask_request();
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
+static void mock_on_processing_complete_in_ms(uint32_t delay);
+static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
+static e_task_handle_id_t task_id_name = TASK_ID_LORA;
+static uint8_t on_processing = 0; // To check whether new request can be processed
+
 static uint8_t src_addr = 0;
 static uint8_t dest_addr = 0;
 static uint8_t dev_addr = 1;
 static e_lora_function_t lorafunc = LORA_FUNC_ACTIVE_TRANSMIT;
-static e_task_handle_id_t reply_task_handle_id = 0;
 static uint8_t buf[40] = {0};
 
 void lora_task(void* pvParameters) {
@@ -54,14 +59,15 @@ void lora_task(void* pvParameters) {
     lora_set_spreading_factor(LORA_SF);
     ESP_LOGI(TAG, "Start");
     while (1) {
-        intertask_handle();
+        handle_intertask_request();
         lora_receive();  // put into receive mode
         if (lora_received()) {
             int rxLen = lora_receive_packet(buf, sizeof(buf));
             // ESP_LOGI(pcTaskGetName(NULL), "%d byte packet received:[%.*s]", rxLen, buf);
             m_lora_protocol_frame_parse(buf, sizeof(buf));
         }
-        vTaskDelay(10);  // Avoid WatchDog alerts
+        mock_on_processing_complete_in_ms(1000);
+        vTaskDelay(10);
     }  // end while
 
 }
@@ -83,7 +89,7 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
            ESP_LOGI(TAG, "Found reply_task_handle_id:%d, relay to this id");
            st_core_data_t *coredata = (st_core_data_t*)pvParameters;
            st_intertask_data_t idata = {
-               .src_task_handle_id = TASK_ID_LORA,
+               .src_task_handle_id = task_id_name,
                .coredata = *coredata,
            };
            relay_intertask(reply_task_handle_id, idata);
@@ -93,104 +99,116 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
         /* TODO: Relay to adjacent lora node */
         return;
     }
+    on_processing = 0;
 }
 
 // ------------------- INTER_TASK ------------------- [
 
-static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t notifydata)
+static void lora_intertask_core_function(st_core_data_t coredata)
 {
-    TaskHandle_t *task_handle = NULL;
-    switch(taskid) {
-        case TASK_ID_NETWORK:
-            task_handle = get_network_handle();
-            break;
-        case TASK_ID_HMI:
-            task_handle = get_hmi_handle();
-            break;
-        case TASK_ID_SDCARD:
-            task_handle = get_common_handle();
-            break;
-        default:
-            ESP_LOGE(TAG, "This TaskHandle doesn't supported");
-            return ESP_ERR_NOT_SUPPORTED;
-            break;
-
+    e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buf, sizeof(buf), (void*)&coredata, sizeof(st_core_data_t), dev_addr, dest_addr, 0);
+    ESP_LOGI(TAG, "Sending coredata to address: %u", dest_addr);
+    if(LORA_PROTOCOL_OK != protocol_err) {
+        ESP_LOGE(TAG, "%s:Pack frame data failed, err:%d", __func__, protocol_err);
     }
-    if(!task_handle){
-        ESP_LOGE(TAG, "Not found required TaskHandle");
-        return ESP_ERR_NOT_FOUND;
-    }
-
-    if(xTaskNotify(*task_handle, notifydata.value, eSetValueWithoutOverwrite) == pdPASS) {
-        ESP_LOGI(TAG, "Notify to :%d", taskid);
-    }
-    else {
-        ESP_LOGE(TAG, "Fail to notify task");
-    }
-    return ESP_OK;
+    lora_send_packet(buf, sizeof(buf));
+    bzero(buf, sizeof(buf));
 }
+
+// static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t notifydata)
+// {
+//     TaskHandle_t *task_handle = NULL;
+//     switch(taskid) {
+//         case TASK_ID_NETWORK:
+//             task_handle = get_network_handle();
+//             break;
+//         case TASK_ID_HMI:
+//             task_handle = get_hmi_handle();
+//             break;
+//         case TASK_ID_SDCARD:
+//             task_handle = get_common_handle();
+//             break;
+//         default:
+//             ESP_LOGE(TAG, "This TaskHandle doesn't supported");
+//             return ESP_ERR_NOT_SUPPORTED;
+//             break;
+//
+//     }
+//     if(!task_handle){
+//         ESP_LOGE(TAG, "Not found required TaskHandle");
+//         return ESP_ERR_NOT_FOUND;
+//     }
+//
+//     if(xTaskNotify(*task_handle, notifydata.value, eSetValueWithoutOverwrite) == pdPASS) {
+//         ESP_LOGI(TAG, "Notify to :%d", taskid);
+//     }
+//     else {
+//         ESP_LOGE(TAG, "Fail to notify task");
+//     }
+//     return ESP_OK;
+// }
 
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata)
 {
-    uint8_t qidx = get_available_queue_common();
-    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+    // uint8_t qidx = get_available_queue_common();
+    QueueHandle_t *p_queue = (get_queue_common_addr() + taskid);
     if(xQueueSend(*p_queue, (void*)&idata, pdMS_TO_TICKS(200)) == pdPASS){}
     else {
-        ESP_LOGE(TAG, "Fail to send queue");
+        ESP_LOGE(TAG, "Fail to send queue to task handle id:%d", taskid);
     }
-    u_intertask_noti_t notifydata ;
-    notifydata.notivalue.intertask_err = INTERTASK_ERR_NOT_USE;
-    notifydata.notivalue.qidx = qidx; // queue index
-    notify_intertask(taskid, notifydata);
+    // u_intertask_noti_t notifydata ;
+    // notifydata.notivalue.intertask_err = INTERTASK_ERR_NOT_USE;
+    // notifydata.notivalue.qidx = qidx; // queue index
+    // notify_intertask(taskid, notifydata);
     return ESP_OK;
 }
 
 static esp_err_t handle_intertask_request()
 {
     /* Common step of handle intertask request */
-    u_intertask_noti_t notifydata ;
-    if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&notifydata.value, pdMS_TO_TICKS(100)) == pdFALSE)
-        return ESP_OK;
-    ESP_LOGI(TAG, "Received notify, qidx:%u, intertask_err:%u", 
-            notifydata.notivalue.qidx,
-            notifydata.notivalue.intertask_err
-            );
-    uint8_t qidx = notifydata.notivalue.qidx;
-    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
-    st_intertask_data_t idata;
-    e_intertask_err_t ierr = notifydata.notivalue.intertask_err;
+    // u_intertask_noti_t notifydata ;
+    // if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&notifydata.value, pdMS_TO_TICKS(10)) == pdTRUE)
+    // {
+    //     ESP_LOGI(TAG, "Received notify, qidx:%u, intertask_err:%u", 
+    //             notifydata.notivalue.qidx,
+    //             notifydata.notivalue.intertask_err
+    //             );
+    //     uint8_t qidx = notifydata.notivalue.qidx;
+    //     e_intertask_err_t ierr = notifydata.notivalue.intertask_err;
+    // }
 
     /* Bypass xQueueReceive if intertask reply with status */
-    if(INTERTASK_ERR_NOT_USE != ierr) {
-        ESP_LOGW(TAG, "Relay intertask has status:%d", ierr);
+    // if(INTERTASK_ERR_NOT_USE != ierr) {
+    //     ESP_LOGW(TAG, "Relay intertask has status:%d", ierr);
+    //     return ESP_OK;
+    // }
+    if(on_processing)
         return ESP_OK;
-    }
-    if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
 
-        st_core_data_t coredata =   idata.coredata;
-        reply_task_handle_id = idata.src_task_handle_id;
-        ESP_LOGI(TAG, "size coredata:%lu, dest_addr:%u, reply_task_handle_id:%d", sizeof(coredata), dest_addr, idata.src_task_handle_id);
-        /* Perform core function */
-        e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buf, sizeof(buf), (void*)&coredata, sizeof(st_core_data_t), dev_addr, dest_addr, 0);
-        if(LORA_PROTOCOL_OK != protocol_err) {
-            ESP_LOGE(TAG, "%s:Pack frame data failed, err:%d", __func__, protocol_err);
-        }
-        lora_send_packet(buf, sizeof(buf));
-        bzero(buf, sizeof(buf));
-    }
-    else {
-        ESP_LOGE(TAG, "%s:Fail to handle QueueReceive", __func__);
+    st_intertask_data_t idata;
+    QueueHandle_t *p_queue = (get_queue_common_addr() + task_id_name);
+    if((xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS)){
+        on_processing = 1;
+        reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
+        ESP_LOGI(TAG, "Receive queue from :%d", reply_task_handle_id);
+        lora_intertask_core_function(idata.coredata);
     }
     return ESP_OK;
 
 }
-
-static esp_err_t intertask_handle()
+static void mock_on_processing_complete_in_ms(uint32_t delay)
 {
-    ESP_ERROR_CHECK(handle_intertask_request());
-    return ESP_OK;
-
+    if(!on_processing) return;
+    vTaskDelay(pdMS_TO_TICKS(delay));
+    st_core_data_t coredata = {0};
+    st_intertask_data_t idata = {
+        .src_task_handle_id = task_id_name,
+        .coredata = coredata,
+    };
+    relay_intertask(reply_task_handle_id, idata);
+    on_processing = 0;
 }
+
 // ------------------- INTER TASK ------------------- ]
 // ------------------- HELPER FUNCTION ------------------- [
 uint8_t lora_get_dest_addr() {return dest_addr;}
