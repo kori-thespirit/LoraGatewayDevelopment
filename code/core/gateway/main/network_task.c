@@ -59,7 +59,7 @@ static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 
 const st_modbus_topic_descriptor_t topic_gd20_control[] = {
     {
-        0x03, //Modbus function: Holding
+        0x06, //Modbus function: Write Holding
         {"command", 0x2000}, // parameter:command
         {
             {"value", TYPE_U16, (void*)&g_mdata.value},
@@ -67,7 +67,7 @@ const st_modbus_topic_descriptor_t topic_gd20_control[] = {
         }
     },
     {
-        0x03, //Modbus function: Holding
+        0x06, //Modbus function: Write Holding
         {"frequency", 0x2001}, // parameter:frequency
         {
             {"value", TYPE_U16, (void*)&g_mdata.value},
