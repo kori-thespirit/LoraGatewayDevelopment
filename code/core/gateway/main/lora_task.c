@@ -66,7 +66,6 @@ void lora_task(void* pvParameters) {
             // ESP_LOGI(pcTaskGetName(NULL), "%d byte packet received:[%.*s]", rxLen, buf);
             m_lora_protocol_frame_parse(buf, sizeof(buf));
         }
-        mock_on_processing_complete_in_ms(1000);
         vTaskDelay(10);
     }  // end while
 

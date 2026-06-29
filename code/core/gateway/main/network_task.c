@@ -44,20 +44,31 @@ typedef struct modbus_topic_descriptor{
     st_param_descriptor_t param_desc[2];
 }st_modbus_topic_descriptor_t;
 
+typedef struct modbus_topic_data {
+    float out_i;
+    float out_v;
+    float freq;
+    float speed;
+    float conv_temp;
+}st_modbus_topic_data_t;
+
 static void error_handle(esp_mqtt_error_codes_t *error);
 static void handle_topic_request(esp_mqtt_event_handle_t event);
 static void handle_topic_gd20_control(void *vParameters);
 static void mqtt_log(const char* status, const char * message);
-static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t notifydata);
-static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
-static esp_err_t handle_intertask_request();
 static st_intertask_data_t get_intertask_modbus();
+
+static esp_err_t handle_intertask_request();
+static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
+static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
+static e_task_handle_id_t task_id_name = TASK_ID_NETWORK;
+static uint8_t on_processing = 0; // To check whether new request can be processed
 
 EventGroupHandle_t network_event_group;
 st_modbus_data_t g_mdata;
-static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 
-const st_modbus_topic_descriptor_t topic_gd20_control[] = {
+static st_modbus_topic_data_t g_topic_gd20_data;
+static const st_modbus_topic_descriptor_t topic_gd20_control[] = {
     {
         0x06, //Modbus function: Write Holding
         {"command", 0x2000}, // parameter:command
@@ -74,28 +85,27 @@ const st_modbus_topic_descriptor_t topic_gd20_control[] = {
             {"modbus address", TYPE_U8, (void*)&g_mdata.addr},
         }
     }
-
 };
 
-const st_map_str_to_value_t topic_gd20_query[] = {
-    {"status"   , 0x2100},
-    {"id"       , 0x2103},
-};
 
-#define TOTAL_TOPIC(_X_) TOTAL_INDEX(_X_, const char*)
-const char *sub_topic_list[] = {
+// static const st_map_str_to_value_t topic_gd20_query[] = {
+//     {"status"   , 0x2100},
+//     {"id"       , 0x2103},
+// };
+
+static const char *sub_topic_list[] = {
     // "/topic/project/lora/gateway/#",
     "/topic/project/lora/node/+/devices/+/control",
     "/topic/project/lora/node/+/devices/+/query",
     "/topic/project/lora/node/+/config/",
 };
 
-const char *pub_topic_list[] = {
+const static char *pub_topic_list[] = {
     "/topic/project/lora/node/2/devices/gd20/data",
-    "/topic/project/lora/gateway/status",
+    "/topic/project/lora/gateway/2/status",
 };
 
-const char *example_topic_list[] = {
+const static char *example_topic_list[] = {
     "/topic/example/#",
 };
 
@@ -110,10 +120,10 @@ char *mqtt_gd20_data_json_format = "\
 }";
 */
 
-char *mqtt_gd20_data_json_format =\
+static char *mqtt_gd20_data_json_format =\
 " { \"Ouput Current\":%.2f, \"Frequency\":%.2f, \"Out Voltage\":%.2f, \"Speed\":%.2f, \"Temperature\":%.2f }";
 
-char *mqtt_gateway_status_json_format =\
+static char *mqtt_gateway_status_json_format =\
 "{\t\n\"status\":\"%s\",\n\t\"message\":\"%s\"\n}";
 
 void network_task(void* pvParameters) 
@@ -138,8 +148,9 @@ void network_task(void* pvParameters)
         ESP_LOGI(TAG, "Connecting to %s ... broker", MQTT_URI);
         ESP_ERROR_CHECK(mqtts_app_start(&network_event_group));
         ESP_ERROR_CHECK(mqtts_app_register_callback(handle_topic_request, error_handle));
-        ESP_ERROR_CHECK(mqtts_app_use_subscribe_list(sub_topic_list, TOTAL_INDEX(sub_topic_list)));
+        ESP_ERROR_CHECK(mqtts_app_use_subscribe_list(sub_topic_list, TOTAL_IDX(sub_topic_list)));
         ESP_LOGI(TAG, "MQTT connected");
+        mqtt_log("OK", "MQTT connected");
     }
     else {
         ESP_LOGE(TAG, "Failed to connect to network");
@@ -284,13 +295,13 @@ static void handle_topic_gd20_control(void *vParameters)
 
     ESP_LOGI(TAG, "mb_reg:%s", mb_reg);
     
-    for(i = 0; i < TOTAL_INDEX(topic_gd20_control); i++) {
+    for(i = 0; i < TOTAL_IDX(topic_gd20_control); i++) {
         if(!strcmp(topic_gd20_control[i].modbus_reg.str, mb_reg)) {
             ESP_LOGI(TAG, "Found register:%s, reg_value:0x%x at topic %u", topic_gd20_control[i].modbus_reg.str, topic_gd20_control[i].modbus_reg.val, i);
             g_mdata.reg = topic_gd20_control[i].modbus_reg.val;
             g_mdata.modbus_function = topic_gd20_control[i].modbus_function;
             const st_param_descriptor_t *param_desc = topic_gd20_control[i].param_desc;
-            for(uint8_t descriptor = 0; descriptor < TOTAL_INDEX(topic_gd20_control[i].param_desc); descriptor++){
+            for(uint8_t descriptor = 0; descriptor < TOTAL_IDX(topic_gd20_control[i].param_desc); descriptor++){
                 cJSON *temp = cJSON_GetObjectItemCaseSensitive(json,(param_desc + descriptor)->paramkey);
                 if(temp == NULL) {
                     ESP_LOGE(TAG, "%s, %d: required paramkey not found: %s", 
@@ -313,7 +324,7 @@ static void handle_topic_gd20_control(void *vParameters)
         }
     }
     ESP_LOGI(TAG, "g_mdata - value:%u, addr:%u", g_mdata.value, g_mdata.addr);
-    mqtt_log("OK", "Parse receive data completed");
+    mqtt_log("OK", "Sending request to node");
 
     st_intertask_data_t idata = get_intertask_modbus();
     relay_intertask(TASK_ID_LORA, idata);
@@ -340,114 +351,105 @@ static st_intertask_data_t get_intertask_modbus()
 
 static void network_intertask_core_function(st_core_data_t coredata)
 {
-    // ESP_LOGI(TAG, "Inside %s",__func__);
-    // float fdata;
-    // uint16_t u16data;
-    // uint8_t u8data;
-    // switch(coredata.cdataid)
-    // {
-    // }
-}
-
-static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t notifydata)
-{
-    TaskHandle_t *task_handle = NULL;
-    switch(taskid) {
-        case TASK_ID_HMI:
-            task_handle = get_hmi_handle();
+    static uint8_t request_count = 0;
+    ESP_LOGI(TAG, "Inside %s",__func__);
+    switch(coredata.cdataid)
+    {
+        case COREDATA_ID_GD20_SPEED:
+            memcpy((void*)&g_topic_gd20_data.speed, (void*)&coredata.cdata, sizeof(float));
+            ESP_LOGI(TAG, "GD20_SPEED:%.2f, request_count:%u", g_topic_gd20_data.speed, request_count);
+            request_count++;
             break;
-        case TASK_ID_LORA:
-            task_handle = get_lora_task_handle();
+        case COREDATA_ID_GD20_POWER:
             break;
-        case TASK_ID_SDCARD:
-            task_handle = get_common_handle();
+        case COREDATA_ID_GD20_TORQUE:
+            break;
+        case COREDATA_ID_GD20_STATUS:
+            break;
+        case COREDATA_ID_GD20_FREQ:
+            memcpy((void*)&g_topic_gd20_data.freq, (void*)&coredata.cdata, sizeof(float));
+            ESP_LOGI(TAG, "GD20_FREQ:%.2f, request_count:%u", g_topic_gd20_data.out_i, request_count);
+            g_topic_gd20_data.freq *= 100;
+            request_count++;
+            break;
+        case COREDATA_ID_GD20_CURRENT:
+            memcpy((void*)&g_topic_gd20_data.out_i, (void*)&coredata.cdata, sizeof(float));
+            ESP_LOGI(TAG, "GD20_CURRENT:%.2f, request_count:%u", g_topic_gd20_data.out_i, request_count);
+            g_topic_gd20_data.out_i *= 100;
+            request_count++;
+            break;
+        case COREDATA_ID_GD20_VOLTAGE:
+            memcpy((void*)&g_topic_gd20_data.out_v, (void*)&coredata.cdata, sizeof(float));
+            ESP_LOGI(TAG, "GD20_VOLTAGE:%.2f, request_count:%u", g_topic_gd20_data.out_v, request_count);
+            g_topic_gd20_data.out_v *= 100;
+            request_count++;
+            break;
+        case COREDATA_ID_GD20_CONVETER_TEMP:
+            memcpy((void*)&g_topic_gd20_data.conv_temp, (void*)&coredata.cdata, sizeof(float));
+            ESP_LOGI(TAG, "GD20_CONVETER_TEMP:%.2f, request_count:%u", g_topic_gd20_data.conv_temp, request_count);
+            g_topic_gd20_data.conv_temp *= 100;
+            request_count++;
             break;
         default:
-            ESP_LOGE(TAG, "This TaskHandle doesn't supported");
-            return ESP_ERR_NOT_SUPPORTED;
             break;
-
     }
-    if(!task_handle){
-        ESP_LOGE(TAG, "Not found required TaskHandle");
-        return ESP_ERR_NOT_FOUND;
+    if(request_count > 4) {
+        request_count = 0;
+        char mqtt_gd20_data_buf[100] = {0};
+        sprintf(mqtt_gd20_data_buf, mqtt_gd20_data_json_format, 
+                g_topic_gd20_data.out_i,
+                g_topic_gd20_data.freq,
+                g_topic_gd20_data.out_v,
+                g_topic_gd20_data.conv_temp
+                );
+        mqtts_app_publish(*(pub_topic_list + 0), mqtt_gd20_data_buf);
     }
-
-    if(xTaskNotify(*task_handle, notifydata.value, eSetValueWithoutOverwrite) == pdPASS) {
-        ESP_LOGI(TAG, "Notify to :%d", taskid);
-    }
-    else {
-        ESP_LOGE(TAG, "Fail to notify task");
-    }
-    return ESP_OK;
+    on_processing = 0;
 }
+
 
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata)
 {
-    uint8_t qidx = get_available_queue_common();
-    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+    QueueHandle_t *p_queue = (get_queue_common_addr() + taskid);
     if(xQueueSend(*p_queue, (void*)&idata, pdMS_TO_TICKS(200)) == pdPASS){}
     else {
-        ESP_LOGE(TAG, "Fail to send queue");
+        ESP_LOGE(TAG, "Fail to send queue to task handle id:%d", taskid);
     }
-    u_intertask_noti_t notifydata ;
-    notifydata.notivalue.intertask_err = INTERTASK_ERR_NOT_USE;
-    notifydata.notivalue.qidx = qidx; // queue index
-    notify_intertask(taskid, notifydata);
     return ESP_OK;
 }
 
 static esp_err_t handle_intertask_request()
 {
-    /* Common step of handle intertask request */
-    u_intertask_noti_t notifydata ;
-    if(xTaskNotifyWait(0x00, 0x00, (uint32_t*)&notifydata.value, pdMS_TO_TICKS(100)) == pdFALSE)
+    if(on_processing)
         return ESP_OK;
-    ESP_LOGI(TAG, "Received notify, qidx:%u, intertask_err:%u", 
-            notifydata.notivalue.qidx,
-            notifydata.notivalue.intertask_err
-            );
-    uint8_t qidx = notifydata.notivalue.qidx;
-    QueueHandle_t *p_queue = (get_queue_common_addr() + qidx);
+
+    QueueHandle_t *p_queue = (get_queue_common_addr() + task_id_name);
     st_intertask_data_t idata;
-    e_intertask_err_t ierr = (e_intertask_err_t)notifydata.notivalue.intertask_err;
-
-    /* Bypass xQueueReceive if intertask reply with status */
-    if(INTERTASK_ERR_NOT_USE != ierr) {
-        ESP_LOGW(TAG, "Relay intertask has status:%d", ierr);
-        return ESP_OK;
-    }
-    if(xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS){
-
+    if((xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS)){
+        on_processing = 1;
         reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
+        ESP_LOGI(TAG, "Receive queue from :%d", reply_task_handle_id);
         network_intertask_core_function(idata.coredata);
     }
-    else {
-        ESP_LOGE(TAG, "%s:Fail to handle QueueReceive", __func__);
-    }
+    // else {
+    //     ESP_LOGE(TAG, "Line %d - Fail to handle QueueReceive", __LINE__);
+    // }
     return ESP_OK;
-
 }
 
-static esp_err_t intertask_handle()
-{
-    ESP_ERROR_CHECK(handle_intertask_request());
-    return ESP_OK;
-
-}
 // ------------------- INTER TASK ------------------- ]
 
+char mqtt_status_buf[sizeof(mqtt_gateway_status_json_format) + 100] = {0};
 static void mqtt_log(const char* status, const char * message)
 {
-    char buffer[sizeof(mqtt_gateway_status_json_format) + 150] = {0};
     uint16_t total_len = sizeof(mqtt_gateway_status_json_format) + strlen(message) + strlen(status);
     ESP_LOGI(TAG, "total_len:%u", total_len);
-    if(total_len > sizeof(buffer)) {
-        ESP_LOGE(TAG, "%s - message is too long:%d, expect:%d", __func__, total_len, sizeof(mqtt_gateway_status_json_format) + 150);
+    if(total_len > sizeof(mqtt_status_buf)) {
+        ESP_LOGE(TAG, "%s - message is too long:%d, expect:%d", __func__, total_len, sizeof(mqtt_status_buf));
     }
     if(strcmp(status, "OK") && strcmp(status, "ERROR")) {
         ESP_LOGE(TAG, "status must be OK or ERROR:%s", status);
     }
-    sprintf(buffer, mqtt_gateway_status_json_format, status, message);
-    ESP_ERROR_CHECK(mqtts_app_publish(*(pub_topic_list + 1), buffer));
+    sprintf(mqtt_status_buf, mqtt_gateway_status_json_format, status, message);
+    ESP_ERROR_CHECK(mqtts_app_publish(*(pub_topic_list + 1), mqtt_status_buf));
 }

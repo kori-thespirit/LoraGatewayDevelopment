@@ -17,8 +17,6 @@ static const char *TAG = "common";
 TimerHandle_t stimer_common;
 
 static st_modbus_data_t intetask_request_data[] = {
-    {SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT  , SHT20_REG_TEMP     , 1},
-    {SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT  , SHT20_REG_HUMID    , 1},
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_SET_FREQ      , 1},
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OPERATION_FREQ, 1},
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_VOLTAGE, 1},
@@ -28,6 +26,8 @@ static st_modbus_data_t intetask_request_data[] = {
     // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_SPEED  , 1},
     // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_POWER  , 1},
     // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_TORQUE , 1},
+    // {SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT  , SHT20_REG_TEMP     , 1},
+    // {SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT  , SHT20_REG_HUMID    , 1},
 };
 
 static st_intertask_data_t get_intertask_modbus_data(st_modbus_data_t mdata)
@@ -83,7 +83,7 @@ static void common_intertask_core_function(st_core_data_t coredata)
 
     st_intertask_data_t idata = { .src_task_handle_id = task_id_name, .coredata = coredata, };
     relay_intertask(TASK_ID_HMI, idata);
-    // relay_intertask(TASK_ID_NETWORK, idata);
+    relay_intertask(TASK_ID_NETWORK, idata);
     on_processing = 0;
 }
 
