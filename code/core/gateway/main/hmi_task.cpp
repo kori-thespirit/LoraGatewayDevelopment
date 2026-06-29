@@ -169,7 +169,6 @@ static void hmi_intertask_core_function(st_core_data_t coredata)
             memcpy((void*)&fdata, (void*)&coredata.cdata, sizeof(float));
             ESP_LOGI(TAG, "GD20_CONVETER_TEMP:%.2f",fdata);
             hmi_send_data_to_display(ADDRESS_GD20_TEMP, (uint16_t)(fdata * 100));
-
             break;
         default:
             break;
