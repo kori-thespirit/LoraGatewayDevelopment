@@ -20,11 +20,6 @@ static e_task_handle_id_t reply_task_handle_id = 0;
 static uint8_t reply_dev_addr = 0;
 static e_modbus_function_t reply_modbus_function;
 
-static void transfer_payload_to_other_task()
-{
-
-}
-
 void modbus_task(void* pvParameters)
 {
     e_modbus_payload_err_t err = ESP_OK;

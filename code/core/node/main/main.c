@@ -17,17 +17,19 @@ TaskHandle_t modbus_task_handle;
 TaskHandle_t lora_task_handle;
 TaskHandle_t network_task_handle;
 
-static QueueHandle_t q_common[5];
+// static QueueHandle_t q_common[5];
+static QueueHandle_t q_common;
 
 static const char *TAG = "main";
 
 void app_main() {
-    for(uint8_t i = 0; i < sizeof(q_common)/sizeof(QueueHandle_t); i++) {
-        q_common[i] = xQueueCreate(QUEUE_COMMON_SIZE, sizeof(uint8_t));
-        if(NULL == q_common[i]) {
-            ESP_LOGE(TAG,"Fail to create queue: %u", i);
-        }
-    }
+    // for(uint8_t i = 0; i < sizeof(q_common)/sizeof(QueueHandle_t); i++) {
+    //     q_common[i] = xQueueCreate(QUEUE_COMMON_SIZE, sizeof(st_modbus_intertask_t));
+    //     if(NULL == q_common[i]) {
+    //         ESP_LOGE(TAG,"Fail to create queue: %u", i);
+    //     }
+    // }
+    q_common = xQueueCreate(QUEUE_COMMON_ITEMS, sizeof(st_intertask_data_t));
 
     lora_task_handle = xTaskCreateStatic(
     lora_task,
@@ -50,12 +52,8 @@ void app_main() {
     xModbusStack,
     &xModbusTaskBuffer
     );
-    if (ret != pdPASS) 
-      ESP_LOGE(TAG,"Fail to create network task");
-
-    for(;;){
-        daemon_task(NULL);
-    }
+    if (modbus_task_handle == NULL) 
+      ESP_LOGE(TAG,"Fail to create modbus task");
 
     for(;;){
         vTaskDelay(pdMS_TO_TICKS(1000));
