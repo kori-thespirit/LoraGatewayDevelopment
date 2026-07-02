@@ -16,6 +16,7 @@
 #define LORA_SF 7                 // Spreading Factor: 7
 #define LORA_CR 1                 // Coding Rate: 1 là 4/5
 #define LORA_CRC 1                // 1: Bật CRC, 0: Tắt CRC
+#define MAX_RETRY_TIME 3
  
 static const char *TAG = "lora_task";
 void pack_complete(void *pvParameters);
@@ -33,6 +34,9 @@ static uint8_t dest_addr = 0;
 static uint8_t dev_addr = 1;
 static e_lora_function_t lorafunc = LORA_FUNC_ACTIVE_TRANSMIT;
 static uint8_t buf[40] = {0};
+static uint8_t buf_retry[40] = {0};
+static uint8_t retry_time = 0;
+static uint32_t message_count = 0;
 
 void lora_task(void* pvParameters) {
 
@@ -110,6 +114,7 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
         /* TODO: Relay to adjacent lora node */
         return;
     }
+    bzero(buf_retry, sizeof(buf_retry));
     intertask_on_processing = 0;
 }
 
@@ -118,16 +123,19 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
 static void lora_intertask_core_function(st_core_data_t coredata)
 {
     e_lora_protocol_err_t protocol_err = m_lora_protocol_frame_pack((void*)buf, sizeof(buf), (void*)&coredata, sizeof(st_core_data_t), dev_addr, dest_addr, 0);
-    ESP_LOGI(TAG, "Sending coredata to address: %u", dest_addr);
+    ESP_LOGI(TAG, "Sending coredata to address: %u, message_count:%lu", dest_addr, message_count);
     if(LORA_PROTOCOL_OK != protocol_err) {
         ESP_LOGE(TAG, "%s:Pack frame data failed, err:%d", __func__, protocol_err);
     }
-    for(uint8_t i = 0; i < sizeof(buf); i++) {
-        printf("%x ", buf[i]);
-    }
-    printf("\n");
+    // for(uint8_t i = 0; i < sizeof(buf); i++) {
+    //     printf("%x ", buf[i]);
+    // }
+    // printf("\n");
+    memcpy(buf_retry, buf, sizeof(buf));
     lora_send_packet(buf, sizeof(buf));
     bzero(buf, sizeof(buf));
+    message_count++;
+    ESP_LOGW(TAG, "message_count:%lu", message_count);
 }
 
 // static esp_err_t notify_intertask(e_task_handle_id_t taskid, u_intertask_noti_t notifydata)
@@ -202,8 +210,18 @@ static esp_err_t handle_intertask_request()
     if(intertask_on_processing) {
         if ((current_tick - last_request_tick) > 2000) {
             last_request_tick = current_tick;
-            ESP_LOGW(TAG, "Timeout! Reset intertask_on_processing.");
-            intertask_on_processing = 0;
+            if(retry_time >= MAX_RETRY_TIME){
+                retry_time = 0;
+                bzero(buf_retry, sizeof(buf_retry));
+                ESP_LOGW(TAG, "Timeout reach limit! Reset intertask_on_processing.");
+                intertask_on_processing = 0;
+                common_task_retry();
+            }
+            else {
+                retry_time++;
+                ESP_LOGW(TAG, "Retry %u", retry_time);
+                lora_send_packet(buf_retry, sizeof(buf_retry));
+            }
         }
         else 
             return ESP_OK;
