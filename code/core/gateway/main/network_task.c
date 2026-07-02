@@ -358,7 +358,7 @@ static void error_handle(esp_mqtt_error_codes_t *error)
 static st_intertask_data_t get_intertask_modbus()
 {
     st_core_data_t coredata;
-    coredata.cdataid = COREDATA_ID_MB_DATA;
+    coredata.cdataid = (uint8_t)COREDATA_ID_MB_DATA;
     bzero(coredata.cdata, sizeof(coredata.cdata));
     memcpy((void*)coredata.cdata, (void*)&g_mdata, sizeof(st_modbus_data_t));
 
@@ -369,7 +369,7 @@ static st_intertask_data_t get_intertask_modbus()
 static void network_intertask_core_function(st_core_data_t coredata)
 {
     static uint8_t request_count = 0;
-    ESP_LOGI(TAG, "Inside %s",__func__);
+    ESP_LOGI(TAG, "Inside %s, get core ID:%u",__func__, coredata.cdataid);
     switch(coredata.cdataid)
     {
         case COREDATA_ID_GD20_SPEED:
@@ -408,17 +408,20 @@ static void network_intertask_core_function(st_core_data_t coredata)
             request_count++;
             break;
         default:
+            ESP_LOGE(TAG, "core ID is not supported:%d", coredata.cdataid);
             break;
     }
-    if(request_count > 4) {
+    if(request_count >= 5) {
         request_count = 0;
-        char mqtt_gd20_data_buf[100] = {0};
-        sprintf(mqtt_gd20_data_buf, mqtt_gd20_data_json_format, 
+        char mqtt_gd20_data_buf[150] = {0};
+        sprintf(mqtt_gd20_data_buf, " { \"Ouput Current\":%f, \"Frequency\":%f, \"Out Voltage\":%f, \"Speed\":%f, \"Temperature\":%f }", 
                 g_topic_gd20_data.out_i,
                 g_topic_gd20_data.freq,
                 g_topic_gd20_data.out_v,
+                g_topic_gd20_data.speed,
                 g_topic_gd20_data.conv_temp
                 );
+        ESP_LOGI(TAG,"Publishing:%s", mqtt_gd20_data_buf);
         mqtts_app_publish(*(pub_topic_list + 0), mqtt_gd20_data_buf);
     }
     intertask_on_processing = 0;
@@ -441,6 +444,7 @@ static esp_err_t handle_intertask_request()
     uint32_t current_tick = xTaskGetTickCount() * portTICK_PERIOD_MS;
     if(intertask_on_processing) {
         if ((current_tick - last_request_tick) > 4000) {
+            last_request_tick = current_tick;
             ESP_LOGW(TAG, "Timeout! Reset intertask_on_processing.");
             intertask_on_processing = 0;
         }

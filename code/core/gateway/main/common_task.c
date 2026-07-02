@@ -35,8 +35,8 @@ static st_modbus_data_t intetask_request_data[] = {
 static st_intertask_data_t get_intertask_modbus_data(st_modbus_data_t mdata)
 {
     st_core_data_t coredata;
+    coredata.cdataid = (uint8_t)COREDATA_ID_MB_DATA ;
     bzero(coredata.cdata, sizeof(coredata.cdata));
-    coredata.cdataid = COREDATA_ID_MB_DATA ;
     memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(st_modbus_data_t));
 
     st_intertask_data_t idata = { .src_task_handle_id = task_id_name, .coredata = coredata, };
@@ -52,12 +52,14 @@ static void request_data_from_modbus()
     if(is_on_modbus_request)
         return;
 
+    is_on_modbus_request = 1;
+    ESP_ERROR_CHECK(lora_set_dest_addr(20));
+    st_intertask_data_t idata = get_intertask_modbus_data(intetask_request_data[request_idx]);
+    ESP_LOGI(TAG, "Send request to TASK_ID_LORA with core ID:%u, request_idx:%u", idata.coredata.cdataid, request_idx);
     if(request_idx >= TOTAL_IDX(intetask_request_data))
         request_idx = 0;
-    is_on_modbus_request = 1;
-    ESP_ERROR_CHECK(lora_set_dest_addr(2));
-    st_intertask_data_t idata = get_intertask_modbus_data(intetask_request_data[request_idx++]);
-    ESP_LOGI(TAG, "Send request to TASK_ID_LORA with core ID:%d", idata.coredata.cdataid);
+    else 
+        request_idx++;
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
     // last_request_tick = current_tick;
 }
@@ -67,11 +69,13 @@ void common_task(void* pvParameters) {
     // sdcard_init();
     // stimer_common = xTimerCreate("common timer", pdMS_TO_TICKS(100), true, NULL, stimer_cb);
     ESP_LOGI(TAG, "task created");
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    while(!network_get_mqtt_status()) {
+        vTaskDelay(pdMS_TO_TICKS(2000));
+    }
     for(;;){
         request_data_from_modbus();
         handle_intertask_request();
-        vTaskDelay(pdMS_TO_TICKS(2000));
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
 
@@ -79,7 +83,7 @@ void common_task(void* pvParameters) {
 
 static void common_intertask_core_function(st_core_data_t coredata)
 {
-    ESP_LOGI(TAG, "Inside %s",__func__);
+    ESP_LOGI(TAG, "Inside %s, get core ID:%u",__func__, coredata.cdataid);
 
     st_intertask_data_t idata = { .src_task_handle_id = task_id_name, .coredata = coredata, };
     relay_intertask(TASK_ID_HMI, idata);

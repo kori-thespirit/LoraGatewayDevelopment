@@ -59,11 +59,11 @@ void lora_task(void* pvParameters) {
     ESP_LOGI(TAG, "Start");
 
     while (1) {
-        handle_intertask_request();
+        ESP_ERROR_CHECK(handle_intertask_request());
         lora_receive();  // put into receive mode
         if (lora_received()) {
-            int rxLen = lora_receive_packet(buf, sizeof(buf));
-            m_lora_protocol_frame_parse(buf, sizeof(buf));
+            if(lora_receive_packet(buf, sizeof(buf)) > 0)
+                m_lora_protocol_frame_parse(buf, sizeof(buf));
         }
         vTaskDelay(pdMS_TO_TICKS(10));
     }  // end while
@@ -84,12 +84,25 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
        src_addr =  dev_addr;
        dest_addr = header.src_addr; // The reply address is the received src_addr
        if(reply_task_handle_id) {
-           ESP_LOGI(TAG, "Found reply_task_handle_id:%d, relay to this id");
-           st_core_data_t *coredata = (st_core_data_t*)pvParameters;
+           st_core_data_t coredata = *(st_core_data_t*)pvParameters;
+           // st_core_data_t coredata;
+           // memcpy((void*)&coredata, pvParameters, sizeof(coredata));
+           // ESP_LOGI(TAG, "pvParameters");
+           // for(uint8_t i = 0; i < sizeof(st_core_data_t); i++) {
+           //     printf("%x ", *(uint8_t*)(pvParameters + i));
+           // }
+           // printf("\n");
+           ESP_LOGI(TAG, "coredata");
+           for(uint8_t i = 0; i < sizeof(st_core_data_t); i++) {
+               printf("%x ", coredata.cdata[i]);
+           }
+           // printf("\n");
+           // ESP_LOGI(TAG, "coredata.cdataid:%u", coredata.cdataid);
            st_intertask_data_t idata = {
                .src_task_handle_id = task_id_name,
-               .coredata = *coredata,
+               .coredata = coredata,
            };
+           ESP_LOGI(TAG, "Found reply_task_handle_id:%d, relay core ID:%u to this id", reply_task_handle_id, coredata.cdataid);
            relay_intertask(reply_task_handle_id, idata);
        }
     }
@@ -109,10 +122,10 @@ static void lora_intertask_core_function(st_core_data_t coredata)
     if(LORA_PROTOCOL_OK != protocol_err) {
         ESP_LOGE(TAG, "%s:Pack frame data failed, err:%d", __func__, protocol_err);
     }
-    // for(uint8_t i = 0; i < sizeof(buf); i++) {
-    //     printf("%x ", buf[i]);
-    // }
-    // printf("\n");
+    for(uint8_t i = 0; i < sizeof(buf); i++) {
+        printf("%x ", buf[i]);
+    }
+    printf("\n");
     lora_send_packet(buf, sizeof(buf));
     bzero(buf, sizeof(buf));
 }
@@ -187,7 +200,8 @@ static esp_err_t handle_intertask_request()
     static uint32_t last_request_tick = 0;
     uint32_t current_tick = xTaskGetTickCount() * portTICK_PERIOD_MS;
     if(intertask_on_processing) {
-        if ((current_tick - last_request_tick) > 4000) {
+        if ((current_tick - last_request_tick) > 8000) {
+            last_request_tick = current_tick;
             ESP_LOGW(TAG, "Timeout! Reset intertask_on_processing.");
             intertask_on_processing = 0;
         }
@@ -225,7 +239,7 @@ uint8_t lora_get_dest_addr() {return dest_addr;}
 esp_err_t lora_set_dest_addr(uint8_t addr) {
     if(addr == src_addr || addr == dev_addr) return ESP_ERR_INVALID_ARG;
     dest_addr = addr;
-    ESP_LOGI(TAG, "%s dest_addr:%u, addr:%u", __func__, dest_addr, addr);
+    ESP_LOGI(TAG, "set dest_addr:%u", dest_addr);
     return ESP_OK;
 
 }

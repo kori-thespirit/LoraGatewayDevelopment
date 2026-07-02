@@ -118,7 +118,7 @@ void hmi_task(void* pvParameters) {
 
 static void hmi_intertask_core_function(st_core_data_t coredata)
 {
-    ESP_LOGI(TAG, "Inside %s",__func__);
+    ESP_LOGI(TAG, "Inside %s, get core ID:%u",__func__, coredata.cdataid);
     float fdata;
     uint16_t u16data;
     uint8_t u8data;
@@ -171,6 +171,7 @@ static void hmi_intertask_core_function(st_core_data_t coredata)
             hmi_send_data_to_display(ADDRESS_GD20_TEMP, (uint16_t)(fdata * 100));
             break;
         default:
+            ESP_LOGE(TAG, "core ID is not supported:%d", coredata.cdataid);
             break;
     }
     intertask_on_processing = 0;
