@@ -28,7 +28,7 @@ static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t 
 static e_task_handle_id_t reply_task_handle_id = 0;
 static uint8_t src_addr = 0; 
 static uint8_t dest_addr = 0;
-static uint8_t dev_addr = 2;
+static uint8_t dev_addr = 20;
 static e_lora_function_t lorafunc = LORA_FUNC_LISTEN_ONLY;
 static uint8_t buf[40] = {0};
 
@@ -55,7 +55,7 @@ void lora_task(void* pvParameters) {
     lora_enable_crc();
 
     lora_set_coding_rate(LORA_CR);
-    ESP_LOGI( TAG, "coding_rate=%d", LORA_CR);
+    ESP_LOGI(TAG, "coding_rate=%d", LORA_CR);
 
     lora_set_bandwidth(LORA_BW);
     ESP_LOGI(TAG, "bandwidth=%d", LORA_BW);
@@ -63,18 +63,24 @@ void lora_task(void* pvParameters) {
     lora_set_spreading_factor(LORA_SF);
     ESP_LOGI(TAG, "spreading_factor=%d", LORA_SF);
 
+    ESP_LOGI(TAG, "Lora device address:%u", dev_addr);
     while (1) {
-        // test_send();
         ESP_ERROR_CHECK(intertask_handle());
         lora_receive();  // put into receive mode
         if (lora_received()) {
-            int rxLen = lora_receive_packet(buf, sizeof(buf));
-            m_lora_protocol_frame_parse(buf, sizeof(buf));
+            // ESP_LOGI(TAG, "%d byte packet received:[%.*s]", rxLen, rxLen, buf);
+            // for(uint8_t i = 0; i < sizeof(buf); i++) {
+            //     printf("%x ", buf[i]);
+            // }
+            // printf("\n");
+            if(lora_receive_packet(buf, sizeof(buf)) > 0)
+                m_lora_protocol_frame_parse(buf, sizeof(buf));
         }
         int lost = lora_packet_lost();
         if (lost != 0) {
             ESP_LOGW(TAG, "%d packets lost", lost);
         }
+        vTaskDelay(10);
     }
     vTaskDelete(NULL);
 }
@@ -88,7 +94,7 @@ void pack_complete(void *pvParameters)
 void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
 {
     if(header.dest_addr == dev_addr) {
-       ESP_LOGI(TAG, "This message is for me");
+       ESP_LOGI(TAG, "This message is for me, src_addr:%u", header.src_addr);
        src_addr =  dev_addr;
        dest_addr = header.src_addr; // The reply address is the received src_addr
     }
@@ -96,17 +102,33 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
         /* TODO: Relay to adjacent lora node */
         return;
     }
-    st_core_data_t *coredata = (st_core_data_t*)pvParameters;
-    e_core_data_id_t cdataid = coredata->cdataid;
+
+    st_core_data_t coredata = *(st_core_data_t*)pvParameters;
+    // st_core_data_t coredata;
+    // e_core_data_id_t cdataid = coredata->cdataid;
+    //
+    // memcpy((void*)&coredata, pvParameters, sizeof(coredata));
+    ESP_LOGI(TAG, "pvParameters");
+    for(uint8_t i = 0; i < sizeof(st_core_data_t); i++) {
+        printf("%x ", *(uint8_t*)(pvParameters + i));
+    }
+    // printf("\n");
+    // ESP_LOGI(TAG, "coredata");
+    // for(uint8_t i = 0; i < sizeof(st_core_data_t); i++) {
+    //     printf("%x ", coredata.cdata[i]);
+    // }
+    // printf("\n");
+    ESP_LOGI(TAG, "coredata.cdataid:%u", coredata.cdataid);
+    e_core_data_id_t cdataid = coredata.cdataid;
     st_intertask_data_t idata = {
         .src_task_handle_id = TASK_ID_LORA,
-        .coredata = *coredata,
+        .coredata = coredata,
     };
     switch(cdataid){
         /* Relay to network task */
-        case COREDATA_ID_NET:
-            relay_intertask(TASK_ID_NETWORK,idata);
-            break;
+        // case COREDATA_ID_NET:
+        //     relay_intertask(TASK_ID_NETWORK,idata);
+        //     break;
         /* Relay to modbus task */
         case COREDATA_ID_MB_DATA:
         case COREDATA_ID_MB_CFG:
@@ -114,11 +136,11 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
             relay_intertask(TASK_ID_MODBUS,idata);
             break;
         /* Handle Lora data itself */
-        case COREDATA_ID_LORA_CFG_REG:
-            st_lora_cfg_reg_t loracfg;
-            memcpy((void*)&loracfg, (void*)coredata->cdata, sizeof(st_lora_cfg_reg_t));
-            ESP_LOGI(TAG, "Get lora config, sf:%u, cr:%u, bw:%u, freq:%lu", loracfg.cr, loracfg.bw, loracfg.freq);
-            break;
+        // case COREDATA_ID_LORA_CFG_REG:
+        //     st_lora_cfg_reg_t loracfg;
+        //     memcpy((void*)&loracfg, (void*)coredata->cdata, sizeof(st_lora_cfg_reg_t));
+        //     ESP_LOGI(TAG, "Get lora config, sf:%u, cr:%u, bw:%u, freq:%lu", loracfg.cr, loracfg.bw, loracfg.freq);
+        //     break;
         default:
             ESP_LOGE(TAG, "Core data ID not supported:%d", cdataid);
             break;

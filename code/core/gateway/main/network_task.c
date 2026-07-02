@@ -45,6 +45,7 @@ typedef struct modbus_topic_descriptor{
 }st_modbus_topic_descriptor_t;
 
 typedef struct modbus_topic_data {
+    uint8_t motor_status;
     float out_i;
     float out_v;
     float freq;
@@ -122,7 +123,7 @@ char *mqtt_gd20_data_json_format = "\
 */
 
 static char *mqtt_gd20_data_json_format =\
-" { \"Ouput Current\":%.2f, \"Frequency\":%.2f, \"Out Voltage\":%.2f, \"Speed\":%.2f, \"Temperature\":%.2f }";
+" {  \"Running\":%u, \"Ouput Current\":%.2f, \"Frequency\":%.2f, \"Out Voltage\":%.2f, \"Speed\":%.2f, \"Temperature\":%.2f }";
 
 static char *mqtt_gateway_status_json_format =\
 "{\t\n\"status\":\"%s\",\n\t\"message\":\"%s\"\n}";
@@ -382,39 +383,39 @@ static void network_intertask_core_function(st_core_data_t coredata)
         case COREDATA_ID_GD20_TORQUE:
             break;
         case COREDATA_ID_GD20_STATUS:
+            memcpy((void*)&g_topic_gd20_data.motor_status, (void*)&coredata.cdata, sizeof(uint8_t));
+            ESP_LOGI(TAG, "GD20_STATUS:%u, request_count:%u", g_topic_gd20_data.motor_status, request_count);
+            request_count++;
             break;
         case COREDATA_ID_GD20_FREQ:
             memcpy((void*)&g_topic_gd20_data.freq, (void*)&coredata.cdata, sizeof(float));
             ESP_LOGI(TAG, "GD20_FREQ:%.2f, request_count:%u", g_topic_gd20_data.out_i, request_count);
-            g_topic_gd20_data.freq *= 100;
             request_count++;
             break;
         case COREDATA_ID_GD20_CURRENT:
             memcpy((void*)&g_topic_gd20_data.out_i, (void*)&coredata.cdata, sizeof(float));
             ESP_LOGI(TAG, "GD20_CURRENT:%.2f, request_count:%u", g_topic_gd20_data.out_i, request_count);
-            g_topic_gd20_data.out_i *= 100;
             request_count++;
             break;
         case COREDATA_ID_GD20_VOLTAGE:
             memcpy((void*)&g_topic_gd20_data.out_v, (void*)&coredata.cdata, sizeof(float));
             ESP_LOGI(TAG, "GD20_VOLTAGE:%.2f, request_count:%u", g_topic_gd20_data.out_v, request_count);
-            g_topic_gd20_data.out_v *= 100;
             request_count++;
             break;
         case COREDATA_ID_GD20_CONVETER_TEMP:
             memcpy((void*)&g_topic_gd20_data.conv_temp, (void*)&coredata.cdata, sizeof(float));
             ESP_LOGI(TAG, "GD20_CONVETER_TEMP:%.2f, request_count:%u", g_topic_gd20_data.conv_temp, request_count);
-            g_topic_gd20_data.conv_temp *= 100;
             request_count++;
             break;
         default:
             ESP_LOGE(TAG, "core ID is not supported:%d", coredata.cdataid);
             break;
     }
-    if(request_count >= 5) {
+    if(request_count >= 6) {
         request_count = 0;
         char mqtt_gd20_data_buf[150] = {0};
-        sprintf(mqtt_gd20_data_buf, " { \"Ouput Current\":%f, \"Frequency\":%f, \"Out Voltage\":%f, \"Speed\":%f, \"Temperature\":%f }", 
+        sprintf(mqtt_gd20_data_buf, mqtt_gd20_data_json_format, 
+                g_topic_gd20_data.motor_status,
                 g_topic_gd20_data.out_i,
                 g_topic_gd20_data.freq,
                 g_topic_gd20_data.out_v,

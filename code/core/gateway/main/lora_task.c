@@ -200,7 +200,7 @@ static esp_err_t handle_intertask_request()
     static uint32_t last_request_tick = 0;
     uint32_t current_tick = xTaskGetTickCount() * portTICK_PERIOD_MS;
     if(intertask_on_processing) {
-        if ((current_tick - last_request_tick) > 8000) {
+        if ((current_tick - last_request_tick) > 2000) {
             last_request_tick = current_tick;
             ESP_LOGW(TAG, "Timeout! Reset intertask_on_processing.");
             intertask_on_processing = 0;
@@ -212,10 +212,19 @@ static esp_err_t handle_intertask_request()
     st_intertask_data_t idata;
     QueueHandle_t *p_queue = (get_queue_common_addr() + task_id_name);
     if((xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS)){
+        last_request_tick = current_tick;
         intertask_on_processing = 1;
         reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
         ESP_LOGI(TAG, "Receive queue from :%d", reply_task_handle_id);
-        lora_intertask_core_function(idata.coredata);
+        if(reply_task_handle_id == TASK_ID_HMI && reply_task_handle_id == TASK_ID_NETWORK) {
+            lora_intertask_core_function(idata.coredata);
+            vTaskDelay(pdMS_TO_TICKS(10)); // delay between request
+            intertask_on_processing = 0;
+        }
+        else {
+            lora_intertask_core_function(idata.coredata);
+        }
+
     }
     return ESP_OK;
 
