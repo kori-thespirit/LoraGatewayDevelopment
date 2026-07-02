@@ -31,6 +31,7 @@ static uint8_t dest_addr = 0;
 static uint8_t dev_addr = 20;
 static e_lora_function_t lorafunc = LORA_FUNC_LISTEN_ONLY;
 static uint8_t buf[40] = {0};
+static uint32_t message_count = 0;
 
 void lora_task(void* pvParameters) {
     e_lora_protocol_err_t protocol_err = m_lora_protocol_register_callback(&pack_complete, &parse_complete); 
@@ -97,6 +98,8 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
        ESP_LOGI(TAG, "This message is for me, src_addr:%u", header.src_addr);
        src_addr =  dev_addr;
        dest_addr = header.src_addr; // The reply address is the received src_addr
+       message_count++;
+       ESP_LOGW(TAG, "message_count:%lu", message_count);
     }
     else {
         /* TODO: Relay to adjacent lora node */
@@ -104,18 +107,10 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
     }
 
     st_core_data_t coredata = *(st_core_data_t*)pvParameters;
-    // st_core_data_t coredata;
-    // e_core_data_id_t cdataid = coredata->cdataid;
-    //
     // memcpy((void*)&coredata, pvParameters, sizeof(coredata));
-    ESP_LOGI(TAG, "pvParameters");
-    for(uint8_t i = 0; i < sizeof(st_core_data_t); i++) {
-        printf("%x ", *(uint8_t*)(pvParameters + i));
-    }
-    // printf("\n");
-    // ESP_LOGI(TAG, "coredata");
+    // ESP_LOGI(TAG, "pvParameters");
     // for(uint8_t i = 0; i < sizeof(st_core_data_t); i++) {
-    //     printf("%x ", coredata.cdata[i]);
+    //     printf("%x ", *(uint8_t*)(pvParameters + i));
     // }
     // printf("\n");
     ESP_LOGI(TAG, "coredata.cdataid:%u", coredata.cdataid);
