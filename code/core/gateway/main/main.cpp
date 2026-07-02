@@ -58,6 +58,7 @@ void app_main(void) {
     if (lora_task_handle == NULL) 
       ESP_LOGE(TAG,"Fail to create lora task");
 
+    
     BaseType_t err = xTaskCreate(
     hmi_task,
     "hmi_task",
@@ -68,7 +69,9 @@ void app_main(void) {
     );
     if (err != pdPASS) 
       ESP_LOGE(TAG,"Fail to create HMI task");
+    
 
+    
     common_task_handle = xTaskCreateStatic(
     common_task,
     "common_task",
@@ -80,8 +83,11 @@ void app_main(void) {
     );
     if (common_task_handle == NULL) 
       ESP_LOGE(TAG,"Fail to create common task");
+    
 
     /* Highspeed CPU core to handle network task */
+
+    
     BaseType_t ret = xTaskCreatePinnedToCore(
             network_task,           // Task function
             "network_task",         // Name for debugging
@@ -93,6 +99,8 @@ void app_main(void) {
     );
     if (ret != pdPASS) 
       ESP_LOGE(TAG,"Fail to create network task");
+    
+    
 
     // xTaskCreate(other_task, "other_task", 1024 * 2, NULL, TASK_PRIORITY_OTHER, NULL);
 

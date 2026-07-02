@@ -62,10 +62,11 @@ static esp_err_t handle_intertask_request();
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
 static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 static e_task_handle_id_t task_id_name = TASK_ID_NETWORK;
-static uint8_t on_processing = 0; // To check whether new request can be processed
+static uint8_t intertask_on_processing = 0; // To check whether new request can be processed
 
 EventGroupHandle_t network_event_group;
 st_modbus_data_t g_mdata;
+static uint8_t mqtt_connected = 0;
 
 static st_modbus_topic_data_t g_topic_gd20_data;
 static const st_modbus_topic_descriptor_t topic_gd20_control[] = {
@@ -149,15 +150,31 @@ void network_task(void* pvParameters)
         ESP_ERROR_CHECK(mqtts_app_start(&network_event_group));
         ESP_ERROR_CHECK(mqtts_app_register_callback(handle_topic_request, error_handle));
         ESP_ERROR_CHECK(mqtts_app_use_subscribe_list(sub_topic_list, TOTAL_IDX(sub_topic_list)));
-        ESP_LOGI(TAG, "MQTT connected");
-        mqtt_log("OK", "MQTT connected");
     }
     else {
         ESP_LOGE(TAG, "Failed to connect to network");
     }
 
     for(;;){
-        ESP_ERROR_CHECK(handle_intertask_request());
+        bits = xEventGroupWaitBits(network_event_group,
+                BIT_TO_VALUE(NET_MQTT_IS_CONNECTED),
+                pdFALSE,
+                pdFALSE,
+                0);
+        if(CHECK_BIT(bits, BIT_TO_VALUE(NET_MQTT_IS_CONNECTED))) {
+            ESP_ERROR_CHECK(handle_intertask_request());
+            if(!mqtt_connected) {
+                ESP_LOGI(TAG, "MQTT connected");
+                mqtt_log("OK", "MQTT connected");
+                mqtt_connected = 1;
+            }
+        }
+        else {
+            if(mqtt_connected) {
+                ESP_LOGW(TAG, "MQTT disconnected");
+                mqtt_connected = 0;
+            }
+        }
     }
 }
 
@@ -404,7 +421,7 @@ static void network_intertask_core_function(st_core_data_t coredata)
                 );
         mqtts_app_publish(*(pub_topic_list + 0), mqtt_gd20_data_buf);
     }
-    on_processing = 0;
+    intertask_on_processing = 0;
 }
 
 
@@ -420,13 +437,21 @@ static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t 
 
 static esp_err_t handle_intertask_request()
 {
-    if(on_processing)
-        return ESP_OK;
+    static uint32_t last_request_tick = 0;
+    uint32_t current_tick = xTaskGetTickCount() * portTICK_PERIOD_MS;
+    if(intertask_on_processing) {
+        if ((current_tick - last_request_tick) > 4000) {
+            ESP_LOGW(TAG, "Timeout! Reset intertask_on_processing.");
+            intertask_on_processing = 0;
+        }
+        else 
+            return ESP_OK;
+    }
 
     QueueHandle_t *p_queue = (get_queue_common_addr() + task_id_name);
     st_intertask_data_t idata;
     if((xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS)){
-        on_processing = 1;
+        intertask_on_processing = 1;
         reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
         ESP_LOGI(TAG, "Receive queue from :%d", reply_task_handle_id);
         network_intertask_core_function(idata.coredata);
@@ -453,3 +478,5 @@ static void mqtt_log(const char* status, const char * message)
     sprintf(mqtt_status_buf, mqtt_gateway_status_json_format, status, message);
     ESP_ERROR_CHECK(mqtts_app_publish(*(pub_topic_list + 1), mqtt_status_buf));
 }
+
+uint8_t network_get_mqtt_status() {return mqtt_connected;}
