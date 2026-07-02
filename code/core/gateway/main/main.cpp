@@ -58,7 +58,6 @@ void app_main(void) {
     if (lora_task_handle == NULL) 
       ESP_LOGE(TAG,"Fail to create lora task");
 
-    
     BaseType_t err = xTaskCreate(
     hmi_task,
     "hmi_task",
@@ -69,9 +68,7 @@ void app_main(void) {
     );
     if (err != pdPASS) 
       ESP_LOGE(TAG,"Fail to create HMI task");
-    
 
-    
     common_task_handle = xTaskCreateStatic(
     common_task,
     "common_task",

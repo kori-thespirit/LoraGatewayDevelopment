@@ -26,9 +26,9 @@ typedef enum core_data_id{
 } e_core_data_id_t;
 
 typedef struct core_data{
+    uint8_t cdataid;
     /* WARNING: Do not use pointer for cdata due to free allocated memory or local variable */
     uint8_t cdata[20];
-    e_core_data_id_t cdataid;
 } st_core_data_t;
 
 typedef struct modbus_data {
