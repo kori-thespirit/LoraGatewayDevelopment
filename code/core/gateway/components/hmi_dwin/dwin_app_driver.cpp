@@ -112,12 +112,14 @@ static void hmi_event_cb(std::string address, int lastByte, std::string message,
     if(ESP_OK != err)
         return;
 
-    ESP_LOGI(TAG, "data_length:%u, cmd_func:0x%x, vp:0x%x, ret_len:%u word, lastbyte:0x%x",
+    if(hmiframe.vp != 0x4f4b){
+        ESP_LOGI(TAG, "data_length:%u, cmd_func:0x%x, vp:0x%x, ret_len:%u word, lastbyte:0x%x",
             hmiframe.data_length, 
             hmiframe.cmd_func, 
             hmiframe.vp, 
             hmiframe.word_len, 
             hmiframe.lastbyte);
+    }
     if(hmiframe.vp == VP_KEYBOARD_INPUT) {
         int result = kb.processKey(hmiframe.lastbyte);
         std::string buffer = kb.getBuffer();
