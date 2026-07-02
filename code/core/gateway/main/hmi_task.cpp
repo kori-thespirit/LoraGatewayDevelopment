@@ -80,6 +80,7 @@ void hmi_parse_complete(st_hmi_frame_t hmiframe, void *pvParameter)
             ESP_LOGE(TAG, "No command is found");
             break;
     }
+    ESP_ERROR_CHECK(lora_set_dest_addr(20));
     relay_intertask(taskid, idata);
 }
 
@@ -87,7 +88,6 @@ void hmi_task(void* pvParameters) {
     ESP_LOGI(TAG, "task created");
     hmi_start();
     hmi_register_callback(hmi_parse_complete);
-    ESP_ERROR_CHECK(lora_set_dest_addr(2));
 
     // Khởi tạo RTC
     ds3231_init();

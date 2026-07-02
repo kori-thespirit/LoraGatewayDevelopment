@@ -24,6 +24,7 @@ static st_modbus_data_t intetask_request_data[] = {
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_VOLTAGE, 1},
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_CURRENT, 1},
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_CONVERTER_TEMP, 1},
+    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_STATUS    , 1},
     // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_SET_FREQ      , 1},
     // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_ID        , 1},
     // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_POWER  , 1},
@@ -53,13 +54,13 @@ static void request_data_from_modbus()
         return;
 
     is_on_modbus_request = 1;
-    ESP_ERROR_CHECK(lora_set_dest_addr(20));
-    st_intertask_data_t idata = get_intertask_modbus_data(intetask_request_data[request_idx]);
-    ESP_LOGI(TAG, "Send request to TASK_ID_LORA with core ID:%u, request_idx:%u", idata.coredata.cdataid, request_idx);
-    if(request_idx >= TOTAL_IDX(intetask_request_data))
+    if(request_idx > TOTAL_IDX(intetask_request_data) - 1) {
         request_idx = 0;
-    else 
-        request_idx++;
+        is_on_modbus_request = 0;
+    }
+    st_intertask_data_t idata = get_intertask_modbus_data(intetask_request_data[request_idx++]);
+    ESP_LOGI(TAG, "Send request to TASK_ID_LORA with core ID:%u, request_idx:%u", idata.coredata.cdataid, request_idx);
+    ESP_ERROR_CHECK(lora_set_dest_addr(20));
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
     // last_request_tick = current_tick;
 }
@@ -69,13 +70,13 @@ void common_task(void* pvParameters) {
     // sdcard_init();
     // stimer_common = xTimerCreate("common timer", pdMS_TO_TICKS(100), true, NULL, stimer_cb);
     ESP_LOGI(TAG, "task created");
-    while(!network_get_mqtt_status()) {
-        vTaskDelay(pdMS_TO_TICKS(2000));
-    }
+    // while(!network_get_mqtt_status()) {
+    //     vTaskDelay(pdMS_TO_TICKS(2000));
+    // }
     for(;;){
         request_data_from_modbus();
         handle_intertask_request();
-        vTaskDelay(pdMS_TO_TICKS(10));
+        vTaskDelay(pdMS_TO_TICKS(3000));
     }
 }
 
