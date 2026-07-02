@@ -216,7 +216,10 @@ static void handle_topic_request(esp_mqtt_event_handle_t event)
     }
     uint8_t lora_address = atoi(token_storage[1]);
     ESP_LOGI(TAG, "lora_address:%u", lora_address);
-    ESP_ERROR_CHECK(lora_set_dest_addr(lora_address));
+    if(lora_address == 2)
+        ESP_ERROR_CHECK(lora_set_dest_addr(lora_address));
+    else 
+        return;
     char* device_name = token_storage[3];
     ESP_LOGI(TAG, "Handle topic of device: %s", device_name);
 

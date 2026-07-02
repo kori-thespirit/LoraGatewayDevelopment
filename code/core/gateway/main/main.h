@@ -39,6 +39,7 @@ uint8_t lora_get_dest_addr();
 esp_err_t lora_set_dest_addr(uint8_t addr);
 uint8_t get_available_queue_common();
 uint8_t network_get_mqtt_status();
+void common_task_retry();
 QueueHandle_t * get_queue_common_addr();
 TaskHandle_t  * get_lora_task_handle();
 TaskHandle_t  * get_network_handle();

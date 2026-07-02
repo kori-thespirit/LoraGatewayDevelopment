@@ -12,8 +12,8 @@ static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t 
 static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 static e_task_handle_id_t task_id_name = TASK_ID_COMMON;
 static uint8_t intertask_on_processing = 0; // To check whether new request can be processed
-                                  //
 static uint8_t is_on_modbus_request = 0;
+static uint8_t retry_flag = 0;
 
 static const char *TAG = "common";
 TimerHandle_t stimer_common;
@@ -49,6 +49,13 @@ static void request_data_from_modbus()
     // static uint32_t last_request_tick = 0;
     static uint8_t request_idx = 0;
     uint32_t current_tick = xTaskGetTickCount() * portTICK_PERIOD_MS;
+
+    if(retry_flag) {
+        is_on_modbus_request = 0;
+        retry_flag = 0;
+        if(request_idx > 0)
+            request_idx--;
+    }
 
     if(is_on_modbus_request)
         return;
@@ -124,3 +131,5 @@ static esp_err_t handle_intertask_request()
 }
 
 // ------------------- INTER TASK ------------------- ]
+
+void common_task_retry() { retry_flag = 1; }
