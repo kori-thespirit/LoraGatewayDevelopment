@@ -16,7 +16,6 @@
 #define LORA_SF 7                 // Spreading Factor: 7
 #define LORA_CR 1                 // Coding Rate: 1 là 4/5
 #define LORA_CRC 1                // 1: Bật CRC, 0: Tắt CRC
-#define LORA_QUEUE_INDEX 0
  
 static const char *TAG = "lora_task";
 void pack_complete(void *pvParameters);
@@ -24,10 +23,10 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header);
 
 static esp_err_t handle_intertask_request();
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
-static void mock_on_processing_complete_in_ms(uint32_t delay);
+static void mock_intertask_on_processing_complete_in_ms(uint32_t delay);
 static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 static e_task_handle_id_t task_id_name = TASK_ID_LORA;
-static uint8_t on_processing = 0; // To check whether new request can be processed
+static uint8_t intertask_on_processing = 0; // To check whether new request can be processed
 
 static uint8_t src_addr = 0;
 static uint8_t dest_addr = 0;
@@ -58,15 +57,15 @@ void lora_task(void* pvParameters) {
 
     lora_set_spreading_factor(LORA_SF);
     ESP_LOGI(TAG, "Start");
+
     while (1) {
         handle_intertask_request();
         lora_receive();  // put into receive mode
         if (lora_received()) {
             int rxLen = lora_receive_packet(buf, sizeof(buf));
-            // ESP_LOGI(pcTaskGetName(NULL), "%d byte packet received:[%.*s]", rxLen, buf);
             m_lora_protocol_frame_parse(buf, sizeof(buf));
         }
-        vTaskDelay(10);
+        vTaskDelay(pdMS_TO_TICKS(10));
     }  // end while
 
 }
@@ -98,7 +97,7 @@ void parse_complete(void *pvParameters, st_lora_protocol_header_t header)
         /* TODO: Relay to adjacent lora node */
         return;
     }
-    on_processing = 0;
+    intertask_on_processing = 0;
 }
 
 // ------------------- INTER_TASK ------------------- [
@@ -110,6 +109,10 @@ static void lora_intertask_core_function(st_core_data_t coredata)
     if(LORA_PROTOCOL_OK != protocol_err) {
         ESP_LOGE(TAG, "%s:Pack frame data failed, err:%d", __func__, protocol_err);
     }
+    // for(uint8_t i = 0; i < sizeof(buf); i++) {
+    //     printf("%x ", buf[i]);
+    // }
+    // printf("\n");
     lora_send_packet(buf, sizeof(buf));
     bzero(buf, sizeof(buf));
 }
@@ -181,13 +184,21 @@ static esp_err_t handle_intertask_request()
     //     ESP_LOGW(TAG, "Relay intertask has status:%d", ierr);
     //     return ESP_OK;
     // }
-    if(on_processing)
-        return ESP_OK;
+    static uint32_t last_request_tick = 0;
+    uint32_t current_tick = xTaskGetTickCount() * portTICK_PERIOD_MS;
+    if(intertask_on_processing) {
+        if ((current_tick - last_request_tick) > 4000) {
+            ESP_LOGW(TAG, "Timeout! Reset intertask_on_processing.");
+            intertask_on_processing = 0;
+        }
+        else 
+            return ESP_OK;
+    }
 
     st_intertask_data_t idata;
     QueueHandle_t *p_queue = (get_queue_common_addr() + task_id_name);
     if((xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS)){
-        on_processing = 1;
+        intertask_on_processing = 1;
         reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
         ESP_LOGI(TAG, "Receive queue from :%d", reply_task_handle_id);
         lora_intertask_core_function(idata.coredata);
@@ -195,9 +206,9 @@ static esp_err_t handle_intertask_request()
     return ESP_OK;
 
 }
-static void mock_on_processing_complete_in_ms(uint32_t delay)
+static void mock_intertask_on_processing_complete_in_ms(uint32_t delay)
 {
-    if(!on_processing) return;
+    if(!intertask_on_processing) return;
     vTaskDelay(pdMS_TO_TICKS(delay));
     st_core_data_t coredata = {0};
     st_intertask_data_t idata = {
@@ -205,7 +216,7 @@ static void mock_on_processing_complete_in_ms(uint32_t delay)
         .coredata = coredata,
     };
     relay_intertask(reply_task_handle_id, idata);
-    on_processing = 0;
+    intertask_on_processing = 0;
 }
 
 // ------------------- INTER TASK ------------------- ]

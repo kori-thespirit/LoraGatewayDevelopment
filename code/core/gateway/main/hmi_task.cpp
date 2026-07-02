@@ -16,7 +16,7 @@ static esp_err_t handle_intertask_request();
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
 static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 static e_task_handle_id_t task_id_name = TASK_ID_HMI;
-static uint8_t on_processing = 0; // To check whether new request can be processed
+static uint8_t intertask_on_processing = 0; // To check whether new request can be processed
 
 static const char *TAG = "hmi_task";
 
@@ -173,7 +173,7 @@ static void hmi_intertask_core_function(st_core_data_t coredata)
         default:
             break;
     }
-    on_processing = 0;
+    intertask_on_processing = 0;
 }
 
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata)
@@ -189,13 +189,13 @@ static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t 
 
 static esp_err_t handle_intertask_request()
 {
-    if(on_processing)
+    if(intertask_on_processing)
         return ESP_OK;
 
     QueueHandle_t *p_queue = (get_queue_common_addr() + task_id_name);
     st_intertask_data_t idata;
     if((xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS)){
-        on_processing = 1;
+        intertask_on_processing = 1;
         reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
         ESP_LOGI(TAG, "Receive queue from :%d", reply_task_handle_id);
         hmi_intertask_core_function(idata.coredata);

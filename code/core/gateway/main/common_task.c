@@ -11,19 +11,21 @@ static esp_err_t handle_intertask_request();
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata);
 static e_task_handle_id_t reply_task_handle_id = (e_task_handle_id_t)0;
 static e_task_handle_id_t task_id_name = TASK_ID_COMMON;
-static uint8_t on_processing = 0; // To check whether new request can be processed
+static uint8_t intertask_on_processing = 0; // To check whether new request can be processed
+                                  //
+static uint8_t is_on_modbus_request = 0;
 
 static const char *TAG = "common";
 TimerHandle_t stimer_common;
 
 static st_modbus_data_t intetask_request_data[] = {
-    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_SET_FREQ      , 1},
+    {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_SPEED  , 1},
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OPERATION_FREQ, 1},
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_VOLTAGE, 1},
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_CURRENT, 1},
     {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_CONVERTER_TEMP, 1},
+    // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_SET_FREQ      , 1},
     // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_REG_ID        , 1},
-    // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_SPEED  , 1},
     // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_POWER  , 1},
     // {GD20_SLAVE_ID , (uint8_t)MB_FUNC_R_HOLDING, GD20_OUTPUT_TORQUE , 1},
     // {SHT20_SLAVE_ID, (uint8_t)MB_FUNC_R_INPUT  , SHT20_REG_TEMP     , 1},
@@ -33,8 +35,8 @@ static st_modbus_data_t intetask_request_data[] = {
 static st_intertask_data_t get_intertask_modbus_data(st_modbus_data_t mdata)
 {
     st_core_data_t coredata;
-    coredata.cdataid = COREDATA_ID_MB_DATA ;
     bzero(coredata.cdata, sizeof(coredata.cdata));
+    coredata.cdataid = COREDATA_ID_MB_DATA ;
     memcpy((void*)coredata.cdata, (void*)&mdata, sizeof(st_modbus_data_t));
 
     st_intertask_data_t idata = { .src_task_handle_id = task_id_name, .coredata = coredata, };
@@ -43,24 +45,21 @@ static st_intertask_data_t get_intertask_modbus_data(st_modbus_data_t mdata)
 
 static void request_data_from_modbus()
 {
-    static uint32_t last_request_tick = 0;
+    // static uint32_t last_request_tick = 0;
     static uint8_t request_idx = 0;
     uint32_t current_tick = xTaskGetTickCount() * portTICK_PERIOD_MS;
 
-    if(on_processing) {
-        if ((current_tick - last_request_tick) > 2000) {
-            ESP_LOGW(TAG, "Timeout! Reset on_processing.");
-            on_processing = 0;
-        } else {
-            return;
-        }
-    }
+    if(is_on_modbus_request)
+        return;
 
     if(request_idx >= TOTAL_IDX(intetask_request_data))
         request_idx = 0;
+    is_on_modbus_request = 1;
+    ESP_ERROR_CHECK(lora_set_dest_addr(2));
     st_intertask_data_t idata = get_intertask_modbus_data(intetask_request_data[request_idx++]);
+    ESP_LOGI(TAG, "Send request to TASK_ID_LORA with core ID:%d", idata.coredata.cdataid);
     ESP_ERROR_CHECK(relay_intertask(TASK_ID_LORA, idata));
-    last_request_tick = current_tick;
+    // last_request_tick = current_tick;
 }
 
 void common_task(void* pvParameters) {
@@ -68,10 +67,11 @@ void common_task(void* pvParameters) {
     // sdcard_init();
     // stimer_common = xTimerCreate("common timer", pdMS_TO_TICKS(100), true, NULL, stimer_cb);
     ESP_LOGI(TAG, "task created");
+    vTaskDelay(pdMS_TO_TICKS(1000));
     for(;;){
         request_data_from_modbus();
         handle_intertask_request();
-        vTaskDelay(100);
+        vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
 
@@ -83,8 +83,10 @@ static void common_intertask_core_function(st_core_data_t coredata)
 
     st_intertask_data_t idata = { .src_task_handle_id = task_id_name, .coredata = coredata, };
     relay_intertask(TASK_ID_HMI, idata);
-    relay_intertask(TASK_ID_NETWORK, idata);
-    on_processing = 0;
+    if(network_get_mqtt_status())
+        relay_intertask(TASK_ID_NETWORK, idata);
+    intertask_on_processing = 0;
+    is_on_modbus_request = 0;
 }
 
 static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t idata)
@@ -99,13 +101,13 @@ static esp_err_t relay_intertask(e_task_handle_id_t taskid, st_intertask_data_t 
 
 static esp_err_t handle_intertask_request()
 {
-    if(on_processing)
+    if(intertask_on_processing)
         return ESP_OK;
 
     QueueHandle_t *p_queue = (get_queue_common_addr() + task_id_name);
     st_intertask_data_t idata;
     if((xQueueReceive(*p_queue, (void*)&idata, pdMS_TO_TICKS(100)) == pdPASS)){
-        on_processing = 1;
+        intertask_on_processing = 1;
         reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
         ESP_LOGI(TAG, "Receive queue from :%d", reply_task_handle_id);
         common_intertask_core_function(idata.coredata);
