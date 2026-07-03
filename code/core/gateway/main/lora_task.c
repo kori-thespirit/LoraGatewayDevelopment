@@ -234,10 +234,16 @@ static esp_err_t handle_intertask_request()
         intertask_on_processing = 1;
         reply_task_handle_id = (e_task_handle_id_t) idata.src_task_handle_id;
         ESP_LOGI(TAG, "Receive queue from :%d", reply_task_handle_id);
-        if(reply_task_handle_id == TASK_ID_HMI && reply_task_handle_id == TASK_ID_NETWORK) {
+        if(reply_task_handle_id == TASK_ID_HMI || reply_task_handle_id == TASK_ID_NETWORK) {
             lora_intertask_core_function(idata.coredata);
-            vTaskDelay(pdMS_TO_TICKS(10)); // delay between request
+            vTaskDelay(pdMS_TO_TICKS(2000)); // delay between request
+            for(uint8_t i = 0; i < 3; i++) {
+                lora_send_packet(buf_retry, sizeof(buf_retry));
+                ESP_LOGI(TAG, "Resend %u", i);
+                vTaskDelay(pdMS_TO_TICKS(2000)); // delay between request
+            }
             intertask_on_processing = 0;
+            bzero(buf_retry, sizeof(buf_retry));
         }
         else {
             lora_intertask_core_function(idata.coredata);

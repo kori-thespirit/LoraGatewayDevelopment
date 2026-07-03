@@ -176,6 +176,7 @@ void network_task(void* pvParameters)
                 mqtt_connected = 0;
             }
         }
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
 
