@@ -109,7 +109,7 @@ static esp_err_t handle_intertask_request()
             case COREDATA_ID_MB_CFG:
                 break;
             default:
-                ESP_LOGE(TAG, "%s:Core data id not supported",__func__);
+                ESP_LOGE(TAG, "%s:Core data id not supported, %d",__func__, coredata.cdataid);
                 return ESP_ERR_NOT_SUPPORTED;
                 break;
 
