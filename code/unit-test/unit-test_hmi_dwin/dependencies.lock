@@ -1,0 +1,21 @@
+dependencies:
+  hayschan/dwin-hmi-esp:
+    component_hash: 3d516a7b0f21995a667701fb86c01e1b55c3bc59bc8d0aaf686e4bc86f016546
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.4.0'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.9.0
+  idf:
+    source:
+      type: idf
+    version: 5.5.3
+direct_dependencies:
+- hayschan/dwin-hmi-esp
+- idf
+manifest_hash: a76e44a1469ad58d8759ed8a2dcf91c3967280f4502b46ed05f3940459016e1c
+target: esp32
+version: 2.0.0
