@@ -1,0 +1,11 @@
+dependencies:
+  idf:
+    version: '>=4.4.0'
+description: ESP-IDF Library for DWIN DGUS T5L HMI Displays
+documentation: https://github.com/hayschan/dwin-hmi-esp/tree/main/README.md
+issues: https://github.com/hayschan/dwin-hmi-esp/issues
+maintainers:
+- Hays Chan <blog@haysc.tech>
+repository: https://github.com/hayschan/dwin-hmi-esp.git
+url: https://github.com/hayschan/dwin-hmi-esp
+version: 0.9.0
