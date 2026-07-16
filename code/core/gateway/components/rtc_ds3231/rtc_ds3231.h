@@ -2,6 +2,11 @@
 #define _RTC_DS3231_H
 
 #include "driver/i2c.h"
+#include "esp_err.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
   uint8_t second; 
@@ -29,4 +34,10 @@ void ds3231_set_datetime(uint8_t second,
     uint8_t month, 
     uint16_t year);
 void ds3231_readtime();
+esp_err_t ds3231_get_time(st_rtc_time_t *time_out);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif // _RTC_DS3231_H

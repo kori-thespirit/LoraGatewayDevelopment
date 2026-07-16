@@ -25,6 +25,7 @@
 #define GD20_OUTPUT_SPEED                   0x3005  // Tốc độ động cơ (Output Speed)
 #define GD20_OUTPUT_POWER                   0x3006  // Công suất động cơ (Output Power)
 #define GD20_OUTPUT_TORQUE                  0x3007  // Moment động cơ (Output Torque)
+#define GD20_CONVERTER_TEMP                 0x070C  // Converter temperature
 
 // 1. Mã chạy động cơ chiều thuận: 01 06 20 00 00 01 43 CA
 // const uint8_t CMD_RUN_FWD[]  = {0x01, 0x06, 0x20, 0x00, 0x00, 0x01, 0x43, 0xCA};

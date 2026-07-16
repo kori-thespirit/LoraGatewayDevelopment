@@ -27,6 +27,7 @@ typedef enum modbus_payload_err {
     MB_PAYLOAD_ERR_CALLBACK_IS_NULL,
     MB_PAYLOAD_ERR_RANGE_INVALID,
     MB_PAYLOAD_ERR_DEVICE_NOT_FOUND,
+    MB_PAYLOAD_ERR_MODBUS_TYPE,
     MB_PAYLOAD_ERR_DESCRIPTOR_NOT_FOUND,
     MB_PAYLOAD_ERR_DATA_SIZE_MISMACTH,
     MB_PAYLOAD_ERR_ADDRESS_MISMACTH,
@@ -41,7 +42,7 @@ typedef struct modbus_params_range{
 
 typedef struct modbus_params_descriptor {
     uint8_t size; // In word
-    uint16_t addr; // register address
+    uint16_t reg; // register address
     const char *unit;
     st_modbus_params_range_t range;
     e_modbus_param_type_t type;
@@ -56,12 +57,16 @@ typedef struct modbus_device_info {
 }st_modbus_device_info_t;
 
 typedef void (* p_modbus_tx_complete_cb)(void *pvParameters);
-typedef void (* p_modbus_rx_complete_cb)(void *pvParameters, const st_modbus_params_descriptor_t *desc );
+typedef void (* p_modbus_rx_complete_cb)(void *pvParameters, 
+        const st_modbus_device_info_t *devinfo, 
+        const st_modbus_params_descriptor_t *desc);
 typedef void (* p_modbus_error_cb      )(void *pvParameters);
 
 void m_modbus_payload_handle(uint8_t *modbus_payload, bool is_send);
 e_modbus_payload_err_t m_modbus_register_callback(
             void (* p_modbus_tx_complete_cb)(void *),
-            void (* p_modbus_rx_complete_cb)(void *, const st_modbus_params_descriptor_t *desc),
+            void (* p_modbus_rx_complete_cb)(void *, 
+                const st_modbus_device_info_t *devinfo, 
+                const st_modbus_params_descriptor_t *desc),
             void (* p_modbus_error_cb)      (void *));
 #endif // MODBUS_PAYLOAD_HANDLE_H

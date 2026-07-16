@@ -1,3 +1,4 @@
+/* -------------------------- LICENSE placeholder -------------------------- */
 #ifndef GD20_INVERTER_H
 #define GD20_INVERTER_H
 
@@ -24,6 +25,7 @@
 #define GD20_OUTPUT_SPEED                   0x3005  // Tốc độ động cơ (Output Speed)
 #define GD20_OUTPUT_POWER                   0x3006  // Công suất động cơ (Output Power)
 #define GD20_OUTPUT_TORQUE                  0x3007  // Moment động cơ (Output Torque)
+#define GD20_CONVERTER_TEMP                 0x070C  // Converter temperature
 
 // 1. Mã chạy động cơ chiều thuận: 01 06 20 00 00 01 43 CA
 // const uint8_t CMD_RUN_FWD[]  = {0x01, 0x06, 0x20, 0x00, 0x00, 0x01, 0x43, 0xCA};
@@ -52,12 +54,14 @@
 #define GD20_SET_FREQ_100HZ                 10000 //100Hz Max tần số GD20 hỗ trợ
 
 /* Value of status register (0x2100) */
-#define GD20_STATUS_RUN                     0x0001  //Chạy thuận
-#define GD20_STATUS_REV                     0x0002  //Chạy nghịch
-#define GD20_STATUS_STOP                    0x0003  //Dừng
-#define GD20_STATUS_FAULT                   0x0004  //Lỗi
-#define GD20_STATUS_COAST                   0x0005  //Trạng thái POFF
-#define GD20_STATUS_RESET                   0x0006  //Trạng thái tiền kích thích
+typedef enum {
+    GD20_STATUS_RUN = 1,  //Chạy thuận
+    GD20_STATUS_REV   ,    //Chạy nghịch
+    GD20_STATUS_STOP  ,    //Dừng
+    GD20_STATUS_FAULT ,    //Lỗi
+    GD20_STATUS_COAST ,    //Trạng thái POFF
+    GD20_STATUS_RESET ,    //Trạng thái tiền kích thích
+} e_gd20_status_t;
 
 /* GD20 Modbus Fault messege respone */
 #define GD20_EXC_ILLEGAL_CMD                0x01  // Lệnh không hợp lệ (Illegal command)

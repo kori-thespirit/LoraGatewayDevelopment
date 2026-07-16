@@ -3,6 +3,7 @@
 #define MODBUS_APP_DRIVER_H
 
 #include "gd20_inverter.h"
+#include "sht20_sensor.h"
 #include <stdint.h>
 #include "esp_err.h"
 
@@ -19,8 +20,13 @@
 
 
 typedef enum {
-    MB_FUNC_W = 0x06,
-    MB_FUNC_R = 0x03,
+    MB_FUNC_R_COIL = 0x01,
+    MB_FUNC_R_DISCRETE,
+    MB_FUNC_R_HOLDING,
+    MB_FUNC_R_INPUT,
+    MB_FUNC_W_COIL,
+    MB_FUNC_W_HOLDING,
+    MB_FUNC_DIAG,
 } e_modbus_function_t;
 
 void modbus_init();
